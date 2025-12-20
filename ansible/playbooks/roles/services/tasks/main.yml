@@ -1,0 +1,31 @@
+- name: Ensure service directories exist
+  ansible.builtin.file:
+    path: "/opt/homelab/services/{{ item }}"
+    state: directory
+    owner: homelab
+    group: homelab
+    mode: '0755'
+  loop: "{{ enabled_services | default([]) }}"
+
+- name: Copy service files
+  ansible.builtin.synchronize:
+    src: "services/{{ item }}/"
+    dest: "/opt/homelab/services/{{ item }}/"
+    recursive: yes
+    rsync_opts:
+      - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
+  loop: "{{ enabled_services | default([]) }}"
+
+- name: Write Redbot env file
+  copy:
+    dest: /opt/homelab/services/Redbot/.env
+    mode: '0600'
+    content: |
+      TOKEN={{ redbot_discord_token }}
+
+
+- name: Start Docker Compose services
+  ansible.builtin.shell: >
+    docker compose -f /opt/homelab/services/{{ item }}/docker-compose.yml up -d
+  loop: "{{ enabled_services | default([]) }}"
+  become: true

@@ -1,0 +1,12 @@
+[2025-11-15 03:01:42] [INFO] discord.client: logging in using static token
+[2025-11-15 03:01:42] [INFO] red: Loading packages...
+[2025-11-15 03:01:42] [INFO] red: Loaded packages: audio
+[2025-11-15 03:01:43] [INFO] discord.gateway: Shard ID 0 has connected to Gateway (Session ID: 7e442703699403c0a10cb6375daa38e6).
+[2025-11-15 03:01:43] [INFO] red: Connected to Discord. Getting ready...
+[2025-11-15 03:01:45] [INFO] red.Audio.manager: Managed Lavalink node startup command: /usr/bin/java -Djdk.tls.client.protocols=TLSv1.2 -Xms64M -Xmx15G -jar /redbot/data/cogs/Audio/Lavalink.jar
+[2025-11-15 03:01:45] [INFO] red.Audio.manager: Managed Lavalink node started. PID: 67
+[2025-11-15 03:01:45] [INFO] red.Audio.manager: Waiting for Managed Lavalink node to be ready
+[2025-11-15 03:01:49] [INFO] red.Audio.manager: Managed Lavalink node is ready to receive requests.
+[2025-11-15 03:01:49] [INFO] red.Audio.WS.LLNode: Lavalink WS connecting to ws://localhost:2333 with headers {'Authorization': 'youshallnotpass', 'User-Id': '1141573790715891783', 'Num-Shards': '1', 'Client-Name': 'Red-Lavalink/0.11.0', 'Resume-Key': 'Red-Core-Audio-1141573790715891783-BenAnnaBot'}
+[2025-11-15 03:01:49] [INFO] red.Audio.WS.LLNode: Lavalink WS connected to ws://localhost:2333
+[2025-11-15 03:25:14] [INFO] discord.gateway: Shard ID 0 has successfully RESUMED session 7e442703699403c0a10cb6375daa38e6.

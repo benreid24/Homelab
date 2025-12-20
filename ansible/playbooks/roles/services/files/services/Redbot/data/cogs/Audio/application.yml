@@ -1,0 +1,103 @@
+lavalink:
+  plugins:
+  - dependency: dev.lavalink.youtube:youtube-plugin:1.13.5
+    repository: https://maven.lavalink.dev/releases
+  server:
+    bufferDurationMs: 400
+    frameBufferDurationMs: 1000
+    gc-warnings: true
+    password: youshallnotpass
+    playerUpdateInterval: 1
+    soundcloudSearchEnabled: true
+    sources:
+      bandcamp: true
+      http: true
+      local: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      youtube: false
+    youtubePlaylistLoadLimit: 100
+    youtubeSearchEnabled: true
+logging:
+  file:
+    path: ./logs/
+  level:
+    lavalink: INFO
+    root: INFO
+  logback:
+    rollingpolicy:
+      max-history: 15
+      max-size: 10MB
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+plugins:
+  youtube:
+    allowDirectPlaylistIds: true
+    allowDirectVideoIds: true
+    allowSearch: true
+    clientOptions:
+      ANDROID_MUSIC:
+        playback: true
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      ANDROID_VR:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      IOS:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      MUSIC:
+        playback: false
+        playlistLoading: false
+        searching: true
+        videoLoading: false
+      MWEB:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      TV:
+        playback: false
+        playlistLoading: false
+        searching: false
+        videoLoading: false
+      TVHTML5EMBEDDED:
+        playback: false
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      WEB:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      WEBEMBEDDED:
+        playback: true
+        playlistLoading: false
+        searching: false
+        videoLoading: true
+    clients:
+    - MUSIC
+    - WEBEMBEDDED
+    - ANDROID_VR
+    - ANDROID_MUSIC
+    - TVHTML5EMBEDDED
+    - TV
+    - IOS
+    - WEB
+    - MWEB
+    enabled: true
+sentry:
+  dsn: ''
+  environment: ''
+server:
+  address: localhost
+  port: 2333

@@ -1,0 +1,12 @@
+- name: Provision home lab
+  hosts: localhost
+  become: true
+
+  vars_files:
+  - ../vars/vault.yml
+
+  roles:
+    - common
+    - users
+    - docker
+    - services
