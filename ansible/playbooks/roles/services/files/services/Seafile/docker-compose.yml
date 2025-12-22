@@ -64,11 +64,37 @@ services:
       - db
       - memcached
       - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api2/ping/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     networks:
       - seafile-net
     privileged: true # for fuse
     cap_add:
         - SYS_ADMIN
+
+  seafile-fuse:
+    image: docker:cli
+    container_name: seafile-fuse
+    restart: "no"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      seafile:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for Seafile to fully initialize...';
+        sleep 10;
+        echo 'Starting FUSE mount...';
+        docker exec seafile /opt/seafile/seafile-server-latest/seaf-fuse.sh start /seafile-fuse -o nonempty -o allow_other;
+        echo 'FUSE mount started successfully';
+      "
+    networks:
+      - seafile-net
 
 networks:
   seafile-net:
