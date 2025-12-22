@@ -1,6 +1,6 @@
 - name: Ensure service directories exist
   ansible.builtin.file:
-    path: "/opt/homelab/services/{{ item }}"
+    path: "{{ services_docker_path }}/{{ item }}"
     state: directory
     owner: homelab
     group: homelab
@@ -10,7 +10,7 @@
 - name: Copy service files
   ansible.builtin.synchronize:
     src: "services/{{ item }}/"
-    dest: "/opt/homelab/services/{{ item }}/"
+    dest: "{{ services_docker_path }}/{{ item }}/"
     recursive: yes
     rsync_opts:
       - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
@@ -18,14 +18,41 @@
 
 - name: Write Redbot env file
   copy:
-    dest: /opt/homelab/services/Redbot/.env
+    dest: "{{ services_docker_path }}/Redbot/.env"
     mode: '0600'
     content: |
       TOKEN={{ redbot_discord_token }}
 
+- name: Write Seafile env file
+  copy:
+    dest: "{{ services_docker_path }}/Seafile/.env"
+    mode: '0600'
+    content: |
+      DB_PASSWORD={{ seafile_db_password }}
+      ADMIN_EMAIL={{ seafile_admin_email }}
+      ADMIN_PASSWORD={{ seafile_admin_password }}
+      DATA_PATH={{ services_volume_path }}/seafile
+      HOSTNAME={{ external_hostname }}
+      HTTP_PORT={{ seafile.http_port }}
+      EXTERNAL_HTTPS_PORT={{ seafile.https_port }}
+      FUSE_PATH={{ seafile.fuse_path }}
+
+- name: Ensure Seafile FUSE directory exists
+  ansible.builtin.file:
+    path: "{{ seafile.fuse_path }}"
+    state: directory
+    owner: homelab
+    group: homelab
+    mode: '0755'
+
+- name: Login to Seafile Docker registry
+  ansible.builtin.shell: >
+    docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
+  become: true
+
 
 - name: Start Docker Compose services
   ansible.builtin.shell: >
-    docker compose -f /opt/homelab/services/{{ item }}/docker-compose.yml up -d
+    docker compose -f {{ services_docker_path }}/{{ item }}/docker-compose.yml up -d
   loop: "{{ enabled_services | default([]) }}"
   become: true

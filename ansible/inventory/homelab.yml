@@ -1,7 +1,19 @@
 all:
   hosts:
     localhost:
+      timezone: EST
       ansible_connection: local
+      external_hostname: sirgeorgelordofthevoid.com
+      services_docker_path: /opt/homelab/services
+      services_volume_path: /opt/homelab/data
       enabled_services:
         - Redbot
-      timezone: EST
+        - Seafile
+
+      seafile:
+        http_port: 12080
+        https_port: 13443
+        fuse_path: /data/seafile-fuse
+        # from https://customer.seafile.com/downloads
+        docker_username: seafile
+      
