@@ -9,6 +9,7 @@ all:
       enabled_services:
         - Redbot
         - Seafile
+        - Immich
 
       seafile:
         http_port: 12080
@@ -16,4 +17,11 @@ all:
         fuse_path: /data/seafile-fuse
         # from https://customer.seafile.com/downloads
         docker_username: seafile
+
+      immich:
+        immich_version: release
+        db_hostname: immich_postgres
+        db_username: postgres
+        db_database_name: immich
+        redis_hostname: immich_redis
       

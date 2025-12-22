@@ -48,7 +48,7 @@
 
 - name: Ensure Seafile FUSE directory exists
   ansible.builtin.file:
-    path: "{{ seafile.fuse_path }}"
+    path: "{{ seafile.fuse_path | dirname }}"
     state: directory
     owner: homelab
     group: homelab
@@ -58,6 +58,21 @@
   ansible.builtin.shell: >
     docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
   become: true
+
+- name: Write Immich env file
+  copy:
+    dest: "{{ services_docker_path }}/Immich/.env"
+    mode: '0600'
+    content: |
+      IMMICH_VERSION={{ immich.immich_version }}
+      UPLOAD_LOCATION={{ services_data_path }}/Immich/library
+      DB_DATA_LOCATION={{ services_data_path }}/Immich/database
+      DB_HOSTNAME={{ immich.db_hostname }}
+      DB_USERNAME={{ immich.db_username }}
+      DB_DATABASE_NAME={{ immich.db_database_name }}
+      DB_PASSWORD={{ immich_db_password }}
+      REDIS_HOSTNAME={{ immich.redis_hostname }}
+      EXTERNAL_PATH={{ seafile.fuse_path }}
 
 
 - name: Start Docker Compose services
