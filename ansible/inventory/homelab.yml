@@ -5,7 +5,7 @@ all:
       ansible_connection: local
       external_hostname: sirgeorgelordofthevoid.com
       services_docker_path: /opt/homelab/services
-      services_volume_path: /opt/homelab/data
+      services_data_path: /opt/homelab/data
       enabled_services:
         - Redbot
         - Seafile

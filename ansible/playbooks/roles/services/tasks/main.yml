@@ -1,6 +1,15 @@
-- name: Ensure service directories exist
+- name: Ensure service docker directories exist
   ansible.builtin.file:
     path: "{{ services_docker_path }}/{{ item }}"
+    state: directory
+    owner: homelab
+    group: homelab
+    mode: '0755'
+  loop: "{{ enabled_services | default([]) }}"
+
+- name: Ensure service data directories exist
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/{{ item }}"
     state: directory
     owner: homelab
     group: homelab
@@ -31,7 +40,7 @@
       DB_PASSWORD={{ seafile_db_password }}
       ADMIN_EMAIL={{ seafile_admin_email }}
       ADMIN_PASSWORD={{ seafile_admin_password }}
-      DATA_PATH={{ services_volume_path }}/seafile
+      DATA_PATH={{ services_data_path }}/Seafile
       HOSTNAME={{ external_hostname }}
       HTTP_PORT={{ seafile.http_port }}
       EXTERNAL_HTTPS_PORT={{ seafile.https_port }}
