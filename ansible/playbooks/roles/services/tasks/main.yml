@@ -1,6 +1,6 @@
 - name: Ensure service docker directories exist
   ansible.builtin.file:
-    path: "{{ services_docker_path }}/{{ item }}"
+    path: "{{ services_config_path }}/{{ item }}"
     state: directory
     owner: homelab
     group: homelab
@@ -19,7 +19,7 @@
 - name: Copy service files
   ansible.builtin.synchronize:
     src: "services/{{ item }}/"
-    dest: "{{ services_docker_path }}/{{ item }}/"
+    dest: "{{ services_config_path }}/{{ item }}/"
     recursive: yes
     rsync_opts:
       - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
@@ -32,6 +32,6 @@
 
 - name: Start Docker Compose services
   ansible.builtin.shell: >
-    docker compose -f {{ services_docker_path }}/{{ item }}/docker-compose.yml up -d
+    docker compose -f {{ services_config_path }}/{{ item }}/docker-compose.yml up -d
   loop: "{{ enabled_services | default([]) }}"
   become: true

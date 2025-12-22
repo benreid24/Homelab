@@ -1,15 +1,20 @@
 all:
   hosts:
     localhost:
+      external_hostname: sirgeorgelordofthevoid.com
+    vagrant:
+      external_hostname: 192.168.56.10
+
+  vars:
       timezone: EST
       ansible_connection: local
-      external_hostname: sirgeorgelordofthevoid.com
-      services_docker_path: /opt/homelab/services
+      services_config_path: /opt/homelab/services
       services_data_path: /opt/homelab/data
       enabled_services:
         - Redbot
         - Seafile
         - Immich
+        - Nginx
 
       seafile:
         http_port: 12080

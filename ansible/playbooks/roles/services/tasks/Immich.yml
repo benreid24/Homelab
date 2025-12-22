@@ -1,7 +1,7 @@
 ---
 - name: Write Immich env file
   copy:
-    dest: "{{ services_docker_path }}/Immich/.env"
+    dest: "{{ services_config_path }}/Immich/.env"
     mode: '0600'
     content: |
       IMMICH_VERSION={{ immich.immich_version }}

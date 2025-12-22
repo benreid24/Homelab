@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "ansible/playbooks/homelab.yml"
     ansible.inventory_path = "ansible/inventory/homelab.yml"
-    ansible.limit = "localhost"
+    ansible.limit = "vagrant"
     ansible.vault_password_file = "vault_pass.sh"
     ansible.become = true
   end

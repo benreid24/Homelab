@@ -1,7 +1,7 @@
 ---
 - name: Write Seafile env file
   copy:
-    dest: "{{ services_docker_path }}/Seafile/.env"
+    dest: "{{ services_config_path }}/Seafile/.env"
     mode: '0600'
     content: |
       DB_PASSWORD={{ seafile_db_password }}
@@ -13,13 +13,14 @@
       EXTERNAL_HTTPS_PORT={{ seafile.https_port }}
       FUSE_PATH={{ seafile.fuse_path }}
 
-- name: Ensure Seafile FUSE parent directory exists
+- name: Ensure Seafile FUSE directory exists
   ansible.builtin.file:
-    path: "{{ seafile.fuse_path | dirname }}"
+    path: "{{ seafile.fuse_path }}"
     state: directory
     owner: homelab
     group: homelab
     mode: '0755'
+  ignore_errors: true
 
 - name: Login to Seafile Docker registry
   ansible.builtin.shell: >

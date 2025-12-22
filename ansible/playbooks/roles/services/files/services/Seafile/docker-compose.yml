@@ -72,6 +72,7 @@ services:
       start_period: 60s
     networks:
       - seafile-net
+      - homelab
     privileged: true # for fuse
     cap_add:
         - SYS_ADMIN
@@ -98,3 +99,5 @@ services:
 
 networks:
   seafile-net:
+  homelab:
+    external: true

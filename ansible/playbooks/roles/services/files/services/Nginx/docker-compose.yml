@@ -1,0 +1,18 @@
+name: nginx
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "${CONF_PATH}:/etc/nginx"
+      # TODO - certs from certbot
+    restart: always
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

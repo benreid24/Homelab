@@ -1,7 +1,7 @@
 ---
 - name: Write Redbot env file
   copy:
-    dest: "{{ services_docker_path }}/Redbot/.env"
+    dest: "{{ services_config_path }}/Redbot/.env"
     mode: '0600'
     content: |
       TOKEN={{ redbot_discord_token }}
@@ -9,7 +9,7 @@
 
 - name: Copy Redbot seed data
   ansible.builtin.synchronize:
-    src: "{{ services_docker_path }}/Redbot/data"
+    src: "{{ services_config_path }}/Redbot/data"
     dest: "{{ services_data_path }}/Redbot"
     recursive: yes
     rsync_opts:

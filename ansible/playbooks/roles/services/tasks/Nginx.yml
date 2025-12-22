@@ -1,0 +1,30 @@
+- name: Write Nginx .env file
+  copy:
+    dest: "{{ services_config_path }}/Nginx/.env"
+    mode: '0600'
+    content: |
+      CONF_PATH={{ services_config_path }}/Nginx/config
+      HOSTNAME={{ external_hostname }}
+
+- name: Ensure Nginx sites-enabled directory exists
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/Nginx/config/sites-enabled"
+    state: directory
+    owner: homelab
+    group: homelab
+    mode: '0755'
+
+- name: Template all nginx site configs
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ services_config_path }}/Nginx/config/sites-enabled/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: homelab
+    group: homelab
+    mode: '0644'
+  with_fileglob:
+    - "templates/Nginx/*.conf.j2"
+
+- name: Ensure homelab docker network exists
+  ansible.builtin.shell: >
+    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab
+  become: true
