@@ -8,4 +8,4 @@ services:
             INSTANCE_NAME: "BenAnnaBot"
             PREFIX: "!"
         volumes:
-            - /home/ben/Red-DiscordBot-Docker/data:/redbot/data
+            - ${DATA_PATH}:/redbot/data
