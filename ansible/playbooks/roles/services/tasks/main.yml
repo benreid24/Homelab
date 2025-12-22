@@ -25,64 +25,10 @@
       - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
   loop: "{{ enabled_services | default([]) }}"
 
-- name: Write Redbot env file
-  copy:
-    dest: "{{ services_docker_path }}/Redbot/.env"
-    mode: '0600'
-    content: |
-      TOKEN={{ redbot_discord_token }}
-      DATA_PATH={{ services_data_path }}/Redbot
-
-- name: Copy Redbot seed data
-  ansible.builtin.synchronize:
-    src: "{{ services_docker_path }}/Redbot/data"
-    dest: "{{ services_data_path }}/Redbot"
-    recursive: yes
-    rsync_opts:
-      - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
-
-- name: Write Seafile env file
-  copy:
-    dest: "{{ services_docker_path }}/Seafile/.env"
-    mode: '0600'
-    content: |
-      DB_PASSWORD={{ seafile_db_password }}
-      ADMIN_EMAIL={{ seafile_admin_email }}
-      ADMIN_PASSWORD={{ seafile_admin_password }}
-      DATA_PATH={{ services_data_path }}/Seafile
-      HOSTNAME={{ external_hostname }}
-      HTTP_PORT={{ seafile.http_port }}
-      EXTERNAL_HTTPS_PORT={{ seafile.https_port }}
-      FUSE_PATH={{ seafile.fuse_path }}
-
-- name: Ensure Seafile FUSE directory exists
-  ansible.builtin.file:
-    path: "{{ seafile.fuse_path | dirname }}"
-    state: directory
-    owner: homelab
-    group: homelab
-    mode: '0755'
-
-- name: Login to Seafile Docker registry
-  ansible.builtin.shell: >
-    docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
-  become: true
-
-- name: Write Immich env file
-  copy:
-    dest: "{{ services_docker_path }}/Immich/.env"
-    mode: '0600'
-    content: |
-      IMMICH_VERSION={{ immich.immich_version }}
-      UPLOAD_LOCATION={{ services_data_path }}/Immich/library
-      DB_DATA_LOCATION={{ services_data_path }}/Immich/database
-      DB_HOSTNAME={{ immich.db_hostname }}
-      DB_USERNAME={{ immich.db_username }}
-      DB_DATABASE_NAME={{ immich.db_database_name }}
-      DB_PASSWORD={{ immich_db_password }}
-      REDIS_HOSTNAME={{ immich.redis_hostname }}
-      EXTERNAL_PATH={{ seafile.fuse_path }}
-
+- name: Configure service-specific settings
+  include_tasks: "{{ item }}.yml"
+  loop: "{{ enabled_services | default([]) }}"
+  when: item in enabled_services
 
 - name: Start Docker Compose services
   ansible.builtin.shell: >
