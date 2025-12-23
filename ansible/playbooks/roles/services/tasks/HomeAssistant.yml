@@ -1,10 +1,13 @@
 - name: Write Home Assistant .env file
   copy:
     dest: "{{ services_config_path }}/HomeAssistant/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0600'
     content: |
       CONFIG_PATH={{ homeassistant.conf_path }}
       TIMEZONE={{ timezone }}
+  become: true
   register: homeassistant_config
 
 - name: Mark HomeAssistant for restart

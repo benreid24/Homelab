@@ -1,11 +1,14 @@
 - name: Write Ngddnsinx .env file
   copy:
     dest: "{{ services_config_path }}/ddns/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0600'
     content: |
       DOMAIN={{ root_domain }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_ddns_api_token }}
       CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}
+  become: true
   register: ddns_config
 
 - name: Mark ddns for restart

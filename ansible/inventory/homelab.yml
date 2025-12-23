@@ -4,6 +4,8 @@ all:
     ansible_connection: local
     root_domain: benanna.club
     docker_network_subnet: 172.20.0.0/16
+    service_user: homelab
+    service_group: homelab
 
     services_config_path: /opt/homelab/service-configs
     services_data_path: /opt/homelab/data/service-data

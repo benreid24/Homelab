@@ -2,6 +2,8 @@
 - name: Write Seafile env file
   copy:
     dest: "{{ services_config_path }}/Seafile/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0600'
     content: |
       DB_PASSWORD={{ seafile_db_password }}
@@ -10,6 +12,7 @@
       DATA_PATH={{ services_data_path }}/Seafile
       HOSTNAME=seafile.{{ external_hostname }}
       FUSE_PATH={{ seafile.fuse_path }}
+  become: true
   register: seafile_config
 
 - name: Mark Seafile for restart
@@ -21,8 +24,8 @@
   ansible.builtin.file:
     path: "{{ seafile.fuse_path }}"
     state: directory
-    owner: homelab
-    group: homelab
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0755'
   ignore_errors: true
 
