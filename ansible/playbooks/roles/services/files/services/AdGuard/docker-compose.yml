@@ -1,0 +1,22 @@
+name: adguard
+
+services:
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguard
+    ports:
+      - "53:53/tcp"      # DNS
+      - "53:53/udp"      # DNS
+      - "853:853/tcp"    # DNS over TLS
+    volumes:
+      - ${CONF_PATH}:/opt/adguardhome/conf
+      - ${WORK_PATH}:/opt/adguardhome/work
+    environment:
+      - TZ=${TIMEZONE}
+    restart: unless-stopped
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

@@ -17,6 +17,7 @@ all:
       - ddns
       - HomeAssistant
       - Omada
+      - AdGuard
 
     seafile:
       fuse_path: /opt/homelab/data/seafile-fuse
