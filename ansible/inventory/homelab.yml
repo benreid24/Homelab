@@ -21,6 +21,12 @@ all:
       - Code
       - Kuma
 
+    crons_config_path: /opt/homelab/cron-configs
+    crons_data_path: /opt/homelab/data/cron-data
+    enabled_crons:
+      - Certbot
+      - GithubMirror
+
     seafile:
       fuse_path: /opt/homelab/data/seafile-fuse
       # from https://customer.seafile.com/downloads
@@ -42,6 +48,52 @@ all:
 
     homeassistant:
       conf_path: "{{ services_data_path }}/HomeAssistant/config"
+
+    github_mirror:
+      repo_path: "{{ crons_data_path }}/GithubMirror"
+      repo_list:
+        - name: Homelab
+          repo_url: "https://github.com/benreid24/Homelab.git"
+        - name: BLIB
+          repo_url: "https://github.com/benreid24/BLIB.git"
+        - name: RPS-Godot
+          repo_url: "https://github.com/benreid24/RPS-Godot.git"
+        - name: FriendCal
+          repo_url: "https://github.com/benreid24/FriendCal.git"
+        - name: Outpost-Engine
+          repo_url: "https://github.com/benreid24/Outpost-Engine.git"
+        - name: Stellaru
+          repo_url: "https://github.com/benreid24/Stellaru.git"
+        - name: BLIB-Template
+          repo_url: "https://github.com/benreid24/BLIB-Template.git"
+        - name: Peoplemon-3
+          repo_url: "https://github.com/benreid24/Peoplemon-3.git"
+        - name: FastCopy
+          repo_url: "https://github.com/benreid24/FastCopy.git"
+        - name: Minecraft-Runner
+          repo_url: "https://github.com/benreid24/Minecraft-Runner.git"
+        - name: Animation-Editor-2
+          repo_url: "https://github.com/benreid24/Animation-Editor-2.git"
+        - name: Oatmeal
+          repo_url: "https://github.com/benreid24/Oatmeal.git"
+        - name: Wedding-Website
+          repo_url: "https://github.com/benreid24/wedding-site.git"
+        - name: Space-Race
+          repo_url: "https://github.com/benreid24/Space-Race.git"
+        - name: Ignis-Cor
+          repo_url: "https://github.com/benreid24/Ignus-Cor.git"
+        - name: Rover
+          repo_url: "https://github.com/benreid24/Rover.git"
+        - name: Peoplemon
+          repo_url: "https://github.com/benreid24/Peoplemon.git"
+        - name: Animation-Editor
+          repo_url: "https://github.com/benreid24/Animation-Editor.git"
+        - name: 22ndCG-Website
+          repo_url: "https://github.com/benreid24/22ndCG-Website.git"
+        - name: Personal-Website
+          repo_url: "https://github.com/benreid24/Personal-Website.git"
+        - name: QuadPilot
+          repo_url: "https://github.com/benreid24/QuadPilot.git"
 
   hosts:
     localhost:

@@ -1,0 +1,31 @@
+- name: Configure git to use HTTPS instead of SSH for GitHub
+  ansible.builtin.git_config:
+    scope: global
+    name: url.https://github.com/.insteadOf
+    value: "git@github.com:"
+  become: true
+  become_user: "{{ service_user }}"
+
+- name: Perform initial clone of missing Github repositories
+  ansible.builtin.git:
+    repo: "{{ item.repo_url }}"
+    dest: "{{ github_mirror.repo_path }}/{{ item.name }}"
+    recursive: true
+  loop: "{{ github_mirror.repo_list }}"
+  become: true
+  become_user: "{{ service_user }}"
+
+- name: Make fetch script executable
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/GithubMirror/fetch.sh"
+    mode: '0755'
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+
+- name: Github Mirror cron job
+  ansible.builtin.cron:
+    name: "Github Mirror"
+    minute: "35"
+    hour: "3"
+    job: "{{ crons_config_path }}/GithubMirror/fetch.sh {{ github_mirror.repo_path }}"
+    user: "{{ service_user }}"

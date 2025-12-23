@@ -1,0 +1,42 @@
+- name: Ensure cron config directories exist
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/{{ item }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  loop: "{{ enabled_crons | default([]) }}"
+
+- name: Ensure cron data directories exist
+  ansible.builtin.file:
+    path: "{{ crons_data_path }}/{{ item }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  loop: "{{ enabled_crons | default([]) }}"
+
+- name: Check if cron source directories exist and have files
+  ansible.builtin.find:
+    paths: "{{ role_path }}/files/{{ item }}"
+    file_type: any
+  loop: "{{ enabled_crons | default([]) }}"
+  register: cron_source_check
+  connection: local
+  become: false
+  failed_when: false
+
+- name: Copy cron config files
+  ansible.builtin.synchronize:
+    src: "{{ item.item }}/"
+    dest: "{{ crons_config_path }}/{{ item.item }}/"
+    recursive: yes
+    rsync_opts:
+      - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
+  loop: "{{ cron_source_check.results }}"
+  when: item.matched > 0
+
+- name: Setup enabled crons
+  include_tasks: "{{ item }}.yml"
+  loop: "{{ enabled_crons | default([]) }}"
+  when: item in enabled_crons
