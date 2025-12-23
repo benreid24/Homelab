@@ -1,0 +1,15 @@
+- name: Write Kuma env file
+  copy:
+    dest: "{{ services_config_path }}/Kuma/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      DATA_PATH={{ services_data_path }}/Kuma
+  become: true
+  register: kuma_config
+
+- name: Mark Kuma for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Kuma']) }}"
+  when: kuma_config.changed

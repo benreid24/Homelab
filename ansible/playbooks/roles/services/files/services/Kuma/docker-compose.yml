@@ -1,0 +1,13 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - ${DATA_PATH}:/app/data
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true
