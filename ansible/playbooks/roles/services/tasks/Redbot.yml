@@ -1,4 +1,3 @@
----
 - name: Write Redbot env file
   copy:
     dest: "{{ services_config_path }}/Redbot/.env"

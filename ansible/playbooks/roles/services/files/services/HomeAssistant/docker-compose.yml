@@ -10,7 +10,7 @@ services:
       - /run/dbus:/run/dbus:ro
     environment:
       - TZ=${TIMEZONE}
-    restart: always
+    restart: unless-stopped
     networks:
       - homelab
 

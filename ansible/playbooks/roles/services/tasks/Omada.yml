@@ -1,0 +1,16 @@
+- name: Write Omada env file
+  copy:
+    dest: "{{ services_config_path }}/Omada/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      DATA_PATH={{ services_data_path }}/Omada
+      TIMEZONE={{ timezone }}
+  become: true
+  register: omada_config
+
+- name: Mark Omada for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Omada']) }}"
+  when: omada_config.changed

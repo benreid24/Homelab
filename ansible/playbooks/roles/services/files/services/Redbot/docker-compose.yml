@@ -3,7 +3,7 @@ services:
     red-bot:
         build: .
         container_name: RedBot
-        restart: always
+        restart: unless-stopped
         environment:
             INSTANCE_NAME: "BenAnnaBot"
             PREFIX: "!"

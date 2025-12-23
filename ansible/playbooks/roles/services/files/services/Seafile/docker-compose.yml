@@ -1,6 +1,6 @@
 services:
   db:
-    restart: always
+    restart: unless-stopped
     image: mariadb:10.11
     container_name: seafile-mysql
     environment:
@@ -13,7 +13,7 @@ services:
       - seafile-net
 
   memcached:
-    restart: always
+    restart: unless-stopped
     image: memcached:1.6.18
     container_name: seafile-memcached
     entrypoint: memcached -m 256
@@ -21,7 +21,7 @@ services:
       - seafile-net
 
   elasticsearch:
-    restart: always
+    restart: unless-stopped
     image: elasticsearch:8.13.0
     container_name: seafile-elasticsearch
     environment:
@@ -40,7 +40,7 @@ services:
       - seafile-net
           
   seafile:
-    restart: always
+    restart: unless-stopped
     image: docker.seadrive.org/seafileltd/seafile-pro-mc:latest
     container_name: seafile
     volumes:

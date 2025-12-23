@@ -10,7 +10,7 @@ services:
       - "${CONF_PATH}:/etc/nginx"
       - "${STATIC_PATH}:/var/www/html"
       - ${CERTS_PATH}:/etc/letsencrypt:ro
-    restart: always
+    restart: unless-stopped
     networks:
       - homelab
 
@@ -24,6 +24,7 @@ services:
     # Don't auto-start, run manually
     entrypoint: /bin/sh
     command: -c "trap exit TERM; while :; do sleep 1; done"
+    restart: unless-stopped
     networks:
       - homelab
 
