@@ -18,6 +18,7 @@ all:
       - HomeAssistant
       - Omada
       - AdGuard
+      - Code
 
     seafile:
       fuse_path: /opt/homelab/data/seafile-fuse

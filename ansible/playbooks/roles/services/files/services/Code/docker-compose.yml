@@ -1,0 +1,22 @@
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TIMEZONE}
+      - PROXY_DOMAIN=${PROXY_DOMAIN}
+      - PWA_APPNAME=code-server
+      - DEFAULT_WORKSPACE=/home/ben
+    volumes:
+      - ${CONFIG_PATH}:/config
+      - /:/host-root:ro
+      - /home/ben:/home/ben
+    restart: unless-stopped
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

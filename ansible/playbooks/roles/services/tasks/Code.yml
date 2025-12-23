@@ -1,0 +1,17 @@
+- name: Write Code env file
+  copy:
+    dest: "{{ services_config_path }}/Code/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      CONFIG_PATH={{ services_data_path }}/Code/config
+      TIMEZONE={{ timezone }}
+      PROXY_DOMAIN=code.{{ external_hostname }}
+  become: true
+  register: code_config
+
+- name: Mark Code for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Code']) }}"
+  when: code_config.changed
