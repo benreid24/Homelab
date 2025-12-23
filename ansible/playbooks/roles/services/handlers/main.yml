@@ -1,0 +1,6 @@
+- name: restart service
+  ansible.builtin.shell: >
+    docker compose -f {{ services_config_path }}/{{ item }}/docker-compose.yml up -d --force-recreate
+  loop: "{{ services_to_restart | default([]) }}"
+  become: true
+  when: services_to_restart is defined and services_to_restart | length > 0

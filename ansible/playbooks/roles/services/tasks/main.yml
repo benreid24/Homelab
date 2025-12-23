@@ -30,8 +30,14 @@
   loop: "{{ enabled_services | default([]) }}"
   when: item in enabled_services
 
-- name: Start Docker Compose services
+- name: Trigger service restarts for changed configs
+  debug:
+    msg: "Services to restart: {{ services_to_restart | default([]) }}"
+  changed_when: services_to_restart is defined and services_to_restart | length > 0
+  notify: restart service
+
+- name: Ensure Docker Compose services are started
   ansible.builtin.shell: >
-    docker compose -f {{ services_config_path }}/{{ item }}/docker-compose.yml up -d
+    docker compose -f {{ services_config_path }}/{{ item }}/docker-compose.yml up -d --no-recreate
   loop: "{{ enabled_services | default([]) }}"
   become: true

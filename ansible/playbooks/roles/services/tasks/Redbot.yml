@@ -6,6 +6,12 @@
     content: |
       TOKEN={{ redbot_discord_token }}
       DATA_PATH={{ services_data_path }}/Redbot
+  register: redbot_config
+
+- name: Mark Redbot for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) + ['Redbot'] }}"
+  when: redbot_config.changed
 
 - name: Copy Redbot seed data
   ansible.builtin.synchronize:

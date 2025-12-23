@@ -13,3 +13,9 @@
       DB_PASSWORD={{ immich_db_password }}
       REDIS_HOSTNAME={{ immich.redis_hostname }}
       EXTERNAL_PATH={{ seafile.fuse_path }}
+  register: immich_config
+
+- name: Mark Immich for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) + ['Immich'] }}"
+  when: immich_config.changed

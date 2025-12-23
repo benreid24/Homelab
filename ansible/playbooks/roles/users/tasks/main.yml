@@ -9,7 +9,7 @@
     shell: /bin/bash
     create_home: yes
 
-- name: Ensure home directory exists for Compose projects
+- name: Ensure homelab directory exists
   ansible.builtin.file:
     path: /opt/homelab
     state: directory

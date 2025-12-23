@@ -5,3 +5,9 @@
     content: |
       CONFIG_PATH={{ homeassistant.conf_path }}
       TIMEZONE={{ timezone }}
+  register: homeassistant_config
+
+- name: Mark HomeAssistant for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) + ['HomeAssistant'] }}"
+  when: homeassistant_config.changed

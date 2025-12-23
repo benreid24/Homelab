@@ -11,6 +11,7 @@
       CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_dns_api_token }}
       CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}
+  register: nginx_env_config
 
 - name: Write Cloudflare credentials file
   copy:
@@ -40,6 +41,7 @@
     - "templates/Nginx/sites-enabled/*.conf.j2"
   loop_control:
     loop_var: config_file
+  register: nginx_site_configs
 
 - name: Template all nginx common configs
   ansible.builtin.template:
@@ -52,6 +54,15 @@
     - "templates/Nginx/common/*.conf.j2"
   loop_control:
     loop_var: config_file
+  register: nginx_common_configs
+
+- name: Mark Nginx for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) + ['Nginx'] }}"
+  when: >
+    nginx_env_config.changed or
+    nginx_site_configs.changed or
+    nginx_common_configs.changed
 
 - name: Ensure homelab docker network exists
   ansible.builtin.shell: >
