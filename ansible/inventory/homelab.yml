@@ -1,13 +1,16 @@
 all:
   hosts:
     localhost:
-      external_hostname: sirgeorgelordofthevoid.com
+      external_hostname: benanna.club
+      certbot_env: prod
     vagrant:
-      external_hostname: homelab.lan
+      external_hostname: localdev.benanna.club
+      certbot_env: staging
 
   vars:
       timezone: EST
       ansible_connection: local
+
       services_config_path: /opt/homelab/service-configs
       services_data_path: /opt/homelab/data/service-data
       enabled_services:
@@ -30,6 +33,7 @@ all:
 
       nginx:
         conf_path: "{{ services_config_path }}/Nginx/config"
-        certs_path: "{{ services_config_path }}/Nginx/dev-certs"
+        certs_path: "{{ services_data_path }}/Nginx/certs"
         static_path: "{{ services_config_path }}/Nginx/static"
-      
+        letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
+        cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"

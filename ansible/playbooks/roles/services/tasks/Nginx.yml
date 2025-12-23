@@ -7,6 +7,17 @@
       HOSTNAME={{ external_hostname }}
       CERTS_PATH={{ nginx.certs_path }}
       STATIC_PATH={{ nginx.static_path }}
+      LETSENCRYPT_LIB_PATH={{ nginx.letsencrypt_lib_path }}
+      CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
+
+- name: Write Cloudflare credentials file
+  copy:
+    dest: "{{ nginx.cloudflare_credentials_path }}"
+    mode: '0600'
+    owner: homelab
+    group: homelab
+    content: |
+      dns_cloudflare_api_token = {{ cloudflare_dns_api_token }}
 
 - name: Ensure Nginx sites-enabled directory exists
   ansible.builtin.file:
@@ -32,3 +43,34 @@
   ansible.builtin.shell: >
     docker network inspect homelab >/dev/null 2>&1 || docker network create homelab
   become: true
+
+- name: Start certbot container to obtain certificates
+  ansible.builtin.shell: >
+    docker compose -f {{ services_config_path }}/Nginx/docker-compose.yml up -d certbot
+  become: true
+
+- name: Wait for certbot container to be ready
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Check if Let's Encrypt certificate exists
+  stat:
+    path: "{{ nginx.certs_path }}/live/{{ external_hostname }}/fullchain.pem"
+  register: letsencrypt_cert
+
+- name: Obtain Let's Encrypt certificate if not present
+  ansible.builtin.shell: >
+    docker exec certbot certbot certonly
+    --dns-cloudflare
+    --dns-cloudflare-credentials /etc/cloudflare.ini
+    --dns-cloudflare-propagation-seconds 60
+    -d {{ external_hostname }}
+    -d "*.{{ external_hostname }}"
+    --email "{{ admin_email }}"
+    --agree-tos
+    --non-interactive
+    {{ '--staging' if certbot_env == 'staging' else '' }}
+  become: true
+  when: not letsencrypt_cert.stat.exists
+  register: certbot_result
+  failed_when: certbot_result.rc != 0

@@ -9,8 +9,21 @@ services:
     volumes:
       - "${CONF_PATH}:/etc/nginx"
       - "${STATIC_PATH}:/var/www/html"
-      - ${CERTS_PATH}:/etc/certs:ro
+      - ${CERTS_PATH}:/etc/letsencrypt:ro
     restart: always
+    networks:
+      - homelab
+
+  certbot:
+    image: certbot/dns-cloudflare
+    container_name: certbot
+    volumes:
+      - ${CERTS_PATH}:/etc/letsencrypt
+      - ${LETSENCRYPT_LIB_PATH}:/var/lib/letsencrypt
+      - ${CLOUDFLARE_CREDENTIALS_PATH}:/etc/cloudflare.ini:ro
+    # Don't auto-start, run manually
+    entrypoint: /bin/sh
+    command: -c "trap exit TERM; while :; do sleep 1; done"
     networks:
       - homelab
 

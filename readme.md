@@ -10,9 +10,6 @@ Ansible playbooks for provisioning my home server.
 - Vagrant Hosts Plugin: `vagrant plugin install vagrant-hostsupdater`
   - Need to disable DNS over HTTPS
   - May need to manually edit `/etc/hosts` (or `/c/windows/system32/drivers/etc/hosts`) anyways
-- mkcert: https://github.com/FiloSottile/mkcert
-  - Setup local CA: `mkcert -install`
-  - Create certificates: `mkcert homelab.lan "*.homelab.lan"`
 
 ### Vault Editing
 

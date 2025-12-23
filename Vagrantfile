@@ -1,10 +1,10 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
 
-  config.vm.hostname = "homelab.lan"
+  config.vm.hostname = "localdev.benanna.club"
   config.hostsupdater.aliases = [
-    "immich.homelab.lan",
-    "seafile.homelab.lan"
+    "immich.localdev.benanna.club",
+    "seafile.localdev.benanna.club"
   ]
 
   # Private network so Ansible can SSH
