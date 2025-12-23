@@ -1,6 +1,9 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
+    listen 443 ssl default_server;
+    ssl_certificate /etc/certs/fullchain.pem;
+    ssl_certificate_key /etc/certs/privkey.pem;
     server_name {{ external_hostname }};
     
     root /var/www/html;

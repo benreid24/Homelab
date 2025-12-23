@@ -3,12 +3,14 @@
     dest: "{{ services_config_path }}/Nginx/.env"
     mode: '0600'
     content: |
-      CONF_PATH={{ services_config_path }}/Nginx
+      CONF_PATH={{ nginx.conf_path }}
       HOSTNAME={{ external_hostname }}
+      CERTS_PATH={{ nginx.certs_path }}
+      STATIC_PATH={{ nginx.static_path }}
 
 - name: Ensure Nginx sites-enabled directory exists
   ansible.builtin.file:
-    path: "{{ services_config_path }}/Nginx/config/sites-enabled"
+    path: "{{ nginx.conf_path }}/sites-enabled"
     state: directory
     owner: homelab
     group: homelab
@@ -17,7 +19,7 @@
 - name: Template all nginx site configs
   ansible.builtin.template:
     src: "{{ config_file }}"
-    dest: "{{ services_config_path }}/Nginx/config/sites-enabled/{{ config_file | basename | regex_replace('\\.j2$', '') }}"
+    dest: "{{ nginx.conf_path }}/sites-enabled/{{ config_file | basename | regex_replace('\\.j2$', '') }}"
     owner: homelab
     group: homelab
     mode: '0644'

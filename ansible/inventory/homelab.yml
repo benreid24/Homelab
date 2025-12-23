@@ -27,4 +27,9 @@ all:
         db_username: postgres
         db_database_name: immich
         redis_hostname: immich_redis
+
+      nginx:
+        conf_path: "{{ services_config_path }}/Nginx/config"
+        certs_path: "{{ services_config_path }}/Nginx/dev-certs"
+        static_path: "{{ services_config_path }}/Nginx/static"
       

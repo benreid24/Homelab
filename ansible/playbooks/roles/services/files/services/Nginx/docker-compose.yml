@@ -7,9 +7,9 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "${CONF_PATH}/config:/etc/nginx"
-      - "${CONF_PATH}/static:/var/www/html"
-      # TODO - certs from certbot
+      - "${CONF_PATH}:/etc/nginx"
+      - "${STATIC_PATH}:/var/www/html"
+      - ${CERTS_PATH}:/etc/certs:ro
     restart: always
     networks:
       - homelab

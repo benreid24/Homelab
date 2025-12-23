@@ -1,8 +1,8 @@
 server {
-    # listen 13444 ssl;
     listen 80;
-    # ssl_certificate /etc/letsencrypt/live/sirgeorgelordofthevoid.com/fullchain.pem;    # Path to your fullchain.pem
-    # ssl_certificate_key /etc/letsencrypt/live/sirgeorgelordofthevoid.com/privkey.pem;  # Path to your privkey.pem
+    listen 443 ssl;
+    ssl_certificate /etc/certs/fullchain.pem;
+    ssl_certificate_key /etc/certs/privkey.pem;
     server_name immich.{{ external_hostname }};
     server_tokens off;
 

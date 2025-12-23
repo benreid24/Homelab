@@ -1,3 +1,4 @@
 .vagrant
 .vault_pass
 .env
+ansible/playbooks/roles/services/files/services/Nginx/dev-certs
