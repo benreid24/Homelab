@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sir George, Lord of the Void</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .services {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .services h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .service-list {
+            list-style: none;
+        }
+        
+        .service-list li {
+            margin: 0.5rem 0;
+        }
+        
+        .service-list a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: opacity 0.3s;
+        }
+        
+        .service-list a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏰 Sir George, Lord of the Void</h1>
+        <p>Welcome to the realm of infinite possibilities</p>
+        
+        <div class="services">
+            <h2>Available Services</h2>
+            <ul class="service-list">
+                <li><a href="#" data-subdomain="immich">📸 Immich - Photo Management</a></li>
+                <li><a href="#" data-subdomain="seafile">🌊 Seafile - File Sync</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Dynamically set links based on current hostname
+        document.querySelectorAll('[data-subdomain]').forEach(link => {
+            const subdomain = link.getAttribute('data-subdomain');
+            const currentHost = window.location.hostname;
+            link.href = `${window.location.protocol}//${subdomain}.${currentHost}`;
+        });
+    </script>
+</body>
+</html>

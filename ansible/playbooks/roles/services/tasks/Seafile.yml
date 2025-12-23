@@ -8,9 +8,7 @@
       ADMIN_EMAIL={{ seafile_admin_email }}
       ADMIN_PASSWORD={{ seafile_admin_password }}
       DATA_PATH={{ services_data_path }}/Seafile
-      HOSTNAME={{ external_hostname }}
-      HTTP_PORT={{ seafile.http_port }}
-      EXTERNAL_HTTPS_PORT={{ seafile.https_port }}
+      HOSTNAME=seafile.{{ external_hostname }}
       FUSE_PATH={{ seafile.fuse_path }}
 
 - name: Ensure Seafile FUSE directory exists

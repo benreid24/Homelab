@@ -4,11 +4,17 @@ Ansible playbooks for provisioning my home server.
 
 ## Development
 
+### Prerequisites
+
+- Vagrant
+- Vagrant Hosts Plugin: `vagrant plugin install vagrant-hostsupdater`
+  - Need to disable DNS over HTTPS
+
+### Vault Editing
+
 To edit the vault: `ansible-vault edit ansible/vars/vault.yml --vault-password-file=vault_pass.sh` (Put the password in `.vault_pass`)
 
 ## Testing
-
-Testing is done using Vagrant with the guest_ansible plugin. Install with `vagrant plugin install vagrant-guest_ansible`
 
 To provision a VM: `vagrant up`
 

@@ -7,7 +7,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "${CONF_PATH}:/etc/nginx"
+      - "${CONF_PATH}/config:/etc/nginx"
+      - "${CONF_PATH}/static:/var/www/html"
       # TODO - certs from certbot
     restart: always
     networks:

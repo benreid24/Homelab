@@ -43,8 +43,6 @@ services:
     restart: always
     image: docker.seadrive.org/seafileltd/seafile-pro-mc:latest
     container_name: seafile
-    ports:
-      - "${HTTP_PORT}:80"
     volumes:
       - ${DATA_PATH}/data:/shared   # Requested, specifies the path to Seafile data persistent store.
       - type: bind
@@ -59,7 +57,7 @@ services:
       - SEAFILE_ADMIN_EMAIL=${ADMIN_EMAIL} 
       - SEAFILE_ADMIN_PASSWORD=${ADMIN_PASSWORD}   
       - SEAFILE_SERVER_LETSENCRYPT=false  
-      - SEAFILE_SERVER_HOSTNAME=${HOSTNAME}:${EXTERNAL_HTTPS_PORT}
+      - SEAFILE_SERVER_HOSTNAME=${HOSTNAME}
     depends_on:
       - db
       - memcached

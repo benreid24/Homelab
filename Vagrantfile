@@ -1,11 +1,16 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
 
-  config.vm.hostname = "ansible-test"
+  config.vm.hostname = "homelab.lan"
+  config.hostsupdater.aliases = [
+    "immich.homelab.lan",
+    "seafile.homelab.lan"
+  ]
 
   # Private network so Ansible can SSH
   config.vm.network "private_network", ip: "192.168.56.10"
 
+  
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 8192
     vb.cpus = 4

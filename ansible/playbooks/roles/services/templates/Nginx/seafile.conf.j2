@@ -1,0 +1,24 @@
+log_format seafileformat '$http_x_forwarded_for $remote_addr [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $upstream_response_time';
+
+server {
+    # listen 13443 ssl;
+    listen 80;
+    # ssl_certificate /etc/letsencrypt/live/sirgeorgelordofthevoid.com/fullchain.pem;    # Path to your fullchain.pem
+    # ssl_certificate_key /etc/letsencrypt/live/sirgeorgelordofthevoid.com/privkey.pem;  # Path to your privkey.pem
+    server_name seafile.{{ external_hostname }};
+    server_tokens off;
+
+    location / {
+       	proxy_pass         http://seafile;
+       	proxy_set_header   Host $http_host;
+       	proxy_set_header   X-Real-IP $remote_addr;
+       	proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+       	proxy_set_header   X-Forwarded-Host $server_name;
+       	proxy_read_timeout 1200s;
+       	proxy_set_header   X-Forwarded-Proto https;
+        client_max_body_size 1000M;
+    }
+
+    # include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    # ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+}

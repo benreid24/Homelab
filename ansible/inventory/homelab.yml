@@ -3,13 +3,13 @@ all:
     localhost:
       external_hostname: sirgeorgelordofthevoid.com
     vagrant:
-      external_hostname: 192.168.56.10
+      external_hostname: homelab.lan
 
   vars:
       timezone: EST
       ansible_connection: local
-      services_config_path: /opt/homelab/services
-      services_data_path: /opt/homelab/data
+      services_config_path: /opt/homelab/service-configs
+      services_data_path: /opt/homelab/data/service-data
       enabled_services:
         - Redbot
         - Seafile
@@ -17,9 +17,7 @@ all:
         - Nginx
 
       seafile:
-        http_port: 12080
-        https_port: 13443
-        fuse_path: /data/seafile-fuse
+        fuse_path: /opt/homelab/data/seafile-fuse
         # from https://customer.seafile.com/downloads
         docker_username: seafile
 
