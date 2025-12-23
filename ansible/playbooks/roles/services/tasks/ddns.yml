@@ -1,0 +1,8 @@
+- name: Write Ngddnsinx .env file
+  copy:
+    dest: "{{ services_config_path }}/ddns/.env"
+    mode: '0600'
+    content: |
+      DOMAIN={{ root_domain }}
+      CLOUDFLARE_API_TOKEN={{ cloudflare_ddns_api_token }}
+      CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}

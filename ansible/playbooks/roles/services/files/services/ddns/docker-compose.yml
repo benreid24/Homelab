@@ -1,0 +1,11 @@
+name: ddns
+
+services:
+  ddns:
+    build: .
+    container_name: ddns
+    restart: always
+    environment:
+      - DOMAIN=${DOMAIN}
+      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}

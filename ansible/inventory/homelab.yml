@@ -1,39 +1,41 @@
 all:
+  vars:
+    timezone: EST
+    ansible_connection: local
+    root_domain: benanna.club
+
+    services_config_path: /opt/homelab/service-configs
+    services_data_path: /opt/homelab/data/service-data
+    enabled_services:
+      - Redbot
+      - Seafile
+      - Immich
+      - Nginx
+      - ddns
+
+    seafile:
+      fuse_path: /opt/homelab/data/seafile-fuse
+      # from https://customer.seafile.com/downloads
+      docker_username: seafile
+
+    immich:
+      immich_version: release
+      db_hostname: immich_postgres
+      db_username: postgres
+      db_database_name: immich
+      redis_hostname: immich_redis
+
+    nginx:
+      conf_path: "{{ services_config_path }}/Nginx/config"
+      certs_path: "{{ services_data_path }}/Nginx/certs"
+      static_path: "{{ services_config_path }}/Nginx/static"
+      letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
+      cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
+
   hosts:
     localhost:
-      external_hostname: benanna.club
+      external_hostname: "{{ root_domain }}"
       certbot_env: prod
     vagrant:
-      external_hostname: localdev.benanna.club
+      external_hostname: "localdev.{{ root_domain }}"
       certbot_env: staging
-
-  vars:
-      timezone: EST
-      ansible_connection: local
-
-      services_config_path: /opt/homelab/service-configs
-      services_data_path: /opt/homelab/data/service-data
-      enabled_services:
-        - Redbot
-        - Seafile
-        - Immich
-        - Nginx
-
-      seafile:
-        fuse_path: /opt/homelab/data/seafile-fuse
-        # from https://customer.seafile.com/downloads
-        docker_username: seafile
-
-      immich:
-        immich_version: release
-        db_hostname: immich_postgres
-        db_username: postgres
-        db_database_name: immich
-        redis_hostname: immich_redis
-
-      nginx:
-        conf_path: "{{ services_config_path }}/Nginx/config"
-        certs_path: "{{ services_data_path }}/Nginx/certs"
-        static_path: "{{ services_config_path }}/Nginx/static"
-        letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
-        cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
