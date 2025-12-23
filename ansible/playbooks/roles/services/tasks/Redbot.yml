@@ -16,6 +16,13 @@
     services_to_restart: "{{ services_to_restart | default([]) | union(['Redbot']) }}"
   when: redbot_config.changed
 
+- name: Check if Redbot data directory exists and has files
+  ansible.builtin.find:
+    paths: "{{ services_data_path }}/Redbot/data"
+    file_type: any
+  register: redbot_data_check
+  failed_when: false
+
 - name: Copy Redbot seed data
   ansible.builtin.synchronize:
     src: "{{ services_config_path }}/Redbot/data"
@@ -23,3 +30,4 @@
     recursive: yes
     rsync_opts:
       - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
+  when: redbot_data_check.matched == 0

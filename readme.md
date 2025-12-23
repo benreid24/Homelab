@@ -21,4 +21,4 @@ To provision a VM: `vagrant up`
 
 Run Ansible manually in the VM:
 1. `cd /vagrant`
-2. `ansible-playbook --connection=local --limit vagrant -i ansible/inventory/homelab.yml --vault-password-file=/vagrant/vault_pass.sh ./ansible/playbooks/homelab.yml`
+2. `sudo ansible-playbook --connection=local --limit vagrant -i ansible/inventory/homelab.yml --vault-password-file=/vagrant/vault_pass.sh ./ansible/playbooks/homelab.yml`
