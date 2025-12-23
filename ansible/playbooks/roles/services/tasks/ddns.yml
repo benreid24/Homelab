@@ -10,5 +10,5 @@
 
 - name: Mark ddns for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['ddns'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['ddns']) }}"
   when: ddns_config.changed

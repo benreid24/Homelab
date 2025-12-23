@@ -16,6 +16,31 @@
     mode: '0755'
   loop: "{{ enabled_services | default([]) }}"
 
+- name: Check docker-compose files and Dockerfiles for changes
+  stat:
+    path: "{{ services_config_path }}/{{ item[0] }}/{{ item[1] }}"
+    checksum_algorithm: sha1
+  loop: "{{ enabled_services | product(['docker-compose.yml', 'Dockerfile']) | list }}"
+  register: dest_files
+
+- name: Get source file checksums
+  stat:
+    path: "{{ role_path }}/files/services/{{ item[0] }}/{{ item[1] }}"
+    checksum_algorithm: sha1
+  loop: "{{ enabled_services | product(['docker-compose.yml', 'Dockerfile']) | list }}"
+  register: src_files
+  connection: local
+  become: false
+
+- name: Mark services for restart if compose files or Dockerfiles changed
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union([item.0.item[0]]) }}"
+  loop: "{{ src_files.results | zip(dest_files.results) | list }}"
+  when: 
+    - item.0.stat.exists
+    - item.1.stat.exists
+    - item.0.stat.checksum != item.1.stat.checksum
+
 - name: Copy service files
   ansible.builtin.synchronize:
     src: "services/{{ item }}/"

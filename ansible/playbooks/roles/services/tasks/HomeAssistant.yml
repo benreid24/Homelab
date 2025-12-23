@@ -9,5 +9,5 @@
 
 - name: Mark HomeAssistant for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['HomeAssistant'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['HomeAssistant']) }}"
   when: homeassistant_config.changed

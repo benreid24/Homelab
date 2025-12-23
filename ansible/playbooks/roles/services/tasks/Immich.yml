@@ -17,5 +17,5 @@
 
 - name: Mark Immich for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['Immich'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Immich']) }}"
   when: immich_config.changed

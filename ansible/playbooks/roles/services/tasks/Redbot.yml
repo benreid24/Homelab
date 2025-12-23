@@ -10,7 +10,7 @@
 
 - name: Mark Redbot for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['Redbot'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Redbot']) }}"
   when: redbot_config.changed
 
 - name: Copy Redbot seed data

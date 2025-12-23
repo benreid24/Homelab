@@ -14,7 +14,7 @@
 
 - name: Mark Seafile for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['Seafile'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Seafile']) }}"
   when: seafile_config.changed
 
 - name: Ensure Seafile FUSE directory exists

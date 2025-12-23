@@ -58,7 +58,7 @@
 
 - name: Mark Nginx for restart
   set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) + ['Nginx'] }}"
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Nginx']) }}"
   when: >
     nginx_env_config.changed or
     nginx_site_configs.changed or
@@ -74,14 +74,15 @@
     docker compose -f {{ services_config_path }}/Nginx/docker-compose.yml up -d certbot
   become: true
 
-- name: Wait for certbot container to be ready
-  ansible.builtin.pause:
-    seconds: 5
-
 - name: Check if Let's Encrypt certificate exists
   stat:
     path: "{{ nginx.certs_path }}/live/{{ external_hostname }}/fullchain.pem"
   register: letsencrypt_cert
+
+- name: Wait for certbot container to be ready
+  ansible.builtin.pause:
+    seconds: 5
+  when: not letsencrypt_cert.stat.exists
 
 - name: Obtain Let's Encrypt certificate if not present
   ansible.builtin.shell: >
