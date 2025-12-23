@@ -1,0 +1,19 @@
+name: HomeAssistant
+
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: homeassistant
+    volumes:
+      - "${CONFIG_PATH}:/config"
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    environment:
+      - TZ=${TIMEZONE}
+    restart: always
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

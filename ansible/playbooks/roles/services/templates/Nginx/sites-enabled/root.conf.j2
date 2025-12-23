@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/server_common.conf;
+    server_name {{ external_hostname }};
+    
+    root /var/www/html;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

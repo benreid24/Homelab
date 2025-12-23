@@ -37,13 +37,25 @@
     group: homelab
     mode: '0644'
   with_fileglob:
-    - "templates/Nginx/*.conf.j2"
+    - "templates/Nginx/sites-enabled/*.conf.j2"
+  loop_control:
+    loop_var: config_file
+
+- name: Template all nginx common configs
+  ansible.builtin.template:
+    src: "{{ config_file }}"
+    dest: "{{ nginx.conf_path }}/{{ config_file | basename | regex_replace('\\.j2$', '') }}"
+    owner: homelab
+    group: homelab
+    mode: '0644'
+  with_fileglob:
+    - "templates/Nginx/common/*.conf.j2"
   loop_control:
     loop_var: config_file
 
 - name: Ensure homelab docker network exists
   ansible.builtin.shell: >
-    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab
+    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab --subnet {{ docker_network_subnet }}
   become: true
 
 - name: Start certbot container to obtain certificates

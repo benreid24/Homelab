@@ -1,0 +1,9 @@
+server {
+    include /etc/nginx/server_common.conf;
+    server_name immich.{{ external_hostname }};
+
+    location / {
+        proxy_pass         http://immich-server:2283;
+        include /etc/nginx/proxy_common.conf;
+    }
+}

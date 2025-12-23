@@ -1,0 +1,7 @@
+- name: Write Home Assistant .env file
+  copy:
+    dest: "{{ services_config_path }}/HomeAssistant/.env"
+    mode: '0600'
+    content: |
+      CONFIG_PATH={{ homeassistant.conf_path }}
+      TIMEZONE={{ timezone }}

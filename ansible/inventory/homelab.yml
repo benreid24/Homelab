@@ -3,6 +3,7 @@ all:
     timezone: EST
     ansible_connection: local
     root_domain: benanna.club
+    docker_network_subnet: 172.20.0.0/16
 
     services_config_path: /opt/homelab/service-configs
     services_data_path: /opt/homelab/data/service-data
@@ -12,6 +13,7 @@ all:
       - Immich
       - Nginx
       - ddns
+      - HomeAssistant
 
     seafile:
       fuse_path: /opt/homelab/data/seafile-fuse
@@ -31,6 +33,9 @@ all:
       static_path: "{{ services_config_path }}/Nginx/static"
       letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
       cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
+
+    homeassistant:
+      conf_path: "{{ services_data_path }}/HomeAssistant/config"
 
   hosts:
     localhost:
