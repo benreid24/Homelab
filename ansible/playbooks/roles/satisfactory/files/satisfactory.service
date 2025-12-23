@@ -1,0 +1,17 @@
+[Unit]
+Description=Satisfactory dedicated server
+Wants=network-online.target
+After=syslog.target network.target nss-lookup.target network-online.target
+
+[Service]
+ExecStartPre=/home/steam/steamcmd +force_install_dir "/home/steam/Satisfactory" +login anonymous +app_update 1690800 validate +quit
+ExecStart=/home/steam/Satisfactory/FactoryServer.sh -ini:Game:[/Script/Engine.GameSession]:MaxPlayers=10
+User=steam
+Group=steam
+Restart=on-failure
+RestartSec=60
+KillSignal=SIGINT
+WorkingDirectory=/home/steam/Satisfactory
+
+[Install]
+WantedBy=multi-user.target

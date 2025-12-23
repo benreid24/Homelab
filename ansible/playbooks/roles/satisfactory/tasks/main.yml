@@ -1,0 +1,55 @@
+- name: Copy Satisfactory systemd service file
+  ansible.builtin.copy:
+    src: satisfactory.service
+    dest: /etc/systemd/system/satisfactory.service
+    owner: root
+    group: root
+    mode: '0660'
+  become: true
+  register: satisfactory_service
+
+- name: Create Satisfactory save directory
+  ansible.builtin.file:
+    path: "{{ satisfactory_saves_path }}"
+    state: directory
+    owner: steam
+    group: steam
+    mode: '0755'
+  become: true
+
+- name: Create Satisfactory save parent directory
+  ansible.builtin.file:
+    path: /home/steam/.config/Epic/
+    state: directory
+    owner: steam
+    group: steam
+    mode: '0755'
+  become: true
+
+- name: Symlink Satisfactory save directory
+  ansible.builtin.file:
+    src: "{{ satisfactory_saves_path }}"
+    dest: /home/steam/.config/Epic/FactoryGame
+    state: link
+    force: yes
+  become: true
+
+- name: Create Satisfactory installation directory
+  file:
+    dest: /home/steam/Satisfactory
+    owner: steam
+    group: steam
+    mode: 0764
+    state: directory
+
+- name: Enable satisfactory service
+  ansible.builtin.systemd:
+    name: satisfactory.service
+    enabled: yes
+    state: started
+  become: true
+
+- name: Reload systemd to apply satisfactory service changes
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  become: true

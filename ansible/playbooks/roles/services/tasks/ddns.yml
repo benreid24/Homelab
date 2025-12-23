@@ -1,4 +1,4 @@
-- name: Write Ngddnsinx .env file
+- name: Write ddns .env file
   copy:
     dest: "{{ services_config_path }}/ddns/.env"
     owner: "{{ service_user }}"

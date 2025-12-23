@@ -1,0 +1,54 @@
+- name: Enable multiverse repository
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+  loop:
+    - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} multiverse"
+    - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates multiverse"
+  become: true
+
+- name: Add i386 architecture
+  ansible.builtin.command: dpkg --add-architecture i386
+  become: true
+  register: dpkg_result
+  changed_when: dpkg_result.rc == 0
+  failed_when: dpkg_result.rc != 0
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
+- name: Accept steamcmd license
+  ansible.builtin.debconf:
+    name: "steam"
+    question: "steam/question"
+    value: "I AGREE"
+    vtype: "select"
+  become: true
+
+- name: Install Steam
+  ansible.builtin.apt:
+    name:
+      - steamcmd
+    state: present
+  become: true
+
+- name: Create steam group
+  ansible.builtin.group: 
+    name: steam
+
+- name: Create steam user
+  ansible.builtin.user:
+    name: steam
+    group: steam
+
+- name: Link steamcmd executable
+  ansible.builtin.file:
+    src: /usr/games/steamcmd
+    dest: /home/steam/steamcmd
+    state: link
+    owner: steam
+    group: steam
+    mode: 0774
+  become: true

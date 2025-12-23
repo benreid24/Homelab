@@ -95,6 +95,8 @@ all:
         - name: QuadPilot
           repo_url: "https://github.com/benreid24/QuadPilot.git"
 
+    satisfactory_saves_path: /opt/homelab/data/satisfactory-saves
+
   hosts:
     localhost:
       external_hostname: "{{ root_domain }}"

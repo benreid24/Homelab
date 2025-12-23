@@ -8,12 +8,14 @@
 
 - name: Perform initial clone of missing Github repositories
   ansible.builtin.git:
-    repo: "{{ item.repo_url }}"
-    dest: "{{ github_mirror.repo_path }}/{{ item.name }}"
+    repo: "{{ repo.repo_url }}"
+    dest: "{{ github_mirror.repo_path }}/{{ repo.name }}"
     recursive: true
   loop: "{{ github_mirror.repo_list }}"
   become: true
   become_user: "{{ service_user }}"
+  loop_control:
+    loop_var: repo
 
 - name: Make fetch script executable
   ansible.builtin.file:
