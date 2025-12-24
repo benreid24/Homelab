@@ -1,2 +1,0 @@
-- name: Include mount tasks
-  ansible.builtin.include_tasks: mount.yml

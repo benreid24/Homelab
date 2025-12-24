@@ -6,9 +6,10 @@ all:
     docker_network_subnet: 172.20.0.0/16
     service_user: homelab
     service_group: homelab
+    data_path: /opt/homelab/data
 
     services_config_path: /opt/homelab/service-configs
-    services_data_path: /opt/homelab/data/service-data
+    services_data_path: "{{ data_path }}/service-data"
     enabled_services:
       - Redbot
       - Seafile
@@ -22,13 +23,14 @@ all:
       - Kuma
 
     crons_config_path: /opt/homelab/cron-configs
-    crons_data_path: /opt/homelab/data/cron-data
+    crons_data_path: "{{ data_path }}/cron-data"
     enabled_crons:
       - Certbot
       - GithubMirror
+      - Backups
 
     seafile:
-      fuse_path: /opt/homelab/data/seafile-fuse
+      fuse_path: "{{ data_path }}/seafile-fuse"
       # from https://customer.seafile.com/downloads
       docker_username: seafile
 
@@ -95,20 +97,33 @@ all:
         - name: QuadPilot
           repo_url: "https://github.com/benreid24/QuadPilot.git"
 
-    satisfactory_saves_path: /opt/homelab/data/satisfactory-saves
+    satisfactory_saves_path: "{{ data_path }}/satisfactory-saves"
 
     backups:
-      onsite_server: "192.168.0.69/WOGH"
-      onsite_mount_path: "/mnt/backup-onsite"
-      offsite_server: "192.168.0.42/offsite-drive"
-      offsite_mount_path: "/mnt/backup-offsite"
       creds_file: /etc/smb-credentials
-      smb_options: "credentials=/etc/smb-credentials,file_mode=0755,dir_mode=0755,uid=1000,gid=1000"
+
+      onsite_server_address: 192.168.0.69
+      onsite_server_path: "//192.168.0.69/WOGH"
+      onsite_mount_path: "/mnt/backup-onsite"
+      onsite_start_monitor_a: "http://192.168.0.69:3001/api/push/f63QYckSwV?status=up&msg=OK&ping="
+      onsite_start_monitor_b: "http://192.168.0.196:3001/api/push/FKrdkoOGok3ze4O4aOpeNkwTuFek0c1C?status=up&msg=OK&ping="
+      onsite_end_monitor_a: "http://192.168.0.196:3001/api/push/iEJ27bptLi6f6DfUpuwUkfToZheUwYLM?status=up&msg=OK"
+      onsite_end_monitor_b: "http://192.168.0.69:3001/api/push/2v3FEsIt3J?status=up&msg=OK"
+
+      offsite_server_address: 192.168.0.42
+      offsite_server_path: "//192.168.0.42/offsite-drive"
+      offsite_mount_path: "/mnt/backup-offsite"
+      offsite_start_monitor_a: "http://192.168.0.69:3001/api/push/Tf3kcpNdai?status=up&msg=OK&ping="
+      offsite_start_monitor_b: "http://192.168.0.196:3001/api/push/MazrazSaffmI3JNKAofmuYRP7tWWI9p2?status=up&msg=OK&ping="
+      offsite_end_monitor_a: "http://192.168.0.196:3001/api/push/FvCGlPpC1WgDUI58tF9FEjOwlljKaknd?status=up&msg=OK"
+      offsite_end_monitor_b: "http://192.168.0.69:3001/api/push/gVJzrifnKH?status=up&msg=OK"
 
   hosts:
     localhost:
       external_hostname: "{{ root_domain }}"
       certbot_env: prod
+      backup_dst_path: "/homelab-backups"
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       certbot_env: staging
+      backup_dst_path: "/homelab-backups-dev"
