@@ -34,3 +34,4 @@
   ansible.builtin.shell: >
     docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
   become: true
+  become_user: "{{ service_user }}"

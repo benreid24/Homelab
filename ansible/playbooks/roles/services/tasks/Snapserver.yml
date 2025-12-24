@@ -1,0 +1,71 @@
+- name: Write Snapserver env file
+  copy:
+    dest: "{{ services_config_path }}/Snapserver/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      CONF_PATH={{ services_config_path }}/Snapserver/snapserver.conf
+      SPOTIFY_AUDIO_NAME={{ spotify_audio_name_pretty }}
+      RESPOT_VOLUME_PATH={{ services_config_path }}/Snapserver/librespot
+      MPD_MUSIC_PATH={{ backups.onsite_mount_path }}/Music
+      MPD_DATA_PATH={{ services_data_path }}/Snapserver/MPD
+      MPD_CONF_PATH={{ services_config_path }}/Snapserver/mpd.conf
+      MPD_UID={{ service_uid }}
+      MPD_GID={{ service_gid }}
+  become: true
+  register: snapserver_config
+
+- name: Template Snapserver config file
+  template:
+    src: Snapserver/snapserver.conf.j2
+    dest: "{{ services_config_path }}/Snapserver/snapserver.conf"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0644'
+  become: true
+  register: snapserver_config_file
+
+- name: Create Librespot cache directories
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/Snapserver/librespot/{{ librespot_dir }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+  loop:
+    - cache
+    - syscache
+    - user
+  loop_control:
+    loop_var: librespot_dir
+
+- name: Write Librespot Spotify credentials file
+  ansible.builtin.copy:
+    dest: "{{ services_config_path }}/Snapserver/librespot/syscache/credentials.json"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      {
+        "username": "{{ spotify_username }}",
+        "auth_data": "{{ spotify_password }}",
+        "auth_type": 1
+      }
+  become: true
+  register: snapserver_credentials_file
+
+- name: Create MPD data directory
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Snapserver/MPD"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0777'
+  become: true
+
+- name: Mark Snapserver for restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Snapserver']) }}"
+  when: snapserver_config.changed or snapserver_config_file.changed or snapserver_credentials_file.changed

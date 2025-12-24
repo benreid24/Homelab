@@ -33,7 +33,26 @@
   become: true
   register: adguard_config
 
+- name: Ensure AdGuard config directory exists
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/AdGuard/config"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: Template AdGuardHome.yaml configuration file
+  template:
+    src: AdGuard/AdGuardHome.yaml.j2
+    dest: "{{ services_data_path }}/AdGuard/config/AdGuardHome.yaml"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0644'
+  become: true
+  register: adguard_home_config
+
 - name: Mark AdGuard for restart
   set_fact:
     services_to_restart: "{{ services_to_restart | default([]) | union(['AdGuard']) }}"
-  when: adguard_config.changed
+  when: adguard_config.changed or adguard_home_config.changed

@@ -1,0 +1,76 @@
+services:
+  librespot:
+    container_name: librespot
+    image: giof71/librespot:latest
+    restart: "unless-stopped"
+    volumes:
+      - snapfifo:/tmp/snapfifo
+      - "${RESPOT_VOLUME_PATH}/cache:/data/cache:rw"
+      - "${RESPOT_VOLUME_PATH}/syscache:/data/system-cache:rw"
+      - "${RESPOT_VOLUME_PATH}/user:/user/config:rw"
+    entrypoint: >
+      sh -c "
+        mkdir -p /tmp/snapfifo &&
+        if [ ! -p /tmp/snapfifo/spotify.fifo ]; then
+          mkfifo /tmp/snapfifo/spotify.fifo;
+        fi &&
+        exec /app/bin/run-librespot.sh
+      "
+    environment:
+      BACKEND: pipe
+      INITIAL_VOLUME: 75
+      DEVICE_NAME: "${SPOTIFY_AUDIO_NAME}"
+      DEVICE_TYPE: avr
+      DEVICE: /tmp/snapfifo/spotify.fifo
+      ENABLE_OAUTH: headless
+      ENABLE_CACHE: "y"
+      ENABLE_SYSTEM_CACHE: "y"
+    healthcheck:
+      test: ["CMD", "test", "-p", "/tmp/snapfifo/spotify.fifo"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  mpd:
+    # Note to self: If no music then run: docker exec mpd mpc update
+    build:
+      context: ./MPD/
+      dockerfile: Dockerfile
+    container_name: mpd
+    restart: "unless-stopped"
+    volumes:
+      - ${MPD_MUSIC_PATH}:/media/Music:ro
+      - ${MPD_DATA_PATH}:/var/lib/mpd:rw
+      - snapfifo:/snapfifo
+    healthcheck:
+      test: ["CMD", "test", "-p", "/snapfifo/mpd.fifo"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    networks:
+      - homelab
+
+  snapserver:
+    container_name: snapserver
+    image: ivdata/snapserver:latest
+    restart: "unless-stopped"
+    volumes:
+      - snapfifo:/tmp/snapfifo
+      - ${CONF_PATH}:/etc/snapserver.conf:ro
+    ports:
+      - "1704:1704/tcp"
+      - "1705:1705/tcp"
+    networks:
+      - homelab
+    depends_on:
+      librespot:
+        condition: service_healthy
+      mpd:
+        condition: service_healthy
+
+volumes:
+  snapfifo:
+
+networks:
+  homelab:
+    external: true

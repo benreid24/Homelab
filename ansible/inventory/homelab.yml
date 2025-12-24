@@ -11,16 +11,17 @@ all:
     services_config_path: /opt/homelab/service-configs
     services_data_path: "{{ data_path }}/service-data"
     enabled_services:
+      - AdGuard
+      - Nginx
       - Redbot
       - Seafile
       - Immich
-      - Nginx
       - ddns
       - HomeAssistant
       - Omada
-      - AdGuard
       - Code
       - Kuma
+      - Snapserver
 
     crons_config_path: /opt/homelab/cron-configs
     crons_data_path: "{{ data_path }}/cron-data"
@@ -123,7 +124,11 @@ all:
       external_hostname: "{{ root_domain }}"
       certbot_env: prod
       backup_dst_path: "/homelab-backups"
+      spotify_audio_name: "Home%20Audio"
+      spotify_audio_name_pretty: "Home Audio"
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       certbot_env: staging
       backup_dst_path: "/homelab-backups-dev"
+      spotify_audio_name: "Home%20Audio%20Dev"
+      spotify_audio_name_pretty: "Home Audio Dev"
