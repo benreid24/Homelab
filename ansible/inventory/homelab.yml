@@ -97,6 +97,14 @@ all:
 
     satisfactory_saves_path: /opt/homelab/data/satisfactory-saves
 
+    backups:
+      onsite_server: "192.168.0.69/WOGH"
+      onsite_mount_path: "/mnt/backup-onsite"
+      offsite_server: "192.168.0.42/offsite-drive"
+      offsite_mount_path: "/mnt/backup-offsite"
+      creds_file: /etc/smb-credentials
+      smb_options: "credentials=/etc/smb-credentials,file_mode=0755,dir_mode=0755,uid=1000,gid=1000"
+
   hosts:
     localhost:
       external_hostname: "{{ root_domain }}"

@@ -1,0 +1,60 @@
+- name: "Install required packages"
+  ansible.builtin.package:
+    name:
+      - cifs-utils
+    state: present
+  become: true
+
+- name: Install Ansible posix.mount
+  ansible.builtin.shell: >
+    ansible-galaxy collection install ansible.posix
+  become: true
+
+- name: "Write SMB credentials file"
+  ansible.builtin.copy:
+    dest: "{{ backups.creds_file }}"
+    content: |
+      username={{ smb_username }}
+      password={{ smb_password }}
+    owner: root
+    group: root
+    mode: '0600'
+  become: true
+
+- name: "Ensure onsite backup mount point exists"
+  ansible.builtin.file:
+    path: "{{ backups.onsite_mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: "Ensure offsite backup mount point exists"
+  ansible.builtin.file:
+    path: "{{ backups.offsite_mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: "Mount onsite backup share"
+  ansible.posix.mount:
+    path: "{{ backups.onsite_mount_path }}"
+    src: "//{{ backups.onsite_server }}"
+    fstype: cifs
+    opts: "{{ backups.smb_options }}"
+    state: mounted
+    boot: true
+  become: true
+
+- name: "Mount offsite backup share"
+  ansible.posix.mount:
+    path: "{{ backups.offsite_mount_path }}"
+    src: "//{{ backups.offsite_server }}"
+    fstype: cifs
+    opts: "{{ backups.smb_options }}"
+    state: mounted
+    boot: true
+  become: true
