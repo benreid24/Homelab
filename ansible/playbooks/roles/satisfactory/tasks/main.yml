@@ -53,3 +53,12 @@
   ansible.builtin.systemd:
     daemon_reload: yes
   become: true
+
+- name: Setup Satisfactory daily restart cron
+  ansible.builtin.cron:
+    name: "Satisfactory daily restart"
+    minute: "0"
+    hour: "5"
+    job: "systemctl restart satisfactory.service"
+    user: root
+  become: true

@@ -44,3 +44,12 @@
     docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
   become: true
   become_user: "{{ service_user }}"
+
+- name: Setup Seafile garbage collection cron
+  ansible.builtin.cron:
+    name: "Seafile garbage collection"
+    minute: "40"
+    hour: "4"
+    job: "docker exec seafile /scripts/gc.sh"
+    user: "{{ service_user }}"
+  become: true
