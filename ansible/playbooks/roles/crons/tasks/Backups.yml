@@ -1,7 +1,8 @@
-- name: "Install required packages to mount drives"
+- name: "Install required packages for backup jobs"
   ansible.builtin.package:
     name:
       - cifs-utils
+      - bzip2
     state: present
   become: true
 
@@ -68,6 +69,30 @@
     mode: '0755'
   become: true
 
+- name: "Download restic binary"
+  ansible.builtin.get_url:
+    url: "https://github.com/restic/restic/releases/download/v0.18.1/restic_0.18.1_linux_amd64.bz2"
+    dest: "{{ crons_config_path }}/Backups/restic.bz2"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: "Decompress restic binary"
+  ansible.builtin.shell: >
+    bzip2 -d {{ crons_config_path }}/Backups/restic.bz2
+  args:
+    creates: "{{ crons_config_path }}/Backups/restic"
+  become: true
+
+- name: "Set restic binary permissions"
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/Backups/restic"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
 - name: "Ensure onsite backup destination directory exists"
   ansible.builtin.file:
     path: "{{ backups.onsite_mount_path }}{{ backup_dst_path }}"
@@ -79,7 +104,7 @@
 
 - name: "Template onsite backup script"
   ansible.builtin.template:
-    src: "Backups/backup.sh.j2"
+    src: "Backups/borg_backup.sh.j2"
     dest: "{{ crons_config_path }}/Backups/onsite.sh"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -98,14 +123,14 @@
 
 - name: "Template offsite backup script"
   ansible.builtin.template:
-    src: "Backups/backup.sh.j2"
+    src: "Backups/restic_backup.sh.j2"
     dest: "{{ crons_config_path }}/Backups/offsite.sh"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0755'
   vars:
     backup_type: "offsite"
-    borg: "{{ crons_config_path }}/Backups/borg"
+    restic: "{{ crons_config_path }}/Backups/restic"
     src_path: "{{ data_path }}"
     dst_path: "{{ backups.offsite_mount_path }}{{ backup_dst_path }}"
     log_path: /var/log/backup_offsite.log
@@ -115,12 +140,23 @@
     end_monitor_b: "{{ backups.offsite_end_monitor_b }}"
   become: true
 
-- name: "Write backup passkey command file"
+- name: "Write borg backup passkey command file"
   ansible.builtin.copy:
-    dest: "{{ crons_config_path }}/Backups/passcommand.sh"
+    dest: "{{ crons_config_path }}/Backups/borg_passcommand.sh"
     content: |
       #!/bin/sh
-      echo "{{ backup_passphrase }}"
+      echo "{{ borg_backup_passphrase }}"
+    owner: root
+    group: root
+    mode: '0700'
+  become: true
+
+- name: "Write restic backup passkey command file"
+  ansible.builtin.copy:
+    dest: "{{ crons_config_path }}/Backups/restic_passcommand.sh"
+    content: |
+      #!/bin/sh
+      echo "{{ restic_backup_passphrase }}"
     owner: root
     group: root
     mode: '0700'
@@ -130,16 +166,17 @@
   ansible.builtin.shell: >
     {{ crons_config_path }}/Backups/borg init --encryption=repokey {{ backups.onsite_mount_path }}{{ backup_dst_path }}
   environment:
-    BORG_PASSCOMMAND: "{{ crons_config_path }}/Backups/passcommand.sh"
+    BORG_PASSCOMMAND: "{{ crons_config_path }}/Backups/borg_passcommand.sh"
   args:
     creates: "{{ backups.onsite_mount_path }}{{ backup_dst_path }}/config"
   become: true
 
 - name: "Ensure offsite backup repo is initialized"
   ansible.builtin.shell: >
-    {{ crons_config_path }}/Backups/borg init --encryption=repokey {{ backups.offsite_mount_path }}{{ backup_dst_path }}
+    {{ crons_config_path }}/Backups/restic init
   environment:
-    BORG_PASSCOMMAND: "{{ crons_config_path }}/Backups/passcommand.sh"
+    RESTIC_PASSWORD_COMMAND: "{{ crons_config_path }}/Backups/restic_passcommand.sh"
+    RESTIC_REPOSITORY: "{{ backups.offsite_mount_path }}{{ backup_dst_path }}"
   args:
     creates: "{{ backups.offsite_mount_path }}{{ backup_dst_path }}/config"
   become: true

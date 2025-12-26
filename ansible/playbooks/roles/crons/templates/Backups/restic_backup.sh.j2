@@ -20,48 +20,31 @@ curl -fsS {{ start_monitor_a }} || \
 curl -fsS {{ start_monitor_b }} || \
     info "Warning: Could not reach start monitor B"
 
-export BORG_PASSCOMMAND="{{ crons_config_path }}/Backups/passcommand.sh"
-export BORG_REPO={{ dst_path }}
+export RESTIC_PASSWORD_COMMAND="{{ crons_config_path }}/Backups/restic_passcommand.sh"
+export RESTIC_REPOSITORY={{ dst_path }}
+export RESTIC_HOST=$(hostname)
 
-{{ borg }} create                         \
-    --filter AME                    \
-    --list                          \
-    --stats                         \
-    --show-rc                       \
-    --compression lz4               \
+{{ restic }} backup                 \
+    --skip-if-unchanged             \
     --exclude-caches                \
     --exclude 'home/*/.cache/*'     \
     --exclude '*/node_modules/*'    \
     --exclude '*/.venv/*'           \
-    ::'{hostname}-{now}'            \
     {{ src_path }}
 
 backup_exit=$?
 
-{{ borg }} prune                          \
-    --list                          \
-    --glob-archives '{hostname}-*'  \
-    --show-rc                       \
-    --keep-daily    7               \
-    --keep-weekly   4               \
-    --keep-monthly  6
-
+{{ restic }} prune
 prune_exit=$?
 
-info "Compacting repository"
-
-{{ borg }} compact
-compact_exit=$?
-
 global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
-global_exit=$(( compact_exit > global_exit ? compact_exit : global_exit ))
 
 if [ ${global_exit} -eq 0 ]; then
-    info "Backup, Prune, and Compact finished successfully"
-elif [ ${global_exit} -eq 1 ]; then
-    info "Backup, Prune, and/or Compact finished with warnings"
+    info "Backup and Prune finished successfully"
+elif [ ${backup_exit} -eq 0 ]; then
+    info "Backup finished successfully but prune failed"
 else
-    info "Backup, Prune, and/or Compact finished with errors"
+    info "Backup and Prune failed"
 fi
 
 if [ ${backup_exit} -eq 0 ]; then
