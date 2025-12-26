@@ -7,5 +7,6 @@ services:
         environment:
             INSTANCE_NAME: "BenAnnaBot"
             PREFIX: "!"
+            TOKEN: "${TOKEN}"
         volumes:
             - ${DATA_PATH}:/redbot/data

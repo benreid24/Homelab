@@ -13,6 +13,7 @@ all:
     enabled_services:
       - AdGuard
       - Nginx
+      - Komodo
       - Redbot
       - Seafile
       - Immich

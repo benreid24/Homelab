@@ -1,0 +1,18 @@
+- name: Template Komodo compose.env file
+  template:
+    src: Komodo/compose.env.j2
+    dest: "{{ services_config_path }}/Komodo/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+  become: true
+  register: komodo_env_config
+
+- name: Ensure Komodo backups directory exists
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Komodo/backups"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0700'
+  become: true

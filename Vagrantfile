@@ -5,7 +5,13 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "localdev.benanna.club"
   config.hostsupdater.aliases = [
     "immich.localdev.benanna.club",
-    "seafile.localdev.benanna.club"
+    "seafile.localdev.benanna.club",
+    "ha.localdev.benanna.club",
+    "omada.localdev.benanna.club",
+    "dns.localdev.benanna.club",
+    "code.localdev.benanna.club",
+    "kuma.localdev.benanna.club",
+    "snapcast.localdev.benanna.club"
   ]
 
   # Private network so Ansible can SSH

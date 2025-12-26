@@ -63,7 +63,7 @@
 
 - name: Ensure Docker services are started
   ansible.builtin.shell: >
-    docker compose -f {{ services_config_path }}/{{ item }}/docker-compose.yml up -d --no-recreate
+    cd {{ services_config_path }}/{{ item }} && docker compose up -d --no-recreate
   loop: "{{ enabled_services | default([]) }}"
   become: true 
   become_user: "{{ service_user }}"

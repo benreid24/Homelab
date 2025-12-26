@@ -10,6 +10,7 @@ ENV RED_USER=reduser
 ARG RED_UID=1024
 ARG RED_GID=1024
 ENV PATH="${RED_HOME}/.local/bin:${PATH}"
+ENV TOKEN=${TOKEN}
 
 RUN groupadd -r -g $RED_GID ${RED_USER} && \
    useradd -rm -g $RED_GID -u ${RED_UID} -d ${RED_HOME} ${RED_USER} && \

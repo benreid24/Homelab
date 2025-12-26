@@ -30,6 +30,15 @@
   ignore_errors: true
   when: seafile.fuse_path is not mount
 
+- name: Ensure Elasticsearch data directory exists with correct permissions
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Seafile/elasticsearch/data"
+    state: directory
+    owner: 1000
+    group: 0
+    mode: '0755'
+  become: true
+
 - name: Login to Seafile Docker registry
   ansible.builtin.shell: >
     docker login docker.seadrive.org --username "{{ seafile.docker_username }}" --password "{{ seafile_docker_password }}"
