@@ -130,6 +130,7 @@ all:
       spotify_audio_name: "Home%20Audio"
       spotify_audio_name_pretty: "Home Audio"
       music_path: "{{ seafile.fuse_path }}/{{ fuse_music_path }}"
+      prompt_to_restart_services: true
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       certbot_env: staging
@@ -137,3 +138,4 @@ all:
       spotify_audio_name: "Home%20Audio%20Dev"
       spotify_audio_name_pretty: "Home Audio Dev"
       music_path: "{{ backups.onsite_mount_path }}/Music"
+      prompt_to_restart_services: false

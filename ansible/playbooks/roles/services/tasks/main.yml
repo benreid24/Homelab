@@ -70,6 +70,11 @@
   changed_when: services_to_restart is defined and services_to_restart | length > 0
   notify: restart service
 
+- name: Prompt to restart services if needed
+  ansible.builtin.pause:
+    prompt: "Services will now be started or restarted. Press Enter to continue."
+  when: prompt_to_restart_services | default(false)
+
 - name: Ensure Docker services are started
   ansible.builtin.shell: >
     cd {{ services_config_path }}/{{ item }} && docker compose up -d --no-recreate
