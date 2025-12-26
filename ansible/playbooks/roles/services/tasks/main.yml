@@ -48,6 +48,7 @@
     - item.0.stat.exists
     - item.1.stat.exists
     - item.0.stat.checksum != item.1.stat.checksum
+  no_log: true
 
 - name: Copy service files
   ansible.builtin.synchronize:
