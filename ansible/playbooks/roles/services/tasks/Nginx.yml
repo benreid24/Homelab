@@ -13,6 +13,7 @@
       CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_dns_api_token }}
       CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}
+      LOGS_PATH={{ nginx.logs_path }}
   become: true
   register: nginx_env_config
 
@@ -24,6 +25,15 @@
     group: "{{ service_group }}"
     content: |
       dns_cloudflare_api_token = {{ cloudflare_dns_api_token }}
+  become: true
+
+- name: Ensure nginx logs directory exists
+  ansible.builtin.file:
+    path: "{{ nginx.logs_path }}"
+    state: directory
+    owner: "101"
+    group: "101"
+    mode: '0755'
   become: true
 
 - name: Ensure Nginx sites-enabled directory exists
@@ -107,3 +117,11 @@
   when: not letsencrypt_cert.stat.exists
   register: certbot_result
   failed_when: certbot_result.rc != 0
+
+- name: Configure fail2ban nginx jails
+  ansible.builtin.template:
+    src: Nginx/nginx-jail.conf.j2
+    dest: /etc/fail2ban/jail.d/nginx.conf
+    mode: '0644'
+  become: true
+  notify: restart fail2ban

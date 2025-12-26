@@ -10,6 +10,7 @@ services:
       - "${CONF_PATH}:/etc/nginx"
       - "${STATIC_PATH}:/var/www/html"
       - ${CERTS_PATH}:/etc/letsencrypt:ro
+      - ${LOGS_PATH}:/var/log/nginx
     restart: unless-stopped
     networks:
       - homelab

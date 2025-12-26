@@ -7,6 +7,14 @@
     mode: '0755'
   loop: "{{ enabled_services | default([]) }}"
 
+- name: Ensure logs directory exists
+  ansible.builtin.file:
+    path: "{{ logs_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+
 - name: Ensure service data directories exist
   ansible.builtin.file:
     path: "{{ services_data_path }}/{{ item }}"

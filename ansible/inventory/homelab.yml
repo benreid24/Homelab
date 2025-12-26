@@ -7,6 +7,7 @@ all:
     service_user: homelab
     service_group: homelab
     data_path: /opt/homelab/data
+    logs_path: /opt/homelab/logs
 
     services_config_path: /opt/homelab/service-configs
     services_data_path: "{{ data_path }}/service-data"
@@ -49,6 +50,7 @@ all:
       static_path: "{{ services_config_path }}/Nginx/static"
       letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
       cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
+      logs_path: "{{ logs_path }}/nginx"
 
     homeassistant:
       conf_path: "{{ services_data_path }}/HomeAssistant/config"
@@ -127,9 +129,11 @@ all:
       backup_dst_path: "/homelab-backups"
       spotify_audio_name: "Home%20Audio"
       spotify_audio_name_pretty: "Home Audio"
+      music_path: "{{ seafile.fuse_path }}/{{ fuse_music_path }}"
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       certbot_env: staging
       backup_dst_path: "/homelab-backups-dev"
       spotify_audio_name: "Home%20Audio%20Dev"
       spotify_audio_name_pretty: "Home Audio Dev"
+      music_path: "{{ backups.onsite_mount_path }}/Music"

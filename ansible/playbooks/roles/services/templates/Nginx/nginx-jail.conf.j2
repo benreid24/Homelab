@@ -1,0 +1,16 @@
+[nginx-http-auth]
+enabled = true
+port = http,https
+logpath = {{ nginx.logs_path }}/error.log
+
+[nginx-botsearch]
+enabled = true
+port = http,https
+logpath = {{ nginx.logs_path }}/access.log
+          {{ nginx.logs_path }}/error.log
+maxretry = 3
+
+[nginx-limit-req]
+enabled = true
+port = http,https
+logpath = {{ nginx.logs_path }}/error.log

@@ -12,4 +12,11 @@
       - lsb-release
       - vim
       - git
+      - fail2ban
     state: present
+
+- name: Ensure fail2ban is enabled and started
+  ansible.builtin.service:
+    name: fail2ban
+    enabled: yes
+    state: started

@@ -8,7 +8,7 @@
       CONF_PATH={{ services_config_path }}/Snapserver/snapserver.conf
       SPOTIFY_AUDIO_NAME={{ spotify_audio_name_pretty }}
       RESPOT_VOLUME_PATH={{ services_config_path }}/Snapserver/librespot
-      MPD_MUSIC_PATH={{ seafile.fuse_path }}/{{ fuse_music_path }}
+      MPD_MUSIC_PATH={{ music_path }}
       MPD_DATA_PATH={{ services_data_path }}/Snapserver/MPD
       MPD_CONF_PATH={{ services_config_path }}/Snapserver/mpd.conf
       MPD_UID={{ service_uid }}
