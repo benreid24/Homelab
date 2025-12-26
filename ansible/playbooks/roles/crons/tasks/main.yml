@@ -6,6 +6,7 @@
     group: "{{ service_group }}"
     mode: '0755'
   loop: "{{ enabled_crons | default([]) }}"
+  become: true
 
 - name: Ensure cron data directories exist
   ansible.builtin.file:
@@ -15,6 +16,7 @@
     group: "{{ service_group }}"
     mode: '0755'
   loop: "{{ enabled_crons | default([]) }}"
+  become: true
 
 - name: Check if cron source directories exist and have files
   ansible.builtin.find:

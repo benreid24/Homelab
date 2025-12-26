@@ -6,6 +6,7 @@
     group: "{{ service_group }}"
     mode: '0755'
   loop: "{{ enabled_services | default([]) }}"
+  become: true
 
 - name: Ensure logs directory exists
   ansible.builtin.file:
@@ -14,6 +15,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0755'
+  become: true
 
 - name: Ensure service data directories exist
   ansible.builtin.file:
@@ -23,6 +25,7 @@
     group: "{{ service_group }}"
     mode: '0755'
   loop: "{{ enabled_services | default([]) }}"
+  become: true
 
 - name: Check docker-compose files and Dockerfiles for changes
   stat:

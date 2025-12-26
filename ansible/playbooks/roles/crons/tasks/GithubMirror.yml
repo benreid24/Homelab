@@ -23,6 +23,7 @@
     mode: '0755'
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
+  become: true
 
 - name: Github Mirror cron job
   ansible.builtin.cron:

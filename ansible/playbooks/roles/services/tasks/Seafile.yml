@@ -29,6 +29,7 @@
     mode: '0755'
   ignore_errors: true
   when: seafile.fuse_path is not mount
+  become: true
 
 - name: Ensure Elasticsearch data directory exists with correct permissions
   ansible.builtin.file:
