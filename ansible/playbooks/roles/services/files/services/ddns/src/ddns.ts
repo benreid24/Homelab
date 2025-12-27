@@ -70,6 +70,36 @@ async function updateDnsRecord(zoneId: string, recordId: string, record: Omit<Dn
     await response.json();
 }
 
+async function checkAndUpdateDNS(zoneId: string, domain: string, existingRecords: DnsRecord[], currentIp: string): Promise<void> {
+    const existingRecord = existingRecords.find(record => record.name === domain && record.type === 'A');
+
+    if (!existingRecord) {
+        console.log(`No existing DNS A record found for ${domain}. Creating one.`);
+        await createDnsRecord(zoneId, {
+            name: domain,
+            type: 'A',
+            content: currentIp,
+            ttl: 600
+        });
+        console.log(`Created new DNS A record for ${domain} with IP ${currentIp}`);
+    }
+    else {
+        if (existingRecord.content !== currentIp) {
+            console.log(`DNS A record for ${domain} exists but IP differs. Updating from ${existingRecord.content} to ${currentIp}.`);
+            await updateDnsRecord(zoneId, existingRecord.id, {
+                name: domain,
+                type: 'A',
+                content: currentIp,
+                ttl: 600
+            });
+            console.log(`Updated DNS A record for ${domain} to IP ${currentIp}`);
+        }
+        else {
+            console.log(`DNS A record for ${domain} is up-to-date with IP ${currentIp}. No action needed.`);
+        }
+    }
+}
+
 async function main() {
     if (!DOMAIN) {
         throw new Error('DOMAIN must be set in environment variables.');
@@ -82,33 +112,8 @@ async function main() {
 
     const currentIp = await getCurrentIp();
     const records = await readRecords(CLOUDFLARE_ZONE_ID);
-    const existingRecord = records.find(record => record.name === DOMAIN && record.type === 'A');
-
-    if (!existingRecord) {
-        console.log(`No existing DNS A record found for ${DOMAIN}. Creating one.`);
-        await createDnsRecord(CLOUDFLARE_ZONE_ID, {
-            name: DOMAIN,
-            type: 'A',
-            content: currentIp,
-            ttl: 600
-        });
-        console.log(`Created new DNS A record for ${DOMAIN} with IP ${currentIp}`);
-    }
-    else {
-        if (existingRecord.content !== currentIp) {
-            console.log(`DNS A record for ${DOMAIN} exists but IP differs. Updating from ${existingRecord.content} to ${currentIp}.`);
-            await updateDnsRecord(CLOUDFLARE_ZONE_ID, existingRecord.id, {
-                name: DOMAIN,
-                type: 'A',
-                content: currentIp,
-                ttl: 600
-            });
-            console.log(`Updated DNS A record for ${DOMAIN} to IP ${currentIp}`);
-        }
-        else {
-            console.log(`DNS A record for ${DOMAIN} is up-to-date with IP ${currentIp}. No action needed.`);
-        }
-    }
+    await checkAndUpdateDNS(CLOUDFLARE_ZONE_ID, DOMAIN, records, currentIp);
+    await checkAndUpdateDNS(CLOUDFLARE_ZONE_ID, `*.${DOMAIN}`, records, currentIp);
 }
 
 main().catch(error => {

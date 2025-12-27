@@ -4,6 +4,9 @@ services:
   omada-controller:
     image: mbentley/omada-controller:latest
     container_name: omada-controller
+    ports:
+      - 29810:29810/udp
+      - 29811-29814:29811-29814/tcp
     volumes:
       - ${DATA_PATH}/data:/opt/tplink/EAPController/data
       - ${DATA_PATH}/work:/opt/tplink/EAPController/work

@@ -1,2 +1,7 @@
 ssl_certificate /etc/letsencrypt/live/{{ external_hostname }}/fullchain.pem;
 ssl_certificate_key /etc/letsencrypt/live/{{ external_hostname }}/privkey.pem;
+
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+if ($scheme = http) {
+    return 301 https://$host$request_uri;
+}
