@@ -48,7 +48,7 @@ else
     info "Backup and Prune failed"
 fi
 
-if [ ${backup_exit} -eq 0 ]; then
+if [ ${backup_exit} -eq 0 ] || [ ${backup_exit} -eq 3 ]; then
     # Calculate runtime in milliseconds
     end_time=$(date +%s%3N)
     runtime_ms=$((end_time - start_time))
