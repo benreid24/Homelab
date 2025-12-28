@@ -69,3 +69,11 @@
   set_fact:
     services_to_restart: "{{ services_to_restart | default([]) | union(['Snapserver']) }}"
   when: snapserver_config.changed or snapserver_config_file.changed or snapserver_credentials_file.changed
+
+- name: Install MPD music scan cron
+  ansible.builtin.cron:
+    name: "MPD Music Library Scan"
+    minute: "*/15"
+    user: "{{ service_user }}"
+    job: "docker exec mpd mpc update"
+  become: true

@@ -1,8 +1,12 @@
 import process from 'process';
 
-const DOMAIN = process.env.DOMAIN;
-const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID;
-const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+interface ManagedDomain {
+    domain: string;
+    zoneId: string;
+}
+
+const DOMAINS = JSON.parse(process.env.DOMAINS || '[]') as ManagedDomain[];
+const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN as string;
 
 interface DnsRecord {
     id: string;
@@ -101,19 +105,21 @@ async function checkAndUpdateDNS(zoneId: string, domain: string, existingRecords
 }
 
 async function main() {
-    if (!DOMAIN) {
-        throw new Error('DOMAIN must be set in environment variables.');
+    if (!DOMAINS.length) {
+        throw new Error('DOMAINS must be set in environment variables.');
     }
-    if (!CLOUDFLARE_ZONE_ID || !CLOUDFLARE_API_TOKEN) {
-        throw new Error('CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN must be set in environment variables.');
+    if (!CLOUDFLARE_API_TOKEN) {
+        throw new Error('CLOUDFLARE_API_TOKEN must be set in environment variables.');
     }
 
-    console.log(`Managing DNS for domain: ${DOMAIN}`);
+    for (const { domain, zoneId } of DOMAINS) {
+        console.log(`Managing DNS for domain: ${domain}`);
 
-    const currentIp = await getCurrentIp();
-    const records = await readRecords(CLOUDFLARE_ZONE_ID);
-    await checkAndUpdateDNS(CLOUDFLARE_ZONE_ID, DOMAIN, records, currentIp);
-    await checkAndUpdateDNS(CLOUDFLARE_ZONE_ID, `*.${DOMAIN}`, records, currentIp);
+        const currentIp = await getCurrentIp();
+        const records = await readRecords(zoneId);
+        await checkAndUpdateDNS(zoneId, domain, records, currentIp);
+        await checkAndUpdateDNS(zoneId, `*.${domain}`, records, currentIp);
+    }
 }
 
 main().catch(error => {

@@ -2,10 +2,22 @@ server {
     include /etc/nginx/server_common.conf;
     server_name {{ external_hostname }};
     
-    root /var/www/html;
-    index index.html;
-    
     location / {
-        try_files $uri $uri/ =404;
+        set $upstream http://homepage:3000;
+        proxy_pass $upstream;
+        include /etc/nginx/proxy_common.conf;
     }
 }
+
+{% for domain in extra_domains %}
+server {
+    include /etc/nginx/server_common.conf;
+    server_name {{ domain }};
+    
+    ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+    
+    return 301 https://{{ external_hostname }}$request_uri;
+}
+
+{% endfor %}

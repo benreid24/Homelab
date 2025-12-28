@@ -12,7 +12,6 @@
       LETSENCRYPT_LIB_PATH={{ nginx.letsencrypt_lib_path }}
       CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_dns_api_token }}
-      CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}
       LOGS_PATH={{ nginx.logs_path }}
   become: true
   register: nginx_env_config
@@ -91,31 +90,41 @@
   become: true
   become_user: "{{ service_user }}"
 
-- name: Check if Let's Encrypt certificate exists
+- name: Check if Let's Encrypt certificates exist for managed domains
   stat:
-    path: "{{ nginx.certs_path }}/live/{{ external_hostname }}/fullchain.pem"
-  register: letsencrypt_cert
+    path: "{{ nginx.certs_path }}/live/{{ domain }}/fullchain.pem"
+  register: letsencrypt_certs
+  loop: "{{ managed_domains }}"
+  loop_control:
+    loop_var: domain
+
+- name: Identify domains missing certificates
+  set_fact:
+    domains_missing_certs: "{{ letsencrypt_certs.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
 
 - name: Wait for certbot container to be ready
   ansible.builtin.pause:
     seconds: 5
-  when: not letsencrypt_cert.stat.exists
+  when: domains_missing_certs | length > 0
 
-- name: Obtain Let's Encrypt certificate if not present
+- name: Obtain Let's Encrypt certificates for missing domains
   ansible.builtin.shell: >
     docker exec certbot certbot certonly
     --dns-cloudflare
     --dns-cloudflare-credentials /etc/cloudflare.ini
     --dns-cloudflare-propagation-seconds 60
-    -d {{ external_hostname }}
-    -d "*.{{ external_hostname }}"
+    -d {{ domain }}
+    -d "*.{{ domain }}"
     --email "{{ admin_email }}"
     --agree-tos
     --non-interactive
     {{ '--staging' if certbot_env == 'staging' else '' }}
   become: true
   become_user: "{{ service_user }}"
-  when: not letsencrypt_cert.stat.exists
+  loop: "{{ domains_missing_certs }}"
+  loop_control:
+    loop_var: domain
+  when: domains_missing_certs | length > 0
   register: certbot_result
   failed_when: certbot_result.rc != 0
 

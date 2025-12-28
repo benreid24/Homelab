@@ -6,6 +6,5 @@ services:
     container_name: ddns
     restart: unless-stopped
     environment:
-      - DOMAIN=${DOMAIN}
-      - CLOUDFLARE_ZONE_ID=${CLOUDFLARE_ZONE_ID}
+      - DOMAINS=${DOMAINS}
       - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}

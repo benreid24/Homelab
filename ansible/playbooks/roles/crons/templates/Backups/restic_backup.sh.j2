@@ -26,6 +26,7 @@ export RESTIC_HOST=$(hostname)
 
 {{ restic }} backup                 \
     --skip-if-unchanged             \
+    --ignore-inode                  \
     --exclude-caches                \
     --exclude 'home/*/.cache/*'     \
     --exclude '*/node_modules/*'    \

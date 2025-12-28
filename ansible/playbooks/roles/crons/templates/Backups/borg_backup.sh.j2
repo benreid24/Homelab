@@ -23,12 +23,13 @@ curl -fsS {{ start_monitor_b }} || \
 export BORG_PASSCOMMAND="{{ crons_config_path }}/Backups/borg_passcommand.sh"
 export BORG_REPO={{ dst_path }}
 
-{{ borg }} create                         \
+{{ borg }} create                   \
     --filter AME                    \
     --list                          \
     --stats                         \
     --show-rc                       \
     --compression lz4               \
+    --files-cache=ctime,size        \
     --exclude-caches                \
     --exclude 'home/*/.cache/*'     \
     --exclude '*/node_modules/*'    \
@@ -64,7 +65,7 @@ else
     info "Backup, Prune, and/or Compact finished with errors"
 fi
 
-if [ ${backup_exit} -eq 0 ]; then
+if [ ${backup_exit} -eq 0 ] || [ ${backup_exit} -eq 1 ]; then
     # Calculate runtime in milliseconds
     end_time=$(date +%s%3N)
     runtime_ms=$((end_time - start_time))

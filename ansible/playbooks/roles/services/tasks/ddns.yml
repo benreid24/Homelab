@@ -1,3 +1,16 @@
+- name: Initialize domains config
+  set_fact:
+    domains_config_list: []
+
+- name: Build domains config list
+  set_fact:
+    domains_config_list: "{{ domains_config_list + [{'domain': item.0, 'zoneId': item.1}] }}"
+  loop: "{{ managed_domains | zip(cloudflare_zone_ids) | list }}"
+
+- name: Convert domains config to JSON
+  set_fact:
+    domains_config: "{{ domains_config_list | to_json }}"
+
 - name: Write ddns .env file
   copy:
     dest: "{{ services_config_path }}/ddns/.env"
@@ -5,9 +18,8 @@
     group: "{{ service_group }}"
     mode: '0600'
     content: |
-      DOMAIN={{ root_domain }}
+      DOMAINS={{ domains_config }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_ddns_api_token }}
-      CLOUDFLARE_ZONE_ID={{ cloudflare_zone_id }}
   become: true
   register: ddns_config
 

@@ -30,7 +30,7 @@ immich_admin_password: {something secure}
 
 cloudflare_ddns_api_token: {token with DNS edit scope}
 cloudflare_dns_api_token: {token with DNS edit & zone edit scope}
-cloudflare_zone_id: {id of the domain zone to manage}
+cloudflare_zone_ids: {list of ids of the domain zones to manage}
 
 smb_username: {username for SMB NAS}
 smb_password: {password for SMB NAS}
@@ -63,3 +63,7 @@ On the target machine:
 1. Install Ansible: `sudo apt install -y ansible`
 2. Place the vault password in `.vault_pass` with permission 600
 3. Run Ansible: `sudo ansible-playbook --connection=local --limit localhost -i ansible/inventory/homelab.yml --vault-password-file=./vault_pass.sh ./ansible/playbooks/homelab.yml`
+
+### TP-Link Omada
+
+If device adoption or migration fails you may need to set the network mode to host (or do a better job determining which ports adoption uses) until the devices are properly linked.

@@ -38,6 +38,8 @@ services:
       dockerfile: Dockerfile
     container_name: mpd
     restart: "unless-stopped"
+    ports:
+      - "6600:6600/tcp"
     volumes:
       - ${MPD_MUSIC_PATH}:/media/Music:ro
       - ${MPD_DATA_PATH}:/var/lib/mpd:rw
