@@ -6,7 +6,6 @@ all:
     docker_network_subnet: 172.20.0.0/16
     service_user: homelab
     service_group: homelab
-    data_path: /opt/homelab/data
     logs_path: /opt/homelab/logs
 
     extra_domains:
@@ -130,6 +129,7 @@ all:
     localhost:
       external_hostname: "{{ root_domain }}"
       managed_domains: "{{ [external_hostname] + extra_domains }}"
+      data_path: /mnt/data/homelab/data
       certbot_env: prod
       backup_dst_path: "/homelab-backups"
       spotify_audio_name: "Home%20Audio"
@@ -139,6 +139,7 @@ all:
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       managed_domains: "{{ [external_hostname] + extra_domains }}"
+      data_path: /opt/homelab/data
       certbot_env: staging
       backup_dst_path: "/homelab-backups-dev"
       spotify_audio_name: "Home%20Audio%20Dev"
