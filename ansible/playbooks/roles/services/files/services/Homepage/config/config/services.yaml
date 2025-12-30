@@ -75,28 +75,29 @@
         description: Audio zone volume and input selection
         server: docker-socket
         container: snapserver
-    - Fireplace Zone:
-        href: http://192.168.0.200/
-        icon: mdi-cast-audio-#5191e0
-        description: Audio zone in the game room
-        siteMonitor: http://192.168.0.200/
-    - Dining Room Zone:
-        href: http://192.168.0.202/
-        icon: mdi-cast-audio-#5191e0
-        description: Audio zone in the dining room
-        siteMonitor: http://192.168.0.202/
-    - Office Zone:
-        href: http://192.168.0.205/
-        icon: mdi-cast-audio-#5191e0
-        description: Audio zone in the upstairs office
-        siteMonitor: http://192.168.0.205/
-    - Bedroom Zone:
-        href: http://192.168.0.204/
-        icon: mdi-cast-audio-#5191e0
-        description: Audio zone in the bedroom
-        siteMonitor: http://192.168.0.204/
-    - Bathroom Zone:
-        href: http://192.168.0.203/
-        icon: mdi-cast-audio-#5191e0
-        description: Audio zone in the upstairs bathroom
-        siteMonitor: http://192.168.0.203/
+    - Zones:
+      - Fireplace Zone:
+          href: http://192.168.0.200/
+          icon: mdi-cast-audio-#5191e0
+          description: Audio zone in the game room
+          siteMonitor: http://192.168.0.200/
+      - Dining Room Zone:
+          href: http://192.168.0.202/
+          icon: mdi-cast-audio-#5191e0
+          description: Audio zone in the dining room
+          siteMonitor: http://192.168.0.202/
+      - Office Zone:
+          href: http://192.168.0.205/
+          icon: mdi-cast-audio-#5191e0
+          description: Audio zone in the upstairs office
+          siteMonitor: http://192.168.0.205/
+      - Bedroom Zone:
+          href: http://192.168.0.204/
+          icon: mdi-cast-audio-#5191e0
+          description: Audio zone in the bedroom
+          siteMonitor: http://192.168.0.204/
+      - Bathroom Zone:
+          href: http://192.168.0.203/
+          icon: mdi-cast-audio-#5191e0
+          description: Audio zone in the upstairs bathroom
+          siteMonitor: http://192.168.0.203/

@@ -13,4 +13,4 @@ headerStyle: boxed
 background:
   image: /images/background.jpg
   saturate: 200
-  opacity: 35
+  opacity: 20
