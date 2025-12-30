@@ -1,0 +1,16 @@
+title: BenAnna Mission Control
+description: Control plane for the homelab
+language: en
+target: _blank
+
+showStats: true
+statusStyle: "dot"
+
+theme: dark
+color: slate
+
+headerStyle: boxed
+background:
+  image: /images/background.jpg
+  saturate: 200
+  opacity: 35

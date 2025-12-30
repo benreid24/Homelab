@@ -1,0 +1,77 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services/
+
+- Infrastructure:
+    - Komodo:
+        href: https://komo.benanna.club/stacks
+        icon: https://komo.benanna.club/favicon.ico
+        description: Service deployment monitoring and management
+
+    - Omada:
+        href: https://omada.benanna.club/
+        icon: https://omada.benanna.club/favicon.ico?v=2
+        description: Network control plane
+
+    - AdGuard:
+        href: https://dns.benanna.club
+        icon: https://dns.benanna.club/assets/favicon.png
+        description: Private DNS
+
+    - Monitoring:
+      - Kuma Primary:
+          href: https://kuma.benanna.club
+          icon: https://kuma.benanna.club/favicon.ico
+          description: Service monitoring and alarms. Primary instance
+      - Kuma Secondary:
+          href: http://192.168.0.69:3001/
+          icon: https://kuma.benanna.club/favicon.ico
+          description: Service monitoring and alarms. Secondary instance
+
+- Services:
+    - Home Assistant:
+        href: https://ha.benanna.club
+        icon: https://ha.benanna.club/static/icons/favicon.ico
+        description: Home automation and control
+    - Immich:
+        href: https://immich.benanna.club
+        icon: https://immich.benanna.club/favicon.ico
+        description: Photo organization and gallery
+    - Seafile:
+        href: https://seafile.benanna.club
+        icon: https://seafile.benanna.club/media/favicons/favicon.png
+        description: File synchronization and backup
+    - NVR:
+        href: https://192.168.0.10/
+        icon: https://192.168.0.10/favicon.ico
+        description: Camera feeds and recordings
+    - Code:
+        href: https://code.benanna.club
+        icon: /icons/vscode.png
+        description: Browser based VS Code instance
+
+- Home Audio:
+    - Snapcast:
+        href: https://snapcast.benanna.club
+        icon: https://snapcast.benanna.club/logo.svg
+        description: Audio zone volume and input selection
+    - Fireplace Zone:
+        href: http://192.168.0.200/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the game room
+    - Dining Room Zone:
+        href: http://192.168.0.202/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the dining room
+    - Office Zone:
+        href: http://192.168.0.205/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs office
+    - Bedroom Zone:
+        href: http://192.168.0.204/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the bedroom
+    - Bathroom Zone:
+        href: http://192.168.0.203/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs bathroom

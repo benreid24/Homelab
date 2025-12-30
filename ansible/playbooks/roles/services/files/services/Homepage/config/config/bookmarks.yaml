@@ -1,0 +1,27 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Development:
+    - Github:
+        - abbr: GH
+          href: https://github.com/
+    - BLIB Board:
+        - abbr: BL
+          href: https://github.com/users/benreid24/projects/2
+
+- Communication:
+    - Messages:
+        - abbr: MG
+          href: https://messages.google.com/web/conversations
+    - Messenger:
+        - abbr: FB
+          href: https://www.facebook.com/messages/e2ee/t/5770193883083353
+
+- Entertainment:
+    - YouTube:
+        - abbr: YT
+          href: https://youtube.com/
+    - Reddit:
+        - abbr: RE
+          href: https://reddit.com/

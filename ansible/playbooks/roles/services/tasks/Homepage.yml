@@ -5,19 +5,10 @@
     group: "{{ service_group }}"
     mode: '0600'
     content: |
-      CONFIG_PATH={{ services_data_path }}/Homepage/config
+      DATA_PATH={{ services_config_path }}/Homepage/config
       HOSTNAME={{ external_hostname }}
   become: true
   register: homepage_env_config
-
-- name: Ensure Homepage config directory exists
-  ansible.builtin.file:
-    path: "{{ services_data_path }}/Homepage/config"
-    state: directory
-    owner: "{{ service_user }}"
-    group: "{{ service_group }}"
-    mode: '0755'
-  become: true
 
 - name: Mark Homepage for restart
   set_fact:
