@@ -11,21 +11,28 @@ color: slate
 
 useEqualHeights: true
 layout:
-  TopRow:
-    header: false
+  Infrastructure:
     style: row
     columns: 3
-    Infrastructure:
-      style: column
-    Services:
-      style: column
-      useEqualHeights: true
-    "Home Audio":
-      style: column
-      Zones:
-        style: row
-        columns: 2
-        header: false
+  Monitoring:
+    style: row
+    columns: 3
+  Services:
+    style: row
+    columns: 6
+  Home Audio:
+    style: row
+    columns: 4
+  Zones:
+    style: row
+    columns: 2
+    header: false
+    Downstairs Zones:
+      style: row
+      columns: 3
+    Upstairs Zones:
+      style: row
+      columns: 3
   BottomRow:
     header: false
     style: row

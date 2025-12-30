@@ -2,6 +2,8 @@
 
 Ansible playbooks for provisioning my home server.
 
+![Homepage](homepage.png)
+
 ## Development
 
 ### Prerequisites

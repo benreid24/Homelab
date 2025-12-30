@@ -2,163 +2,180 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
-- TopRow:
-  - Infrastructure:
-      - Komodo:
-          href: https://komo.benanna.club/stacks
-          icon: https://komo.benanna.club/favicon.ico
-          description: Service deployment monitoring and management
-          server: docker-socket
-          container: komodo
 
-      - Omada:
-          href: https://omada.benanna.club/
-          icon: https://omada.benanna.club/favicon.ico?v=2
-          description: Network control plane
-          server: docker-socket
-          container: omada-controller
+- Infrastructure:
+  - Komodo:
+      href: https://komo.benanna.club/stacks
+      icon: https://komo.benanna.club/favicon.ico
+      description: Service deployment monitoring and management
+      server: docker-socket
+      container: komodo
 
-      - AdGuard:
-          href: https://dns.benanna.club
-          icon: https://dns.benanna.club/assets/favicon.png
-          description: Private DNS
-          server: docker-socket
-          container: adguard
-          statusStyle: dot
-          showStats: false
-          widget:
-            type: adguard
-            url: https://dns.benanna.club
-            username: admin
-            password: {{ adguard_password }}
+  - Omada:
+      href: https://omada.benanna.club/
+      icon: https://omada.benanna.club/favicon.ico?v=2
+      description: Network control plane
+      server: docker-socket
+      container: omada-controller
 
-      - Monitoring:
-        - Containers:
-            href: https://komo.benanna.club
-            icon: /icons/docker.png
-            description: Running container stats and control
-            widget:
-              type: komodo
-              url: https://komo.benanna.club
-              key: {{ komodo_api_key }}
-              secret: {{ komodo_api_secret }}
-              showSummary: true
-        - Kuma Primary:
-            href: https://kuma.benanna.club
-            icon: https://kuma.benanna.club/favicon.ico
-            description: Service monitoring and alarms. Primary instance
-            server: docker-socket
-            container: uptime-kuma
-            showStats: false
-        - Kuma Secondary:
-            href: http://192.168.0.69:3001/
-            icon: https://kuma.benanna.club/favicon.ico
-            description: Service monitoring and alarms. Secondary instance
-            siteMonitor: http://192.168.0.69:3001/
+  - AdGuard:
+      href: https://dns.benanna.club
+      icon: https://dns.benanna.club/assets/favicon.png
+      description: Private DNS
+      server: docker-socket
+      container: adguard
+      statusStyle: dot
+      showStats: false
+      widget:
+        type: adguard
+        url: https://dns.benanna.club
+        username: admin
+        password: {{ adguard_password }}
 
-  - Services:
-      - Home Assistant:
-          href: https://ha.benanna.club
-          icon: https://ha.benanna.club/static/icons/favicon.ico
-          description: Home automation and control
-          server: docker-socket
-          container: homeassistant
-      - Immich:
-          href: https://immich.benanna.club
-          icon: https://immich.benanna.club/favicon.ico
-          description: Photo organization and gallery
-          server: docker-socket
-          container: immich_server
-      - Seafile:
-          href: https://seafile.benanna.club
-          icon: https://seafile.benanna.club/media/favicons/favicon.png
-          description: File synchronization and backup
-          server: docker-socket
-          container: seafile
-      - Satisfactory:
-          icon: /icons/satisfactory.png
-          description: Satisfactory game server
-          widget:
-            type: customapi
-            url: https://192.168.0.100:7777/api/v1
-            method: POST
-            headers:
-              Content-Type: application/json
-            requestBody:
-              function: HealthCheck
-              data:
-                ClientCustomData: {}
-            mappings:
-              - field: data.health
-                label: Status
-                format: text
-      - NVR:
-          href: https://192.168.0.10/
-          icon: https://192.168.0.10/favicon.ico
-          description: Camera feeds and recordings
-          siteMonitor: https://192.168.0.10/
-      - Code:
-          href: https://code.benanna.club
-          icon: /icons/vscode.png
-          description: Browser based VS Code instance
-          server: docker-socket
-          container: code-server
+- Monitoring:
+  - Containers:
+      href: https://komo.benanna.club
+      icon: /icons/docker.png
+      description: Running container stats and control
+      widget:
+        type: komodo
+        url: https://komo.benanna.club
+        key: {{ komodo_api_key }}
+        secret: {{ komodo_api_secret }}
+        showSummary: true
+  - Kuma Primary:
+      href: https://kuma.benanna.club
+      icon: https://kuma.benanna.club/favicon.ico
+      description: Service monitoring and alarms. Primary instance
+      server: docker-socket
+      container: uptime-kuma
+      showStats: false
+      widget:
+        type: uptimekuma
+        url: http://192.168.0.69:3001/
+        slug: kuma-primary
+  - Kuma Secondary:
+      href: http://192.168.0.69:3001/
+      icon: https://kuma.benanna.club/favicon.ico
+      description: Service monitoring and alarms. Secondary instance
+      siteMonitor: http://192.168.0.69:3001/
+      widget:
+        type: uptimekuma
+        url: https://kuma.benanna.club
+        slug: kuma-secondary
 
-  - Home Audio:
-      - Playback Control:
-          href: http://192.168.0.200/
-          icon: mdi-cast-audio-#5191e0
-          description: Control plane for music playback
-          siteMonitor: http://192.168.0.200/
-      - Snapcast:
-          href: https://snapcast.benanna.club
-          icon: /icons/snapcast.png
-          description: Audio zone volume and input selection
-          server: docker-socket
-          container: snapserver
-      - Librespot:
-          description: Spotify Connect adaptor service
-          icon: /icons/spotify.png
-          server: docker-socket
-          container: librespot
-      - Music Player Daemon:
-          description: API service for audio playback control
-          icon: /icons/mpd.png
-          server: docker-socket
-          container: mpd
-      - Zones:
-        - Downstairs Zones:
-          - Fireplace Zone:
-              href: http://192.168.0.200/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the game room
-              siteMonitor: http://192.168.0.200/
-          - Dining Room Zone:
-              href: http://192.168.0.202/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the dining room
-              siteMonitor: http://192.168.0.202/
-          - TV Room Zone:
-              href: http://192.168.0.202/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the TV room
-              siteMonitor: http://192.168.0.202/
-        - Upstairs Zones:
-          - Office Zone:
-              href: http://192.168.0.205/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the upstairs office
-              siteMonitor: http://192.168.0.205/
-          - Bedroom Zone:
-              href: http://192.168.0.204/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the bedroom
-              siteMonitor: http://192.168.0.204/
-          - Bathroom Zone:
-              href: http://192.168.0.203/
-              icon: mdi-cast-audio-#5191e0
-              description: Audio zone in the upstairs bathroom
-              siteMonitor: http://192.168.0.203/
+- Services:
+  - Home Assistant:
+      href: https://ha.benanna.club
+      icon: https://ha.benanna.club/static/icons/favicon.ico
+      description: Home automation and control
+      server: docker-socket
+      container: homeassistant
+  - Immich:
+      href: https://immich.benanna.club
+      icon: https://immich.benanna.club/favicon.ico
+      description: Photo organization and gallery
+      server: docker-socket
+      container: immich_server
+  - Seafile:
+      href: https://seafile.benanna.club
+      icon: https://seafile.benanna.club/media/favicons/favicon.png
+      description: File synchronization and backup
+      server: docker-socket
+      container: seafile
+  - Satisfactory:
+      icon: /icons/satisfactory.png
+      description: Satisfactory game server
+      widget:
+        type: customapi
+        url: https://192.168.0.100:7777/api/v1
+        method: POST
+        headers:
+          Content-Type: application/json
+        requestBody:
+          function: HealthCheck
+          data:
+            ClientCustomData: {}
+        mappings:
+          - field: data.health
+            label: Status
+            format: text
+  - NVR:
+      href: https://192.168.0.10/
+      icon: https://192.168.0.10/favicon.ico
+      description: Camera feeds and recordings
+      siteMonitor: https://192.168.0.10/
+      widget:
+        type: homeassistant
+        url: https://ha.benanna.club
+        key: {{ homepage_ha_token }}
+        custom:
+          - template: "{% raw %}{{ states('switch.nvr_record') }}{% endraw %}"
+            label: Recording
+          - template: "{% raw %}{{ 'Up to Date' if state_attr('update.nvr_firmware', 'installed_version') == state_attr('update.nvr_firmware', 'latest_version') else 'Out of Date' }}{% endraw %}"
+            label: Firmware
+  - Code:
+      href: https://code.benanna.club
+      icon: /icons/vscode.png
+      description: Browser based VS Code instance
+      server: docker-socket
+      container: code-server
+
+- Home Audio:
+  - Playback Control:
+      href: http://192.168.0.200/
+      icon: mdi-cast-audio-#5191e0
+      description: Control plane for music playback
+      siteMonitor: http://192.168.0.200/
+  - Snapcast:
+      href: https://snapcast.benanna.club
+      icon: /icons/snapcast.png
+      description: Audio zone volume and input selection
+      server: docker-socket
+      container: snapserver
+  - Librespot:
+      description: Spotify Connect adaptor service
+      icon: /icons/spotify.png
+      server: docker-socket
+      container: librespot
+  - Music Player Daemon:
+      description: API service for audio playback control
+      icon: /icons/mpd.png
+      server: docker-socket
+      container: mpd
+- Zones:
+  - Downstairs Zones:
+    - Fireplace Zone:
+        href: http://192.168.0.200/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the game room
+        siteMonitor: http://192.168.0.200/
+    - Dining Room Zone:
+        href: http://192.168.0.202/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the dining room
+        siteMonitor: http://192.168.0.202/
+    - TV Room Zone:
+        href: http://192.168.0.202/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the TV room
+        siteMonitor: http://192.168.0.202/
+  - Upstairs Zones:
+    - Office Zone:
+        href: http://192.168.0.205/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs office
+        siteMonitor: http://192.168.0.205/
+    - Bedroom Zone:
+        href: http://192.168.0.204/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the bedroom
+        siteMonitor: http://192.168.0.204/
+    - Bathroom Zone:
+        href: http://192.168.0.203/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs bathroom
+        siteMonitor: http://192.168.0.203/
 
 - BottomRow:
   - Backups:
