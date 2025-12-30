@@ -77,3 +77,12 @@
     user: "{{ service_user }}"
     job: "docker exec mpd mpc update"
   become: true
+
+- name: Download AmpD binary
+  ansible.builtin.get_url:
+    url: "https://github.com/rain0r/ampd/releases/download/ampd-2.2.7/ampd.jar"
+    dest: "{{ services_config_path }}/Snapserver/AmpD/ampd.jar"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true

@@ -11,12 +11,15 @@ color: slate
 
 useEqualHeights: true
 layout:
-  Infrastructure:
+  Core:
     style: row
-    columns: 3
-  Monitoring:
-    style: row
-    columns: 3
+    columns: 2
+    Infrastructure:
+      style: row
+      columns: 3
+    Monitoring:
+      style: row
+      columns: 3
   Services:
     style: row
     columns: 6

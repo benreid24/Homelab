@@ -2,67 +2,67 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
+- Core:
+  - Infrastructure:
+    - Komodo:
+        href: https://komo.benanna.club/stacks
+        icon: https://komo.benanna.club/favicon.ico
+        description: Service deployment management
+        server: docker-socket
+        container: komodo
 
-- Infrastructure:
-  - Komodo:
-      href: https://komo.benanna.club/stacks
-      icon: https://komo.benanna.club/favicon.ico
-      description: Service deployment monitoring and management
-      server: docker-socket
-      container: komodo
+    - Omada:
+        href: https://omada.benanna.club/
+        icon: https://omada.benanna.club/favicon.ico?v=2
+        description: Network control plane
+        server: docker-socket
+        container: omada-controller
 
-  - Omada:
-      href: https://omada.benanna.club/
-      icon: https://omada.benanna.club/favicon.ico?v=2
-      description: Network control plane
-      server: docker-socket
-      container: omada-controller
+    - AdGuard:
+        href: https://dns.benanna.club
+        icon: https://dns.benanna.club/assets/favicon.png
+        description: Private DNS
+        server: docker-socket
+        container: adguard
+        statusStyle: dot
+        showStats: false
+        widget:
+          type: adguard
+          url: https://dns.benanna.club
+          username: admin
+          password: {{ adguard_password }}
 
-  - AdGuard:
-      href: https://dns.benanna.club
-      icon: https://dns.benanna.club/assets/favicon.png
-      description: Private DNS
-      server: docker-socket
-      container: adguard
-      statusStyle: dot
-      showStats: false
-      widget:
-        type: adguard
-        url: https://dns.benanna.club
-        username: admin
-        password: {{ adguard_password }}
-
-- Monitoring:
-  - Containers:
-      href: https://komo.benanna.club
-      icon: /icons/docker.png
-      description: Running container stats and control
-      widget:
-        type: komodo
-        url: https://komo.benanna.club
-        key: {{ komodo_api_key }}
-        secret: {{ komodo_api_secret }}
-        showSummary: true
-  - Kuma Primary:
-      href: https://kuma.benanna.club
-      icon: https://kuma.benanna.club/favicon.ico
-      description: Service monitoring and alarms. Primary instance
-      server: docker-socket
-      container: uptime-kuma
-      showStats: false
-      widget:
-        type: uptimekuma
-        url: http://192.168.0.69:3001/
-        slug: kuma-primary
-  - Kuma Secondary:
-      href: http://192.168.0.69:3001/
-      icon: https://kuma.benanna.club/favicon.ico
-      description: Service monitoring and alarms. Secondary instance
-      siteMonitor: http://192.168.0.69:3001/
-      widget:
-        type: uptimekuma
-        url: https://kuma.benanna.club
-        slug: kuma-secondary
+  - Monitoring:
+    - Containers:
+        href: https://komo.benanna.club
+        icon: /icons/docker.png
+        description: Running container stats and control
+        widget:
+          type: komodo
+          url: https://komo.benanna.club
+          key: {{ komodo_api_key }}
+          secret: {{ komodo_api_secret }}
+          showSummary: true
+    - Kuma Primary:
+        href: https://kuma.benanna.club
+        icon: https://kuma.benanna.club/favicon.ico
+        description: Service monitoring and alarms
+        server: docker-socket
+        container: uptime-kuma
+        showStats: false
+        widget:
+          type: uptimekuma
+          url: http://192.168.0.69:3001/
+          slug: kuma-primary
+    - Kuma Secondary:
+        href: http://192.168.0.69:3001/
+        icon: https://kuma.benanna.club/favicon.ico
+        description: Service monitoring and alarms
+        siteMonitor: http://192.168.0.69:3001/
+        widget:
+          type: uptimekuma
+          url: https://kuma.benanna.club
+          slug: kuma-secondary
 
 - Services:
   - Home Assistant:
@@ -123,10 +123,11 @@
 
 - Home Audio:
   - Playback Control:
-      href: http://192.168.0.200/
-      icon: mdi-cast-audio-#5191e0
+      href: https://ampd.benanna.club/browse
+      icon: mdi-music-circle-#7b19bd
       description: Control plane for music playback
-      siteMonitor: http://192.168.0.200/
+      server: docker-socket
+      container: ampd
   - Snapcast:
       href: https://snapcast.benanna.club
       icon: /icons/snapcast.png
