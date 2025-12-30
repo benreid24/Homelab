@@ -4,20 +4,17 @@
 
 - Core:
   - Infrastructure:
-    - Komodo:
-        href: https://komo.benanna.club/stacks
-        icon: https://komo.benanna.club/favicon.ico
-        description: Service deployment management
-        server: docker-socket
-        container: komodo
-
     - Omada:
         href: https://omada.benanna.club/
         icon: https://omada.benanna.club/favicon.ico?v=2
         description: Network control plane
         server: docker-socket
         container: omada-controller
-
+    - Nginx:
+        icon: /icons/nginx.png
+        description: Reverse proxy and web server
+        server: docker-socket
+        container: nginx
     - AdGuard:
         href: https://dns.benanna.club
         icon: https://dns.benanna.club/assets/favicon.png
@@ -31,12 +28,19 @@
           url: https://dns.benanna.club
           username: admin
           password: {{ adguard_password }}
+          fields:
+            - queries
+            - blocked
+            - latency
 
   - Monitoring:
-    - Containers:
-        href: https://komo.benanna.club
-        icon: /icons/docker.png
+    - Komodo:
+        href: https://komo.benanna.club/stacks
+        icon: https://komo.benanna.club/favicon.ico
         description: Running container stats and control
+        server: docker-socket
+        container: komodo
+        showStats: false
         widget:
           type: komodo
           url: https://komo.benanna.club
