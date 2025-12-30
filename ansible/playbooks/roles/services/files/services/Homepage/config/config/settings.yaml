@@ -9,6 +9,38 @@ statusStyle: "dot"
 theme: dark
 color: slate
 
+useEqualHeights: true
+layout:
+  TopRow:
+    header: false
+    style: row
+    columns: 3
+    Infrastructure:
+      style: column
+    Services:
+      style: column
+      useEqualHeights: true
+    "Home Audio":
+      style: column
+      Zones:
+        style: row
+        columns: 2
+        header: false
+  BottomRow:
+    header: false
+    style: row
+    columns: 3
+    Backups:
+      style: row
+      columns: 2
+    Energy:
+      style: row
+      columns: 1
+    Bots:
+      style: row
+      columns: 1
+  
+
 headerStyle: boxed
 background:
   image: /images/background.jpg
