@@ -11,15 +11,9 @@ color: slate
 
 useEqualHeights: true
 layout:
-  Core:
+  Infrastructure:
     style: row
-    columns: 2
-    Infrastructure:
-      style: row
-      columns: 3
-    Monitoring:
-      style: row
-      columns: 3
+    columns: 5
   Services:
     style: row
     columns: 6
@@ -43,14 +37,20 @@ layout:
     Backups:
       style: row
       columns: 2
-    Energy:
+    EnergyAndBots:
       style: row
-      columns: 1
-    Bots:
+      columns: 2
+      header: false
+      Energy:
+        style: row
+        columns: 1
+      Bots:
+        style: row
+        columns: 1
+    Monitoring:
       style: row
-      columns: 1
+      columns: 2
   
-
 headerStyle: boxed
 background:
   image: /images/background.jpg

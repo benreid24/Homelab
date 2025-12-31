@@ -7,6 +7,7 @@ all:
     service_user: homelab
     service_group: homelab
     logs_path: /opt/homelab/logs
+    secondary_host_ip: 192.168.0.69
 
     extra_domains:
       - sirgeorgelordofthevoid.com
@@ -109,21 +110,21 @@ all:
     backups:
       creds_file: /etc/smb-credentials
 
-      onsite_server_address: 192.168.0.69
-      onsite_server_path: "//192.168.0.69/WOGH"
+      onsite_server_address: "{{ secondary_host_ip }}"
+      onsite_server_path: "//{{ secondary_host_ip }}/WOGH"
       onsite_mount_path: "/mnt/backup-onsite"
-      onsite_start_monitor_a: "http://192.168.0.69:3001/api/push/f63QYckSwV?status=up&msg=OK&ping="
+      onsite_start_monitor_a: "http://{{ secondary_host_ip }}:3001/api/push/f63QYckSwV?status=up&msg=OK&ping="
       onsite_start_monitor_b: "https://kuma.benanna.club/api/push/IOmy1Ktinig9TjEx4x1eR8NYLFq4DgUG?status=up&msg=OK&ping="
       onsite_end_monitor_a: "https://kuma.benanna.club/api/push/o7vgqb2AIxxda1Jyg23xVJt1PdeBNTdD?status=up&msg=OK"
-      onsite_end_monitor_b: "http://192.168.0.69:3001/api/push/2v3FEsIt3J?status=up&msg=OK"
+      onsite_end_monitor_b: "http://{{ secondary_host_ip }}:3001/api/push/2v3FEsIt3J?status=up&msg=OK"
 
       offsite_server_address: 192.168.0.42
       offsite_server_path: "//192.168.0.42/offsite-drive"
       offsite_mount_path: "/mnt/backup-offsite"
-      offsite_start_monitor_a: "http://192.168.0.69:3001/api/push/Tf3kcpNdai?status=up&msg=OK&ping="
+      offsite_start_monitor_a: "http://{{ secondary_host_ip }}:3001/api/push/Tf3kcpNdai?status=up&msg=OK&ping="
       offsite_start_monitor_b: "https://kuma.benanna.club/api/push/D3ZOW2KPNkvQFnVWbziLzfHbZiq6bVhJ?status=up&msg=OK&ping="
       offsite_end_monitor_a: "https://kuma.benanna.club/api/push/uEWiN88WDt670itRJYFGVaKsx2adQ07W?status=up&msg=OK"
-      offsite_end_monitor_b: "http://192.168.0.69:3001/api/push/gVJzrifnKH?status=up&msg=OK"
+      offsite_end_monitor_b: "http://{{ secondary_host_ip }}:3001/api/push/gVJzrifnKH?status=up&msg=OK"
 
   hosts:
     localhost:
@@ -136,6 +137,7 @@ all:
       spotify_audio_name_pretty: "Home Audio"
       music_path: "{{ seafile.fuse_path }}/{{ fuse_music_path }}"
       prompt_to_restart_services: true
+      host_ip: 192.168.0.100
     vagrant:
       external_hostname: "localdev.{{ root_domain }}"
       managed_domains: "{{ [external_hostname] + extra_domains }}"
@@ -146,3 +148,4 @@ all:
       spotify_audio_name_pretty: "Home Audio Dev"
       music_path: "{{ backups.onsite_mount_path }}/Music"
       prompt_to_restart_services: false
+      host_ip: 192.168.0.250

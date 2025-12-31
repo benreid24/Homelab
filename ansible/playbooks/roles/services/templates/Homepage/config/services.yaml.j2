@@ -2,71 +2,63 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
 
-- Core:
-  - Infrastructure:
-    - Omada:
-        href: https://omada.benanna.club/
-        icon: https://omada.benanna.club/favicon.ico?v=2
-        description: Network control plane
-        server: docker-socket
-        container: omada-controller
-    - Nginx:
-        icon: /icons/nginx.png
-        description: Reverse proxy and web server
-        server: docker-socket
-        container: nginx
-    - AdGuard:
-        href: https://dns.benanna.club
-        icon: https://dns.benanna.club/assets/favicon.png
-        description: Private DNS
-        server: docker-socket
-        container: adguard
-        statusStyle: dot
-        showStats: false
-        widget:
-          type: adguard
-          url: https://dns.benanna.club
-          username: admin
-          password: {{ adguard_password }}
-          fields:
-            - queries
-            - blocked
-            - latency
-
-  - Monitoring:
-    - Komodo:
-        href: https://komo.benanna.club/stacks
-        icon: https://komo.benanna.club/favicon.ico
-        description: Running container stats and control
-        server: docker-socket
-        container: komodo
-        showStats: false
-        widget:
-          type: komodo
-          url: https://komo.benanna.club
-          key: {{ komodo_api_key }}
-          secret: {{ komodo_api_secret }}
-          showSummary: true
-    - Kuma Primary:
-        href: https://kuma.benanna.club
-        icon: https://kuma.benanna.club/favicon.ico
-        description: Service monitoring and alarms
-        server: docker-socket
-        container: uptime-kuma
-        showStats: false
-        widget:
-          type: uptimekuma
-          url: http://192.168.0.69:3001/
-          slug: kuma-primary
-    - Kuma Secondary:
-        href: http://192.168.0.69:3001/
-        icon: https://kuma.benanna.club/favicon.ico
-        description: Service monitoring and alarms
-        siteMonitor: http://192.168.0.69:3001/
-        widget:
-          type: uptimekuma
-          url: https://kuma.benanna.club
-          slug: kuma-secondary
+- Infrastructure:
+  - Omada:
+      href: https://omada.benanna.club/
+      icon: https://omada.benanna.club/favicon.ico?v=2
+      description: Network control plane
+      server: docker-socket
+      container: omada-controller
+  - Nginx:
+      icon: /icons/nginx.png
+      description: Reverse proxy and web server
+      server: docker-socket
+      container: nginx
+  - AdGuard Primary:
+      href: https://dns.benanna.club
+      icon: https://dns.benanna.club/assets/favicon.png
+      description: Private DNS
+      server: docker-socket
+      container: adguard
+      statusStyle: dot
+      showStats: false
+      widget:
+        type: adguard
+        url: https://dns.benanna.club
+        username: admin
+        password: {{ adguard_password }}
+        fields:
+          - queries
+          - blocked
+          - latency
+  - AdGuard Secondary:
+      href: http://{{ secondary_host_ip }}
+      icon: https://dns.benanna.club/assets/favicon.png
+      description: Private DNS
+      server: docker-socket
+      siteMonitor: http://{{ secondary_host_ip }}
+      widget:
+        type: adguard
+        url: http://{{ secondary_host_ip }}
+        username: admin
+        password: {{ adguard_secondary_password }}
+        fields:
+          - queries
+          - blocked
+          - latency
+  - Komodo:
+      href: https://komo.benanna.club/stacks
+      icon: /icons/komodo.png
+      description: Running container stats and control
+      server: docker-socket
+      container: komodo
+      showStats: false
+      widget:
+        type: komodo
+        url: https://komo.benanna.club
+        key: {{ komodo_api_key }}
+        secret: {{ komodo_api_secret }}
+        showSummary: true
 
 - Services:
   - Home Assistant:
@@ -92,7 +84,7 @@
       description: Satisfactory game server
       widget:
         type: customapi
-        url: https://192.168.0.100:7777/api/v1
+        url: https://{{ host_ip }}:7777/api/v1
         method: POST
         headers:
           Content-Type: application/json
@@ -148,6 +140,7 @@
       icon: /icons/mpd.png
       server: docker-socket
       container: mpd
+
 - Zones:
   - Downstairs Zones:
     - Fireplace Zone:
@@ -200,23 +193,45 @@
           type: uptimekuma
           url: https://kuma.benanna.club
           slug: backup-offsite
-  - Energy:
-    - Power Usage:
-        href: https://ha.benanna.club/dashboard-power/0
-        description: Current power consumption
-        icon: mdi-lightning-bolt-circle-#bfc930
-        widget:
-          type: homeassistant
-          url: https://ha.benanna.club
-          key: {{ homepage_ha_token }}
-          custom:
-            - template: "{% raw %}{{ states('sensor.emporiavue2_total_power') | float(0) | round(0) }} W{% endraw %}"
-              label: Active Draw
-            - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
-              label: Used Today
-  - Bots:
-    - Redbot:
-        description: Discord bot for music
+  - EnergyAndBots:
+    - Energy:
+      - Power Usage:
+          href: https://ha.benanna.club/dashboard-power/0
+          description: Current power consumption
+          icon: mdi-lightning-bolt-circle-#bfc930
+          widget:
+            type: homeassistant
+            url: https://ha.benanna.club
+            key: {{ homepage_ha_token }}
+            custom:
+              - template: "{% raw %}{{ states('sensor.emporiavue2_total_power') | float(0) | round(0) }} W{% endraw %}"
+                label: Active Draw
+              - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
+                label: Used Today
+    - Bots:
+      - Redbot:
+          description: Discord bot for music
+          server: docker-socket
+          container: redbot
+          icon: mdi-robot-#cc2316
+  - Monitoring:
+    - Kuma Primary:
+        href: https://kuma.benanna.club
+        icon: https://kuma.benanna.club/favicon.ico
+        description: Service monitoring and alarms
         server: docker-socket
-        container: redbot
-        icon: mdi-robot-#cc2316
+        container: uptime-kuma
+        showStats: false
+        widget:
+          type: uptimekuma
+          url: http://{{ secondary_host_ip }}:3001/
+          slug: kuma-primary
+    - Kuma Secondary:
+        href: http://{{ secondary_host_ip }}:3001/
+        icon: https://kuma.benanna.club/favicon.ico
+        description: Service monitoring and alarms
+        siteMonitor: http://{{ secondary_host_ip }}:3001/
+        widget:
+          type: uptimekuma
+          url: https://kuma.benanna.club
+          slug: kuma-secondary
