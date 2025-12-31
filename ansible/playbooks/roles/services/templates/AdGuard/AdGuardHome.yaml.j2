@@ -24,6 +24,8 @@ dns:
   refuse_any: true
   upstream_dns:
     - https://dns10.quad9.net/dns-query
+    - 1.1.1.1
+    - 8.8.8.8
   upstream_dns_file: ""
   bootstrap_dns:
     - 9.9.9.10
@@ -110,7 +112,8 @@ filters:
     name: AdAway Default Blocklist
     id: 2
 whitelist_filters: []
-user_rules: []
+user_rules:
+  - '||use-application-dns.net^'
 dhcp:
   enabled: false
   interface_name: ""
@@ -145,10 +148,16 @@ filtering:
     pixabay: true
     yandex: true
     youtube: true
-  blocking_mode: default
+  blocking_mode: nxdomain
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
-  rewrites: []
+  rewrites:
+    - domain: {{ external_hostname }}
+      answer: {{ host_ip }}
+      enabled: true
+    - domain: '*.{{ external_hostname }}'
+      answer: {{ host_ip }}
+      enabled: true
   safe_fs_patterns:
     - /opt/adguardhome/work/userfilters/*
   safebrowsing_cache_size: 1048576

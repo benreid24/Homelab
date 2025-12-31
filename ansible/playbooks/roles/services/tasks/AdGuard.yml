@@ -42,11 +42,6 @@
     mode: '0755'
   become: true
 
-- name: Check if AdGuardHome.yaml exists
-  ansible.builtin.stat:
-    path: "{{ services_data_path }}/AdGuard/config/AdGuardHome.yaml"
-  register: adguard_home_yaml_stat
-
 - name: Template AdGuardHome.yaml configuration file
   template:
     src: AdGuard/AdGuardHome.yaml.j2
@@ -56,7 +51,6 @@
     mode: '0644'
   become: true
   register: adguard_home_config
-  when: not adguard_home_yaml_stat.stat.exists
 
 - name: Mark AdGuard for restart
   set_fact:
