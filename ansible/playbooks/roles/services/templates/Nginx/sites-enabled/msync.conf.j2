@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/server_common.conf;
+    server_name msync.{{ external_hostname }};
+
+    location / {
+        set $upstream http://msync:3000;
+        proxy_pass $upstream;
+        include /etc/nginx/proxy_common.conf;
+        include /etc/nginx/internal_only.conf;
+    }
+}

@@ -19,7 +19,7 @@ layout:
     columns: 6
   Home Audio:
     style: row
-    columns: 4
+    columns: 6
   Zones:
     style: row
     columns: 2

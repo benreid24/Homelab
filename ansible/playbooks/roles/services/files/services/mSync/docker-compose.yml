@@ -1,0 +1,44 @@
+services:
+  msync:
+    build:
+      context: ./mSync
+      dockerfile: Dockerfile
+    container_name: msync
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_PATH=/app/data
+      - MUSIC_PATH=/app/music
+    volumes:
+      - ${DATA_PATH}/mSync:/app/data
+      - ${MUSIC_PATH}/Music:/app/music
+    restart: unless-stopped
+    networks:
+      - homelab
+
+  msync-seadrive:
+    build:
+      context: ./seafile
+      dockerfile: Dockerfile
+    container_name: msync-seadrive
+    restart: unless-stopped
+    devices:
+      - /dev/fuse
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - SEAFILE_SERVER_URL=${SEAFILE_SERVER}
+      - SEAFILE_USERNAME=${SEAFILE_USERNAME}
+      - SEAFILE_TOKEN=${SEAFILE_TOKEN}
+      - SEAFILE_LIBRARY_ID=${SEAFILE_LIBRARY_ID}
+      - SEAFILE_DATA_DIR=/data
+      - SEAFILE_CONFIG_DIR=/config
+    volumes:
+      - ${DATA_PATH}/seafile:/config
+      - ${MUSIC_PATH}:/data
+
+networks:
+  homelab:
+    external: true

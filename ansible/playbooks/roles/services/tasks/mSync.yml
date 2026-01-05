@@ -1,0 +1,37 @@
+- name: Write mSync env file
+  copy:
+    dest: "{{ services_config_path }}/mSync/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      DATA_PATH={{ services_data_path }}/mSync
+      MUSIC_PATH={{ msync_music_path }}
+      SEAFILE_LIBRARY_ID={{ seafile_music_library_id }}
+      SEAFILE_USERNAME={{ admin_email }}
+      SEAFILE_TOKEN={{ seafile_client_token }}
+      SEAFILE_SERVER=https://seafile.{{ external_hostname }}
+  become: true
+
+- name: Clone mSync repository
+  git:
+    repo: 'https://github.com/benreid24/mSync.git'
+    dest: "{{ services_config_path }}/mSync/mSync"
+    version: 'main'
+    force: yes
+    update: yes
+  become: true
+  register: msync_repo
+
+- name: Rebuild mSync service
+  ansible.builtin.shell: >
+    cd {{ services_config_path }}/mSync &&
+    docker compose down && docker compose build --no-cache
+  become: true
+  become_user: "{{ service_user }}"
+  when: msync_repo.changed
+
+- name: Mark mSync service to restart
+  set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['mSync']) }}"
+  when: msync_repo.changed

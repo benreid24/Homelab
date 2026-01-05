@@ -124,10 +124,16 @@
       description: Control plane for music playback
       server: docker-socket
       container: ampd
+  - mSync:
+      href: https://msync.benanna.club
+      icon: https://msync.benanna.club/assets/favicon.png
+      description: Youtube playlist auto sync
+      server: docker-socket
+      container: msync
   - Snapcast:
       href: https://snapcast.benanna.club
       icon: /icons/snapcast.png
-      description: Audio zone volume and input selection
+      description: Audio zone management
       server: docker-socket
       container: snapserver
   - Librespot:
@@ -140,6 +146,12 @@
       icon: /icons/mpd.png
       server: docker-socket
       container: mpd
+  - mSync Seafile:
+      href: https://seafile.benanna.club/library/{{ seafile_music_library_id }}
+      icon: https://seafile.benanna.club/media/favicons/favicon.png
+      description: Seafile client instance for music sync
+      server: docker-socket
+      container: msync-seadrive
 
 - Zones:
   - Downstairs Zones:
