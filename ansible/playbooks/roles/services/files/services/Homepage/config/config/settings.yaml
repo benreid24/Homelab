@@ -16,7 +16,7 @@ layout:
     columns: 5
   Services:
     style: row
-    columns: 5
+    columns: 6
   AudioContainer:
     style: row
     columns: 3

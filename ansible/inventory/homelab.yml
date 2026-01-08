@@ -27,6 +27,7 @@ all:
       - Kuma
       - Snapserver
       - mSync
+      - Mealie
       - Homepage
 
     crons_config_path: /opt/homelab/cron-configs

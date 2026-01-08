@@ -1,0 +1,19 @@
+- name: Write Mealie env file
+  ansible.builtin.copy:
+    dest: "{{ services_config_path }}/Mealie/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0600'
+    content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      TIMEZONE={{ timezone }}
+      HOSTNAME={{ external_hostname }}
+      DATA_PATH={{ services_data_path }}/Mealie
+  register: mealie_env_file
+  become: true
+
+- name: Mark Mealie service for restart
+  ansible.builtin.set_fact:
+    services_to_restart: "{{ services_to_restart | default([]) | union(['Mealie']) }}"
+  when: mealie_env_file.changed
