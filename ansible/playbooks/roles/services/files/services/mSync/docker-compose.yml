@@ -5,10 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: msync
     environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
       - NODE_ENV=production
       - PORT=3000
       - DATA_PATH=/app/data
       - MUSIC_PATH=/app/music
+      - TMP_PATH=/tmp
     volumes:
       - ${DATA_PATH}/mSync:/app/data
       - ${MUSIC_PATH}/Music:/app/music
@@ -29,6 +32,8 @@ services:
     security_opt:
       - apparmor:unconfined
     environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
       - SEAFILE_SERVER_URL=${SEAFILE_SERVER}
       - SEAFILE_USERNAME=${SEAFILE_USERNAME}
       - SEAFILE_TOKEN=${SEAFILE_TOKEN}
@@ -38,6 +43,30 @@ services:
     volumes:
       - ${DATA_PATH}/seafile:/config
       - ${MUSIC_PATH}:/data
+
+  msync-syncthing:
+    image: syncthing/syncthing
+    container_name: msync-syncthing
+    hostname: syncthing-music.${HOSTNAME}
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - STGUIADDRESS=0.0.0.0:8384
+    volumes:
+      - ${MUSIC_PATH}/Music:/var/syncthing/Music
+      - ${DATA_PATH}/mSync/syncthing:/var/syncthing/config
+    ports:
+      - "22000:22000/tcp"
+      - "22000:22000/udp"
+      - "21027:21027/udp"
+    restart: unless-stopped
+    healthcheck:
+      test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - homelab
 
 networks:
   homelab:

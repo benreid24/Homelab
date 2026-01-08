@@ -16,20 +16,27 @@ layout:
     columns: 5
   Services:
     style: row
-    columns: 6
-  Home Audio:
+    columns: 5
+  AudioContainer:
     style: row
-    columns: 6
-  Zones:
-    style: row
-    columns: 2
+    columns: 3
     header: false
-    Downstairs Zones:
+    Home Audio:
       style: row
-      columns: 3
-    Upstairs Zones:
+      columns: 2
+    Music Sync:
       style: row
-      columns: 3
+      columns: 2
+    Zones:
+      style: row
+      columns: 2
+      header: false
+      Downstairs Zones:
+        style: column
+        rows: 3
+      Upstairs Zones:
+        style: column
+        rows: 3
   BottomRow:
     header: false
     style: row

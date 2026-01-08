@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/server_common.conf;
+    server_name syncthing-music.{{ external_hostname }};
+
+    location / {
+        set $upstream http://msync-syncthing:8384;
+        proxy_pass $upstream;
+        include /etc/nginx/proxy_common.conf;
+        include /etc/nginx/internal_only.conf;
+    }
+}

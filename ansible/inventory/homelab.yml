@@ -24,7 +24,6 @@ all:
       - ddns
       - HomeAssistant
       - Omada
-      - Code
       - Kuma
       - Snapserver
       - mSync

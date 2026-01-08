@@ -13,6 +13,22 @@
       SEAFILE_SERVER=https://seafile.{{ external_hostname }}
       SPOTIFY_CLIENT_ID={{ spotify_client_id }}
       SPOTIFY_CLIENT_SECRET={{ spotify_client_secret }}
+      HOSTNAME={{ external_hostname }}
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+  become: true
+
+- name: Create mSync data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  loop:
+    - "{{ services_data_path }}/mSync/mSync"
+    - "{{ services_data_path }}/mSync/syncthing"
+    - "{{ services_data_path }}/mSync/seafile"
   become: true
 
 - name: Clone mSync repository
