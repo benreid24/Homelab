@@ -136,7 +136,6 @@ all:
       backup_dst_path: "/homelab-backups"
       spotify_audio_name: "Home%20Audio"
       spotify_audio_name_pretty: "Home Audio"
-      music_path: "{{ seafile.fuse_path }}/{{ fuse_music_path }}"
       msync_music_path: /mnt/data/homelab/music
       prompt_to_restart_services: true
       host_ip: 192.168.0.100
@@ -148,7 +147,6 @@ all:
       backup_dst_path: "/homelab-backups-dev"
       spotify_audio_name: "Home%20Audio%20Dev"
       spotify_audio_name_pretty: "Home Audio Dev"
-      music_path: "{{ backups.onsite_mount_path }}/Music"
       msync_music_path: /opt/homelab/music
       prompt_to_restart_services: false
       host_ip: 192.168.0.250
