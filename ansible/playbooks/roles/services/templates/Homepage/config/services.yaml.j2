@@ -82,7 +82,7 @@
   - Mealie:
       href: https://mealie.{{ external_hostname }}
       icon: https://mealie.{{ external_hostname }}/favicon.ico
-      description: Meal planning and recipe management
+      description: Recipe storage and meal planner
       server: docker-socket
       container: mealie
   - Satisfactory:
@@ -195,26 +195,32 @@
         description: Syncthing client for music folder sync
         server: docker-socket
         container: msync-syncthing
+    - Redbot:
+        description: Discord bot for music
+        server: docker-socket
+        container: redbot
+        icon: mdi-robot-#cc2316
 
 - BottomRow:
   - Backups:
-    - Onsite:
-        description: Onsite backup status
-        href: https://kuma.{{ external_hostname }}/status/backup-onsite
-        icon: mdi-harddisk-#0c929c
-        widget:
-          type: uptimekuma
-          url: https://kuma.{{ external_hostname }}
-          slug: backup-onsite
-    - Offsite:
-        description: Offsite backup status
-        href: https://kuma.{{ external_hostname }}/status/backup-offsite
-        icon: mdi-harddisk-#0c4f9c
-        widget:
-          type: uptimekuma
-          url: https://kuma.{{ external_hostname }}
-          slug: backup-offsite
-  - EnergyAndBots:
+    - Backups:
+      - Onsite:
+          description: Onsite backup status
+          href: https://kuma.{{ external_hostname }}/status/backup-onsite
+          icon: mdi-harddisk-#0c929c
+          widget:
+            type: uptimekuma
+            url: https://kuma.{{ external_hostname }}
+            slug: backup-onsite
+    - " ":
+      - Offsite:
+          description: Offsite backup status
+          href: https://kuma.{{ external_hostname }}/status/backup-offsite
+          icon: mdi-harddisk-#0c4f9c
+          widget:
+            type: uptimekuma
+            url: https://kuma.{{ external_hostname }}
+            slug: backup-offsite
     - Energy:
       - Power Usage:
           href: https://ha.{{ external_hostname }}/dashboard-power/0
@@ -229,13 +235,18 @@
                 label: Active Draw
               - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
                 label: Used Today
-    - Bots:
-      - Redbot:
-          description: Discord bot for music
-          server: docker-socket
-          container: redbot
-          icon: mdi-robot-#cc2316
   - Monitoring:
+    - Services:
+        href: https://kuma.{{ external_hostname }}
+        icon: https://kuma.{{ external_hostname }}/favicon.ico
+        description: Uptime for all services
+        server: docker-socket
+        container: uptime-kuma
+        showStats: false
+        widget:
+          type: uptimekuma
+          url: https://kuma.{{ external_hostname }}
+          slug: services
     - Kuma Primary:
         href: https://kuma.{{ external_hostname }}
         icon: https://kuma.{{ external_hostname }}/favicon.ico

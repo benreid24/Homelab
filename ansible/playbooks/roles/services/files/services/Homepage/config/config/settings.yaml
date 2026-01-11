@@ -11,9 +11,6 @@ color: slate
 
 useEqualHeights: true
 layout:
-  Infrastructure:
-    style: row
-    columns: 5
   Services:
     style: row
     columns: 6
@@ -37,26 +34,29 @@ layout:
       Upstairs Zones:
         style: column
         rows: 3
+  Infrastructure:
+    style: row
+    columns: 5
   BottomRow:
     header: false
     style: row
-    columns: 3
+    columns: 2
     Backups:
       style: row
-      columns: 2
-    EnergyAndBots:
-      style: row
-      columns: 2
+      columns: 3
       header: false
-      Energy:
+      Backups:
         style: row
         columns: 1
-      Bots:
+      " ":
+        style: row
+        columns: 1
+      Energy:
         style: row
         columns: 1
     Monitoring:
       style: row
-      columns: 2
+      columns: 3
   
 headerStyle: boxed
 background:
