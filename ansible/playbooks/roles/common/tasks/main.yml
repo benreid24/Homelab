@@ -6,6 +6,7 @@
 - name: Install base packages
   apt:
     name:
+      - acl
       - ca-certificates
       - curl
       - gnupg

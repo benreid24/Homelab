@@ -46,7 +46,6 @@
     cd {{ services_config_path }}/mSync &&
     docker compose down && docker compose build --no-cache
   become: true
-  become_user: "{{ service_user }}"
   when: msync_repo.changed
 
 - name: Mark mSync service to restart

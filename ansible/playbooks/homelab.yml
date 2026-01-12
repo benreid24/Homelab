@@ -1,9 +1,6 @@
-- name: Provision home lab
-  hosts: all
+- name: Provision Overseer
+  hosts: overseer
   become: true
-
-  vars_files:
-  - ../vars/vault.yml
 
   roles:
     - common

@@ -1,10 +1,10 @@
 - name: Create homelab group
   ansible.builtin.group:
-    name: homelab
+    name: "{{ service_group }}"
 
 - name: Create service user
   ansible.builtin.user:
-    name: homelab
+    name: "{{ service_user }}"
     group: "{{ service_group }}"
     shell: /bin/bash
     create_home: yes

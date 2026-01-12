@@ -82,13 +82,11 @@
   ansible.builtin.shell: >
     docker network inspect homelab >/dev/null 2>&1 || docker network create homelab --subnet {{ docker_network_subnet }}
   become: true
-  become_user: "{{ service_user }}"
 
 - name: Start certbot container to obtain certificates
   ansible.builtin.shell: >
     docker compose -f {{ services_config_path }}/Nginx/docker-compose.yml up -d certbot
   become: true
-  become_user: "{{ service_user }}"
 
 - name: Check if Let's Encrypt certificates exist for managed domains
   stat:
