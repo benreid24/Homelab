@@ -61,10 +61,12 @@ Run Ansible manually in the VM:
 
 ## Running
 
-On the target machine:
+WSL:
 1. Install Ansible: `sudo apt install -y ansible`
 2. Place the vault password in `.vault_pass` with permission 600
-3. Run Ansible: `sudo ansible-playbook --connection=local --limit localhost -i ansible/inventory/homelab.yml --vault-password-file=./vault_pass.sh ./ansible/playbooks/homelab.yml`
+3. Run from the `ansible` directory: `cd ansible`
+4. Bypass permissions check for WSL mounted Windows drive: `export ANSIBLE_CONFIG=ansible.cfg` 
+5. Run Ansible: `ansible-playbook playbooks/homelab.yml`
 
 ### TP-Link Omada
 
