@@ -35,9 +35,11 @@ enabled_crons:
   - Backups
 
 seafile:
-  fuse_path: "{{ data_path }}/seafile-fuse"
+  clone_path: "{{ data_path }}/seafile-clone"
   # from https://customer.seafile.com/downloads
   docker_username: seafile
+
+msync_music_path: "{{ seafile.clone_path }}/Music"
 
 immich:
   immich_version: release

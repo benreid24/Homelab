@@ -14,35 +14,10 @@ services:
       - TMP_PATH=/tmp
     volumes:
       - ${DATA_PATH}/mSync:/app/data
-      - ${MUSIC_PATH}/Music:/app/music
+      - ${MUSIC_PATH}:/app/music
     restart: unless-stopped
     networks:
       - homelab
-
-  msync-seadrive:
-    build:
-      context: ./seafile
-      dockerfile: Dockerfile
-    container_name: msync-seadrive
-    restart: unless-stopped
-    devices:
-      - /dev/fuse
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - SEAFILE_SERVER_URL=${SEAFILE_SERVER}
-      - SEAFILE_USERNAME=${SEAFILE_USERNAME}
-      - SEAFILE_TOKEN=${SEAFILE_TOKEN}
-      - SEAFILE_LIBRARY_ID=${SEAFILE_LIBRARY_ID}
-      - SEAFILE_DATA_DIR=/data
-      - SEAFILE_CONFIG_DIR=/config
-    volumes:
-      - ${DATA_PATH}/seafile:/config
-      - ${MUSIC_PATH}:/data
 
   msync-syncthing:
     image: syncthing/syncthing
@@ -53,7 +28,7 @@ services:
       - PGID=${PGID}
       - STGUIADDRESS=0.0.0.0:8384
     volumes:
-      - ${MUSIC_PATH}/Music:/var/syncthing/Music
+      - ${MUSIC_PATH}:/var/syncthing/Music
       - ${DATA_PATH}/mSync/syncthing:/var/syncthing/config
     ports:
       - "22000:22000/tcp"

@@ -6,12 +6,19 @@
     group: "{{ service_group }}"
     mode: '0600'
     content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
       DB_PASSWORD={{ seafile_db_password }}
       ADMIN_EMAIL={{ admin_email }}
       ADMIN_PASSWORD={{ seafile_admin_password }}
       DATA_PATH={{ services_data_path }}/Seafile
       HOSTNAME=seafile.{{ external_hostname }}
-      FUSE_PATH={{ seafile.fuse_path }}
+      SEAFILE_CLI_LIBRARY_IDS={{ seafile_library_ids | join(',') }}
+      SEAFILE_CLI_USERNAME={{ admin_email }}
+      SEAFILE_CLI_TOKEN={{ seafile_client_token }}
+      SEAFILE_CLI_SERVER_URL=http://seafile
+      SEAFILE_CLI_CONFIG_PATH={{ services_data_path }}/Seafile/seafile-client
+      SEAFILE_CLI_CLONE_PATH={{ seafile.clone_path }}
   become: true
   register: seafile_config
 
@@ -19,17 +26,6 @@
   set_fact:
     services_to_restart: "{{ services_to_restart | default([]) | union(['Seafile']) }}"
   when: seafile_config.changed
-
-- name: Ensure Seafile FUSE directory exists
-  ansible.builtin.file:
-    path: "{{ seafile.fuse_path }}"
-    state: directory
-    owner: "{{ service_user }}"
-    group: "{{ service_group }}"
-    mode: '0755'
-  ignore_errors: true
-  when: seafile.fuse_path is not mount
-  become: true
 
 - name: Ensure Elasticsearch data directory exists with correct permissions
   ansible.builtin.file:

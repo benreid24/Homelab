@@ -5,6 +5,5 @@ certbot_env: prod
 backup_dst_path: "/homelab-backups"
 spotify_audio_name: "Home%20Audio"
 spotify_audio_name_pretty: "Home Audio"
-msync_music_path: /mnt/data/homelab/music
 prompt_to_restart_services: true
 host_ip: 192.168.0.100

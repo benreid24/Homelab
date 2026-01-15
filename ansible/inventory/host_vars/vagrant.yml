@@ -5,6 +5,5 @@ certbot_env: staging
 backup_dst_path: "/homelab-backups-dev"
 spotify_audio_name: "Home%20Audio%20Dev"
 spotify_audio_name_pretty: "Home Audio Dev"
-msync_music_path: /opt/homelab/music
 prompt_to_restart_services: false
 host_ip: 192.168.0.250

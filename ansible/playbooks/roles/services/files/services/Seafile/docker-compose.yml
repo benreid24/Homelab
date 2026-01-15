@@ -8,7 +8,7 @@ services:
       - MYSQL_LOG_CONSOLE=true
       - MARIADB_AUTO_UPGRADE=1
     volumes:
-      - ${DATA_PATH}/mysql/db:/var/lib/mysql  # Requested, specifies the path to MySQL data persistent store.
+      - ${DATA_PATH}/mysql/db:/var/lib/mysql # Requested, specifies the path to MySQL data persistent store.
     networks:
       - seafile-net
 
@@ -35,28 +35,23 @@ services:
         hard: -1
     mem_limit: 4g
     volumes:
-      - ${DATA_PATH}/elasticsearch/data:/usr/share/elasticsearch/data  # Requested, specifies the path to Elasticsearch data persistent store.
+      - ${DATA_PATH}/elasticsearch/data:/usr/share/elasticsearch/data # Requested, specifies the path to Elasticsearch data persistent store.
     networks:
       - seafile-net
-          
+
   seafile:
     restart: unless-stopped
     image: docker.seadrive.org/seafileltd/seafile-pro-mc:latest
     container_name: seafile
     volumes:
-      - ${DATA_PATH}/data:/shared   # Requested, specifies the path to Seafile data persistent store.
-      - type: bind
-        source: ${FUSE_PATH}
-        target: /seafile-fuse
-        bind:
-          propagation: rshared
+      - ${DATA_PATH}/data:/shared # Requested, specifies the path to Seafile data persistent store.
     environment:
       - DB_HOST=db
       - DB_ROOT_PASSWD=${DB_PASSWORD}
-      - TIME_ZONE=America/New_York 
-      - SEAFILE_ADMIN_EMAIL=${ADMIN_EMAIL} 
-      - SEAFILE_ADMIN_PASSWORD=${ADMIN_PASSWORD}   
-      - SEAFILE_SERVER_LETSENCRYPT=false  
+      - TIME_ZONE=America/New_York
+      - SEAFILE_ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SEAFILE_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - SEAFILE_SERVER_LETSENCRYPT=false
       - SEAFILE_SERVER_HOSTNAME=${HOSTNAME}
     depends_on:
       - db
@@ -71,29 +66,37 @@ services:
     networks:
       - seafile-net
       - homelab
-    privileged: true # for fuse
     cap_add:
-        - SYS_ADMIN
+      - SYS_ADMIN
 
-  seafile-fuse:
-    image: docker:cli
-    container_name: seafile-fuse
-    restart: "no"
+  seafile-client:
+    build:
+      context: ./seafile-cli
+      dockerfile: Dockerfile
+    container_name: seafile-client
+    restart: unless-stopped
+    devices:
+      - /dev/fuse
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - SEAFILE_CLI_SERVER_URL=${SEAFILE_CLI_SERVER_URL}
+      - SEAFILE_CLI_USERNAME=${SEAFILE_CLI_USERNAME}
+      - SEAFILE_CLI_TOKEN=${SEAFILE_CLI_TOKEN}
+      - SEAFILE_CLI_LIBRARY_IDS=${SEAFILE_CLI_LIBRARY_IDS}
+      - SEAFILE_CLI_DATA_DIR=/data
+      - SEAFILE_CLI_CONFIG_DIR=/config
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      seafile:
-        condition: service_healthy
-    command: >
-      sh -c "
-        echo 'Waiting for Seafile to fully initialize...';
-        sleep 10;
-        echo 'Starting FUSE mount...';
-        docker exec seafile /opt/seafile/seafile-server-latest/seaf-fuse.sh start /seafile-fuse -o nonempty -o allow_other;
-        echo 'FUSE mount started successfully';
-      "
+      - ${SEAFILE_CLI_CONFIG_PATH}:/config
+      - ${SEAFILE_CLI_CLONE_PATH}:/data
     networks:
       - seafile-net
+    depends_on:
+      - seafile
 
 networks:
   seafile-net:

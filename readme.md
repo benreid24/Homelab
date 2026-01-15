@@ -15,7 +15,7 @@ Ansible playbooks for provisioning my home server.
 
 ### Vault Editing
 
-To edit the vault: `ansible-vault edit ansible/vars/vault.yml --vault-password-file=vault_pass.sh` (Put the password in `.vault_pass`)
+To edit the vault: `ansible-vault edit ansible/inventory/group_vars/homelab/vault.yml --vault-password-file=vault_pass.sh` (Put the password in `.vault_pass`)
 
 Required vault contents:
 ```
