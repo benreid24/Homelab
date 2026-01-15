@@ -20,6 +20,17 @@ else
   echo "[seaf-cli] Config already initialized"
 fi
 
+# Configure file limit (increase from default ~100k to 2m)
+SEAFILE_CONF_FILE="$SEAFILE_CONF_DIR/seafile.conf"
+if ! grep -q "max_sync_file_count" "$SEAFILE_CONF_FILE" 2>/dev/null; then
+  echo "[seaf-cli] Configuring max_sync_file_count..."
+  cat >> "$SEAFILE_CONF_FILE" << EOF
+
+[library]
+max_sync_file_count = 2000000
+EOF
+fi
+
 # 2. Start daemon (needed before download)
 echo "[seaf-cli] Starting daemon..."
 seaf-cli start -c "$SEAFILE_CONF_DIR"
@@ -38,13 +49,16 @@ if [ -n "$LIBRARY_IDS" ]; then
     
     if ! seaf-cli list -c "$SEAFILE_CONF_DIR" | grep -q "$LIB_ID"; then
       echo "[seaf-cli] Downloading library $LIB_ID..."
+      # Disable exit on error for this command since "Task is already in progress" is non-fatal
+      set +e
       seaf-cli download \
         -c "$SEAFILE_CONF_DIR" \
         -l "$LIB_ID" \
         -s "$SERVER_URL" \
         -d "$DATA_DIR" \
         -u "$USERNAME" \
-        -T "$TOKEN"
+        -T "$TOKEN" 2>&1 | grep -v "Task is already in progress" || true
+      set -e
     else
       echo "[seaf-cli] Library $LIB_ID already registered, skipping download"
     fi
