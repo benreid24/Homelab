@@ -65,8 +65,8 @@ services:
     networks:
       - homelab
 
-  snapserver:
-    container_name: snapserver
+  snapcast:
+    container_name: snapcast
     image: ivdata/snapserver:latest
     restart: "unless-stopped"
     volumes:

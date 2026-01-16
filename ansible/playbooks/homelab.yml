@@ -14,6 +14,8 @@
     - service_ddns
     - service_homeassistant
     - service_omada
+    - service_kuma
+    - service_snapcast
     # - services
     # - crons
     # - steam
