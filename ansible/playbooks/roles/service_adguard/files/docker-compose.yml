@@ -13,6 +13,9 @@ services:
       - ${WORK_PATH}:/opt/adguardhome/work
     environment:
       - TZ=${TIMEZONE}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    user: "${PUID}:${PGID}"
     restart: unless-stopped
     networks:
       - homelab

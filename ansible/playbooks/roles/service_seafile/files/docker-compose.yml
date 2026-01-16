@@ -82,8 +82,6 @@ services:
     security_opt:
       - apparmor:unconfined
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
       - SEAFILE_CLI_SERVER_URL=${SEAFILE_CLI_SERVER_URL}
       - SEAFILE_CLI_USERNAME=${SEAFILE_CLI_USERNAME}
       - SEAFILE_CLI_TOKEN=${SEAFILE_CLI_TOKEN}

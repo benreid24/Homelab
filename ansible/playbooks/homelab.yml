@@ -9,6 +9,7 @@
     - service_nginx
     - service_komodo
     - service_redbot
+    - service_seafile
     # - services
     # - crons
     # - steam

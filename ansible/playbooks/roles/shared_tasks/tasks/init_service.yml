@@ -2,6 +2,8 @@
 # Reusable task to initialize service directories
 # Parameters:
 #   - service_name: Name of the service (required)
+#   - skip_chown_config: Whether to skip chowning config directory (optional, default: false)
+#   - skip_chown_data: Whether to skip chowning data directory (optional, default: false)
 #   - env_content: Content for .env file (optional)
 #   - config_copies: List of copies of form: (optional)
 #     - src_config_path: Path relative to calling role's files directory to copy from (required)
@@ -127,6 +129,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     recurse: true
+  when: not skip_chown_config | default(false)
   become: true
 
 - name: Ensure correct ownership of {{ service_name }} data directory
@@ -136,6 +139,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     recurse: true
+  when: not skip_chown_data | default(false)
   become: true
 
 - name: "Check if {{ service_name }} docker-compose.yml exists"

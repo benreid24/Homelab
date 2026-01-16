@@ -1,12 +1,15 @@
-version: '3.8'
 services:
-    red-bot:
-        build: .
-        container_name: redbot
-        restart: unless-stopped
-        environment:
-            INSTANCE_NAME: "BenAnnaBot"
-            PREFIX: "!"
-            TOKEN: "${TOKEN}"
-        volumes:
-            - ${DATA_PATH}:/redbot/data
+  red-bot:
+    build:
+      context: .
+      args:
+        PUID: ${PUID}
+        PGID: ${PGID}
+    container_name: redbot
+    restart: unless-stopped
+    environment:
+      INSTANCE_NAME: "BenAnnaBot"
+      PREFIX: "!"
+      TOKEN: "${TOKEN}"
+    volumes:
+      - ${DATA_PATH}:/redbot/data
