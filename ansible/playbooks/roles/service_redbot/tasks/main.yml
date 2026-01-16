@@ -1,0 +1,33 @@
+- name: Setup Redbot service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Redbot
+    env_content: |
+      TOKEN={{ redbot_discord_token }}
+      DATA_PATH={{ services_data_path }}/Redbot
+    config_copies:
+      - src_config_path: .
+
+- name: Check if Redbot data directory exists and has files
+  ansible.builtin.find:
+    paths: "{{ services_data_path }}/Redbot/data"
+    file_type: any
+  register: redbot_data_check
+  failed_when: false
+
+- name: Copy Redbot seed data
+  ansible.builtin.synchronize:
+    src: "{{ services_config_path }}/Redbot/data"
+    dest: "{{ services_data_path }}/Redbot"
+    recursive: yes
+    rsync_opts:
+      - "--chmod=Du=rwx,Dg=rx,Do=rx,Fu=rw,Fg=r,Fo=r"
+  when: redbot_data_check.matched == 0
+  register: redbot_seed
+
+- name: Restart Redbot if seed data was copied
+  ansible.builtin.shell:
+    chdir: "{{ services_config_path }}/Redbot"
+    cmd: docker compose up -d --force-recreate --build
+  when: redbot_seed.changed
+  become: true

@@ -8,6 +8,7 @@
     - service_adguard
     - service_nginx
     - service_komodo
+    - service_redbot
     # - services
     # - crons
     # - steam
