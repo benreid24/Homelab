@@ -1,0 +1,12 @@
+- name: Setup Mealie service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Mealie
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      TIMEZONE={{ timezone }}
+      HOSTNAME={{ external_hostname }}
+      DATA_PATH={{ services_data_path }}/Mealie

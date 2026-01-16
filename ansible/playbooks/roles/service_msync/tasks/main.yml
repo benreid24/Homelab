@@ -1,0 +1,49 @@
+- name: Create mSync data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  loop:
+    - "{{ services_data_path }}/mSync/mSync"
+    - "{{ services_data_path }}/mSync/syncthing"
+    - "{{ services_data_path }}/mSync/seafile"
+  become: true
+
+- name: Clone mSync repository
+  git:
+    repo: 'https://github.com/benreid24/mSync.git'
+    dest: "{{ services_config_path }}/mSync/mSync"
+    version: 'main'
+    force: yes
+    update: yes
+  become: true
+  become_user: "{{ service_user }}"
+  register: msync_repo
+
+- name: Rebuild mSync service
+  ansible.builtin.shell: >
+    cd {{ services_config_path }}/mSync &&
+    docker compose down && docker compose build --no-cache
+  become: true
+  when: msync_repo.changed
+
+- name: Setup mSync service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: mSync
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      DATA_PATH={{ services_data_path }}/mSync
+      MUSIC_PATH={{ msync_music_path }}
+      SEAFILE_LIBRARY_ID={{ seafile_music_library_id }}
+      SEAFILE_USERNAME={{ admin_email }}
+      SEAFILE_TOKEN={{ seafile_client_token }}
+      SEAFILE_SERVER=https://seafile.{{ external_hostname }}
+      SPOTIFY_CLIENT_ID={{ spotify_client_id }}
+      SPOTIFY_CLIENT_SECRET={{ spotify_client_secret }}
+      HOSTNAME={{ external_hostname }}
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}

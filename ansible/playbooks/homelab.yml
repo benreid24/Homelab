@@ -16,6 +16,8 @@
     - service_omada
     - service_kuma
     - service_snapcast
+    - service_msync
+    - service_mealie
     # - services
     # - crons
     # - steam
