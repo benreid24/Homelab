@@ -1,0 +1,20 @@
+---
+# Helper task for templating files from glob patterns
+# Called by init_service.yml for nested loop support
+# Parameters passed from parent:
+#   - template_glob_item: The current glob item being processed
+#   - service_name: Name of the service
+#   - services_config_path: Base path for service configs
+#   - calling_role_path: Path to the calling role's directory
+
+- name: "Template files matching {{ template_glob_item.src_template_glob }}"
+  ansible.builtin.template:
+    src: "{{ glob_file }}"
+    dest: "{{ services_config_path }}/{{ service_name }}/{{ template_glob_item.dst_template_path_prefix | default('') }}/{{ glob_file | basename | regex_replace('\\.j2$', '') }}"
+    mode: "{{ template_glob_item.file_mode | default('0644') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  loop: "{{ lookup('ansible.builtin.fileglob', calling_role_path + '/templates/' + template_glob_item.src_template_glob, wantlist=True) }}"
+  loop_control:
+    loop_var: glob_file
+  become: true

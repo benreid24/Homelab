@@ -4,9 +4,3 @@
   loop: "{{ services_to_restart | default([]) }}"
   become: true
   when: services_to_restart is defined and services_to_restart | length > 0
-
-- name: restart fail2ban
-  ansible.builtin.service:
-    name: fail2ban
-    state: restarted
-  become: true

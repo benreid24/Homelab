@@ -6,6 +6,7 @@
     - common
     - docker
     - service_adguard
+    - service_nginx
     - services
     - crons
     - steam

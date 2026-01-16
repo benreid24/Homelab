@@ -13,6 +13,11 @@
 #     - dst_template_path: Path relative to services_config_path/{{ service_name }} to template to (required)
 #     - file_mode: Permission mode for templated files (optional, default: '0644')
 #     - directory_mode: Permission mode for parent directories (optional, default: '0755')
+#   - template_globs: List of template globs of form: (optional)
+#     - src_template_glob: File glob relative to calling role's templates directory to template from (required)
+#     - dst_template_path: Path prefix relative to services_config_path/{{ service_name }} to template to (required)
+#     - file_mode: Permission mode for templated files (optional, default: '0644')
+#     - directory_mode: Permission mode for parent directories (optional, default: '0755')
 
 - name: "Create {{ service_name }} config directory"
   ansible.builtin.file:
@@ -90,6 +95,49 @@
   register: _template_result
   become: true
 
+- name: "Create parent directories for {{ service_name }} template globs"
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/{{ service_name }}/{{ template_glob_item.dst_template_path_prefix | default('') }}"
+    state: directory
+    mode: "{{ template_glob_item.directory_mode | default('0755') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  when:
+    - template_globs is defined
+    - template_glob_item.dst_template_path_prefix | default('') != ''
+  loop: "{{ template_globs | default([]) }}"
+  loop_control:
+    loop_var: template_glob_item
+  become: true
+
+- name: "Template {{ service_name }} config files from globs"
+  include_tasks: template_from_glob.yml
+  vars:
+    calling_role_path: "{{ role_path }}"
+  loop: "{{ template_globs | default([]) }}"
+  loop_control:
+    loop_var: template_glob_item
+  when: template_globs is defined
+  register: _template_glob_result
+
+- name: Ensure correct ownership of {{ service_name }} config directory
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/{{ service_name }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  become: true
+
+- name: Ensure correct ownership of {{ service_name }} data directory
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/{{ service_name }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  become: true
+
 - name: "Check if {{ service_name }} docker-compose.yml exists"
   ansible.builtin.stat:
     path: "{{ services_config_path }}/{{ service_name }}/{{ docker_compose_path | default('') }}/docker-compose.yml"
@@ -103,5 +151,6 @@
     - _docker_compose_file.stat.exists
     - (_env_file_result is defined and _env_file_result.changed) or
       (_config_copy_result is defined and _config_copy_result.changed) or
-      (_template_result is defined and _template_result.changed)
+      (_template_result is defined and _template_result.changed) or
+      (_template_glob_result is defined and _template_glob_result.changed)
   become: true

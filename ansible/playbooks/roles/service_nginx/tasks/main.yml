@@ -1,0 +1,98 @@
+- name: Write Cloudflare credentials file
+  copy:
+    dest: "{{ nginx.cloudflare_credentials_path }}"
+    mode: '0600'
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    content: |
+      dns_cloudflare_api_token = {{ cloudflare_dns_api_token }}
+  become: true
+
+- name: Ensure homelab docker network exists
+  ansible.builtin.shell: >
+    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab --subnet {{ docker_network_subnet }}
+  become: true
+
+- name: Ensure nginx logs directory exists
+  ansible.builtin.file:
+    path: "{{ nginx.logs_path }}"
+    state: directory
+    owner: "101"
+    group: "101"
+    mode: '0755'
+  become: true
+
+- name: Configure fail2ban nginx jails
+  ansible.builtin.template:
+    src: nginx-jail.conf.j2
+    dest: /etc/fail2ban/jail.d/nginx.conf
+    mode: '0644'
+  become: true
+  register: fail2ban_nginx_jail
+
+- name: Restart fail2ban if nginx jail changed
+  ansible.builtin.service:
+    name: fail2ban
+    state: restarted
+  become: true
+  when: fail2ban_nginx_jail.changed
+
+- name: Setup Nginx service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Nginx
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      CONF_PATH={{ nginx.config_path }}
+      HOSTNAME={{ external_hostname }}
+      CERTS_PATH={{ nginx.certs_path }}
+      LETSENCRYPT_LIB_PATH={{ nginx.letsencrypt_lib_path }}
+      CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
+      CLOUDFLARE_API_TOKEN={{ cloudflare_dns_api_token }}
+      LOGS_PATH={{ nginx.logs_path }}
+    template_globs:
+      - src_template_glob: common/*.conf.j2
+        dst_template_path_prefix: "{{ nginx.config_local_path }}/common"
+        file_mode: "0644"
+      - src_template_glob: sites-enabled/*.conf.j2
+        dst_template_path_prefix: "{{ nginx.config_local_path }}/sites-enabled"
+        file_mode: "0644"
+
+- name: Check if Let's Encrypt certificates exist for managed domains
+  stat:
+    path: "{{ nginx.certs_path }}/live/{{ domain }}/fullchain.pem"
+  register: letsencrypt_certs
+  loop: "{{ managed_domains }}"
+  loop_control:
+    loop_var: domain
+
+- name: Identify domains missing certificates
+  set_fact:
+    domains_missing_certs: "{{ letsencrypt_certs.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
+
+- name: Wait for certbot container to be ready
+  ansible.builtin.pause:
+    seconds: 5
+  when: domains_missing_certs | length > 0
+
+- name: Obtain Let's Encrypt certificates for missing domains
+  ansible.builtin.shell: >
+    docker exec certbot certbot certonly
+    --dns-cloudflare
+    --dns-cloudflare-credentials /etc/cloudflare.ini
+    --dns-cloudflare-propagation-seconds 60
+    -d {{ domain }}
+    -d "*.{{ domain }}"
+    --email "{{ admin_email }}"
+    --agree-tos
+    --non-interactive
+    {{ '--staging' if certbot_env == 'staging' else '' }}
+  become: true
+  become_user: "{{ service_user }}"
+  loop: "{{ domains_missing_certs }}"
+  loop_control:
+    loop_var: domain
+  when: domains_missing_certs | length > 0
+  register: certbot_result
+  failed_when: certbot_result.rc != 0
