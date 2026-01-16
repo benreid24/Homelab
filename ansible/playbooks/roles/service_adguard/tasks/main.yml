@@ -21,6 +21,15 @@
     mode: "0644"
   become: true
 
+- name: Create AdGuard work directory
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/AdGuard/work"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
 - name: Setup AdGuard service
   include_tasks: ../../shared_tasks/tasks/init_service.yml
   vars:
@@ -29,9 +38,10 @@
       WORK_PATH={{ services_config_path }}/AdGuard/work
       CONF_PATH={{ services_config_path }}/AdGuard/config
       TIMEZONE={{ timezone }}
-    config_copies:
-      - src_config_path: .
     templates:
       - src_template_path: AdGuardHome.yaml.j2
         dst_template_path: config/AdGuardHome.yaml
         file_mode: "0600"
+      - src_template_path: docker-compose.yml.j2
+        dst_template_path: docker-compose.yml
+        file_mode: "0644"

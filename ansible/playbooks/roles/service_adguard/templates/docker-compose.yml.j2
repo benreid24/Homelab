@@ -8,6 +8,9 @@ services:
       - "53:53/tcp"      # DNS
       - "53:53/udp"      # DNS
       - "853:853/tcp"    # DNS over TLS
+{% if adguard_expose_http is defined %}
+      - "80:80"
+{% endif %}
     volumes:
       - ${CONF_PATH}:/opt/adguardhome/conf
       - ${WORK_PATH}:/opt/adguardhome/work

@@ -152,11 +152,11 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites:
-    - domain: {{ external_hostname }}
-      answer: {{ host_ip }}
+    - domain: {{ root_domain }}
+      answer: {{ overseer_ip }}
       enabled: true
-    - domain: '*.{{ external_hostname }}'
-      answer: {{ host_ip }}
+    - domain: '*.{{ root_domain }}'
+      answer: {{ overseer_ip }}
       enabled: true
   safe_fs_patterns:
     - /opt/adguardhome/work/userfilters/*

@@ -8,11 +8,6 @@
       dns_cloudflare_api_token = {{ cloudflare_dns_api_token }}
   become: true
 
-- name: Ensure homelab docker network exists
-  ansible.builtin.shell: >
-    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab --subnet {{ docker_network_subnet }}
-  become: true
-
 - name: Ensure nginx logs directory exists
   ansible.builtin.file:
     path: "{{ nginx.logs_path }}"

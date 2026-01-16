@@ -10,3 +10,4 @@
     templates:
       - src_template_path: services.yaml.j2
         dst_template_path: config/config/services.yaml
+        file_mode: "0600"

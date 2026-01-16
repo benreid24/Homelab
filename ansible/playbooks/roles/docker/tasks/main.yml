@@ -33,3 +33,8 @@
     name: "{{ service_user}}"
     groups: docker
     append: yes
+
+- name: Ensure homelab docker network exists
+  ansible.builtin.shell: >
+    docker network inspect homelab >/dev/null 2>&1 || docker network create homelab --subnet {{ docker_network_subnet }}
+  become: true
