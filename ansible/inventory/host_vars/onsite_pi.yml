@@ -3,5 +3,6 @@ host_ip: "{{ onsite_pi_ip }}"
 
 primary_dns_ip: "{{ host_ip }}"
 secondary_dns_ip: "{{ overseer_ip }}"
-adguard_expose_http: true
 
+adguard_expose_http: true
+kuma_expose_http: true

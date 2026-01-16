@@ -36,7 +36,7 @@ layout:
         rows: 3
   Infrastructure:
     style: row
-    columns: 5
+    columns: 6
   BottomRow:
     header: false
     style: row
@@ -57,7 +57,7 @@ layout:
     Monitoring:
       style: row
       columns: 3
-  
+
 headerStyle: boxed
 background:
   image: /images/background.jpg

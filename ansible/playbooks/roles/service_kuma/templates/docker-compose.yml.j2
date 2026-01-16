@@ -5,6 +5,10 @@ services:
     restart: unless-stopped
     volumes:
       - ${DATA_PATH}:/app/data
+{% if kuma_expose_http is defined %}
+    ports:
+      - "3001:3001"
+{% endif %}
     networks:
       - homelab
 

@@ -6,6 +6,7 @@
     - common
     - docker
     - service_adguard
+    - service_kuma
 
 - name: Provision Overseer
   hosts: overseer
