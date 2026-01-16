@@ -1,0 +1,19 @@
+- name: Ensure Komodo backups directory exists
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Komodo/backups"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0700'
+  become: true
+
+- name: Setup Komodo service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Komodo
+    config_copies:
+      - src_config_path: .
+    templates:
+      - src_template_path: compose.env.j2
+        dst_template_path: .env
+        file_mode: "0600"
