@@ -11,19 +11,12 @@
   set_fact:
     domains_config: "{{ domains_config_list | to_json }}"
 
-- name: Write ddns .env file
-  copy:
-    dest: "{{ services_config_path }}/ddns/.env"
-    owner: "{{ service_user }}"
-    group: "{{ service_group }}"
-    mode: '0600'
-    content: |
+- name: Setup ddns service
+  import_tasks: ../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: ddns
+    config_copies:
+      - src_config_path: .
+    env_content: |
       DOMAINS={{ domains_config }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_ddns_api_token }}
-  become: true
-  register: ddns_config
-
-- name: Mark ddns for restart
-  set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) | union(['ddns']) }}"
-  when: ddns_config.changed

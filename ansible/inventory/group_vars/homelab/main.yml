@@ -12,7 +12,6 @@ extra_domains:
 services_config_path: /opt/homelab/service-configs
 services_data_path: "{{ data_path }}/service-data"
 enabled_services:
-  - ddns
   - HomeAssistant
   - Omada
   - Kuma
