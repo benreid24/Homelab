@@ -10,6 +10,7 @@
     - service_komodo
     - service_redbot
     - service_seafile
+    - service_immich
     # - services
     # - crons
     # - steam

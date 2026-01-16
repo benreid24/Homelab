@@ -1,24 +1,17 @@
----
-- name: Write Immich env file
-  copy:
-    dest: "{{ services_config_path }}/Immich/.env"
-    owner: "{{ service_user }}"
-    group: "{{ service_group }}"
-    mode: '0600'
-    content: |
+- name: Setup Immich service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Immich
+    env_content: |
       IMMICH_VERSION={{ immich.immich_version }}
       UPLOAD_LOCATION={{ services_data_path }}/Immich/library
       DB_DATA_LOCATION={{ services_data_path }}/Immich/database
+      CACHE_LOCATION={{ services_data_path }}/Immich/cache
       DB_HOSTNAME={{ immich.db_hostname }}
       DB_USERNAME={{ immich.db_username }}
       DB_DATABASE_NAME={{ immich.db_database_name }}
       DB_PASSWORD={{ immich_db_password }}
       REDIS_HOSTNAME={{ immich.redis_hostname }}
       EXTERNAL_PATH={{ seafile.clone_path }}
-  become: true
-  register: immich_config
-
-- name: Mark Immich for restart
-  set_fact:
-    services_to_restart: "{{ services_to_restart | default([]) | union(['Immich']) }}"
-  when: immich_config.changed
+    config_copies:
+      - src_config_path: .
