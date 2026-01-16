@@ -1,0 +1,9 @@
+- name: Setup Omada service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Omada
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      DATA_PATH={{ services_data_path }}/Omada
+      TIMEZONE={{ timezone }}

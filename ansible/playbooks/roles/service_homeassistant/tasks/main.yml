@@ -1,0 +1,9 @@
+- name: Setup HomeAssistant service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: HomeAssistant
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      CONFIG_PATH={{ homeassistant.conf_path }}
+      TIMEZONE={{ timezone }}
