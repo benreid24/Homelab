@@ -4,8 +4,8 @@
 
   roles:
     - common
-    - users
     - docker
+    - service_adguard
     - services
     - crons
     - steam

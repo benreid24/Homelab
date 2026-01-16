@@ -1,0 +1,37 @@
+---
+- name: Disable systemd-resolved to free port 53
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+  become: true
+
+- name: Remove resolv.conf symlink
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+  become: true
+
+- name: Create new resolv.conf for AdGuard
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver {{ host_ip }}
+      nameserver {{ secondary_host_ip }}
+    mode: "0644"
+  become: true
+
+- name: Setup AdGuard service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: AdGuard
+    env_content: |
+      WORK_PATH={{ services_config_path }}/AdGuard/work
+      CONF_PATH={{ services_config_path }}/AdGuard/config
+      TIMEZONE={{ timezone }}
+    config_copies:
+      - src_config_path: .
+    templates:
+      - src_template_path: AdGuardHome.yaml.j2
+        dst_template_path: config/AdGuardHome.yaml
+        file_mode: "0600"

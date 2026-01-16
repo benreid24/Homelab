@@ -21,3 +21,33 @@
     name: fail2ban
     enabled: yes
     state: started
+
+- name: Create homelab group
+  ansible.builtin.group:
+    name: "{{ service_group }}"
+
+- name: Create service user
+  ansible.builtin.user:
+    name: "{{ service_user }}"
+    group: "{{ service_group }}"
+    shell: /bin/bash
+    create_home: yes
+
+- name: Ensure homelab directory exists
+  ansible.builtin.file:
+    path: /opt/homelab
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: "Get service user info"
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ service_user }}"
+
+- name: "Set uid and gid facts"
+  ansible.builtin.set_fact:
+    service_uid: "{{ getent_passwd[service_user][1] }}"
+    service_gid: "{{ getent_passwd[service_user][2] }}"

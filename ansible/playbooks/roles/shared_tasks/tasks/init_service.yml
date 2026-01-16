@@ -1,0 +1,107 @@
+---
+# Reusable task to initialize service directories
+# Parameters:
+#   - service_name: Name of the service (required)
+#   - env_content: Content for .env file (optional)
+#   - config_copies: List of copies of form: (optional)
+#     - src_config_path: Path relative to calling role's files directory to copy from (required)
+#     - dst_config_path: Path relative to services_config_path/{{ service_name }} to copy to (optional)
+#     - directory_mode: Permission mode for created directories (optional, default: '0755')
+#     - file_mode: Permission mode for copied files (optional, default: '0644')
+#   - templates: List of templates of form: (optional)
+#     - src_template_path: Path relative to calling role's templates directory to template from (required)
+#     - dst_template_path: Path relative to services_config_path/{{ service_name }} to template to (required)
+#     - file_mode: Permission mode for templated files (optional, default: '0644')
+#     - directory_mode: Permission mode for parent directories (optional, default: '0755')
+
+- name: "Create {{ service_name }} config directory"
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/{{ service_name }}"
+    state: directory
+    mode: "{{ directory_mode | default('0755') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+
+- name: "Create {{ service_name }} data directory"
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/{{ service_name }}"
+    state: directory
+    mode: "{{ directory_mode | default('0755') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+
+- name: "Write {{ service_name }} env file"
+  ansible.builtin.copy:
+    dest: "{{ services_config_path }}/{{ service_name }}/.env"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0600"
+    content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      {{ env_content | default('') }}
+  when: env_content is defined
+  register: _env_file_result
+  become: true
+
+- name: "Copy {{ service_name }} config files"
+  ansible.builtin.copy:
+    src: "{{ config_copy.src_config_path }}/"
+    dest: "{{ services_config_path }}/{{ service_name }}/{{ config_copy.dst_config_path | default('') }}"
+    mode: "{{ config_copy.file_mode | default('0644') }}"
+    directory_mode: "{{ config_copy.directory_mode | default('0755') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  when: config_copies is defined
+  loop: "{{ config_copies | default([]) }}"
+  loop_control:
+    loop_var: config_copy
+  register: _config_copy_result
+  become: true
+
+- name: "Create parent directories for {{ service_name }} template files"
+  ansible.builtin.file:
+    path: "{{ services_config_path }}/{{ service_name }}/{{ template_item.dst_template_path | dirname }}"
+    state: directory
+    mode: "{{ template_item.directory_mode | default('0755') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  when:
+    - templates is defined
+    - template_item.dst_template_path | dirname != ''
+  loop: "{{ templates | default([]) }}"
+  loop_control:
+    loop_var: template_item
+  become: true
+
+- name: "Template {{ service_name }} config files"
+  ansible.builtin.template:
+    src: "{{ template_item.src_template_path }}"
+    dest: "{{ services_config_path }}/{{ service_name }}/{{ template_item.dst_template_path }}"
+    mode: "{{ template_item.file_mode | default('0644') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  when: templates is defined
+  loop: "{{ templates | default([]) }}"
+  loop_control:
+    loop_var: template_item
+  register: _template_result
+  become: true
+
+- name: "Check if {{ service_name }} docker-compose.yml exists"
+  ansible.builtin.stat:
+    path: "{{ services_config_path }}/{{ service_name }}/{{ docker_compose_path | default('') }}/docker-compose.yml"
+  register: _docker_compose_file
+
+- name: "Start {{ service_name }}"
+  ansible.builtin.shell:
+    chdir: "{{ services_config_path }}/{{ service_name }}/{{ docker_compose_path | default('') }}"
+    cmd: docker compose up -d --build
+  when:
+    - _docker_compose_file.stat.exists
+    - (_env_file_result is defined and _env_file_result.changed) or
+      (_config_copy_result is defined and _config_copy_result.changed) or
+      (_template_result is defined and _template_result.changed)
+  become: true
