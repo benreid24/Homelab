@@ -32,14 +32,14 @@
           - blocked
           - latency
   - AdGuard Secondary:
-      href: http://{{ secondary_host_ip }}
+      href: http://{{ onsite_pi_ip }}
       icon: https://dns.{{ external_hostname }}/assets/favicon.png
       description: Private DNS
       server: docker-socket
-      siteMonitor: http://{{ secondary_host_ip }}
+      siteMonitor: http://{{ onsite_pi_ip }}
       widget:
         type: adguard
-        url: http://{{ secondary_host_ip }}
+        url: http://{{ onsite_pi_ip }}
         username: admin
         password: {{ adguard_secondary_password }}
         fields:
@@ -256,13 +256,13 @@
         showStats: false
         widget:
           type: uptimekuma
-          url: http://{{ secondary_host_ip }}:3001/
+          url: http://{{ onsite_pi_ip }}:3001/
           slug: kuma-primary
     - Kuma Secondary:
-        href: http://{{ secondary_host_ip }}:3001/
+        href: http://{{ onsite_pi_ip }}:3001/
         icon: https://kuma.{{ external_hostname }}/favicon.ico
         description: Service monitoring and alarms
-        siteMonitor: http://{{ secondary_host_ip }}:3001/
+        siteMonitor: http://{{ onsite_pi_ip }}:3001/
         widget:
           type: uptimekuma
           url: https://kuma.{{ external_hostname }}

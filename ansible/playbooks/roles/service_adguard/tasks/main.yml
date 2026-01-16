@@ -16,8 +16,8 @@
   ansible.builtin.copy:
     dest: /etc/resolv.conf
     content: |
-      nameserver {{ host_ip }}
-      nameserver {{ secondary_host_ip }}
+      nameserver {{ primary_dns_ip }}
+      nameserver {{ secondary_dns_ip }}
     mode: "0644"
   become: true
 
