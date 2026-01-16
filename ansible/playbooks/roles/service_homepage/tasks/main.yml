@@ -1,0 +1,12 @@
+- name: Setup Homepage service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Homepage
+    config_copies:
+      - src_config_path: .
+    env_content: |
+      DATA_PATH={{ services_config_path }}/Homepage/config
+      HOSTNAME={{ external_hostname }}
+    templates:
+      - src_template_path: services.yaml.j2
+        dst_template_path: config/config/services.yaml

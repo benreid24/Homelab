@@ -11,8 +11,6 @@ extra_domains:
 
 services_config_path: /opt/homelab/service-configs
 services_data_path: "{{ data_path }}/service-data"
-enabled_services:
-  - Homepage
 
 crons_config_path: /opt/homelab/cron-configs
 crons_data_path: "{{ data_path }}/cron-data"

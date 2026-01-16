@@ -18,7 +18,7 @@
     - service_snapcast
     - service_msync
     - service_mealie
-    # - services
+    - service_homepage
     # - crons
     # - steam
     # - satisfactory
