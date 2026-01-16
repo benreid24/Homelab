@@ -14,10 +14,6 @@ services_data_path: "{{ data_path }}/service-data"
 
 crons_config_path: /opt/homelab/cron-configs
 crons_data_path: "{{ data_path }}/cron-data"
-enabled_crons:
-  - Certbot
-  - GithubMirror
-  - Backups
 
 seafile:
   clone_path: "{{ data_path }}/seafile-clone"

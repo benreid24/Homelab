@@ -19,7 +19,7 @@
       password={{ smb_password }}
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
   become: true
 
 - name: "Ensure onsite backup mount point exists"
@@ -28,7 +28,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Ensure offsite backup mount point exists"
@@ -37,7 +37,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Mount onsite backup share"
@@ -60,13 +60,22 @@
     boot: true
   become: true
 
+- name: "Ensure Backups cron config directory exists"
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/Backups"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
 - name: "Download borg binary"
   ansible.builtin.get_url:
     url: "https://github.com/borgbackup/borg/releases/download/1.4.3/borg-linux-glibc231-x86_64"
     dest: "{{ crons_config_path }}/Backups/borg"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Download restic binary"
@@ -75,7 +84,7 @@
     dest: "{{ crons_config_path }}/Backups/restic.bz2"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Decompress restic binary"
@@ -90,7 +99,7 @@
     path: "{{ crons_config_path }}/Backups/restic"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Ensure onsite backup destination directory exists"
@@ -99,16 +108,16 @@
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: "Template onsite backup script"
   ansible.builtin.template:
-    src: "Backups/borg_backup.sh.j2"
+    src: "borg_backup.sh.j2"
     dest: "{{ crons_config_path }}/Backups/onsite.sh"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   vars:
     backup_type: "onsite"
     borg: "{{ crons_config_path }}/Backups/borg"
@@ -123,11 +132,11 @@
 
 - name: "Template offsite backup script"
   ansible.builtin.template:
-    src: "Backups/restic_backup.sh.j2"
+    src: "restic_backup.sh.j2"
     dest: "{{ crons_config_path }}/Backups/offsite.sh"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   vars:
     backup_type: "offsite"
     restic: "{{ crons_config_path }}/Backups/restic"
@@ -148,7 +157,7 @@
       echo "{{ borg_backup_passphrase }}"
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
   become: true
 
 - name: "Write restic backup passkey command file"
@@ -159,7 +168,7 @@
       echo "{{ restic_backup_passphrase }}"
     owner: root
     group: root
-    mode: '0700'
+    mode: "0700"
   become: true
 
 - name: "Ensure onsite backup repo is initialized"

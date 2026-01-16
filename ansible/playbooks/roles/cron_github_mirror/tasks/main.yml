@@ -6,6 +6,15 @@
   become: true
   become_user: "{{ service_user }}"
 
+- name: Ensure Github mirror directory exists
+  ansible.builtin.file:
+    path: "{{ github_mirror.repo_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
 - name: Perform initial clone of missing Github repositories
   ansible.builtin.git:
     repo: "{{ repo.repo_url }}"
@@ -17,10 +26,19 @@
   loop_control:
     loop_var: repo
 
+- name: Ensure Github Mirror cron config directory exists
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/GithubMirror"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
 - name: Make fetch script executable
   ansible.builtin.file:
     path: "{{ crons_config_path }}/GithubMirror/fetch.sh"
-    mode: '0755'
+    mode: "0755"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
   become: true

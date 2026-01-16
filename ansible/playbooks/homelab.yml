@@ -19,6 +19,7 @@
     - service_msync
     - service_mealie
     - service_homepage
-    # - crons
-    # - steam
-    # - satisfactory
+    - cron_backups
+    - cron_github_mirror
+    - steam
+    - satisfactory

@@ -96,3 +96,11 @@
   when: domains_missing_certs | length > 0
   register: certbot_result
   failed_when: certbot_result.rc != 0
+
+- name: Certbot renewal cron job
+  ansible.builtin.cron:
+    name: "Renew Let's Encrypt certificates"
+    minute: "13"
+    hour: "3"
+    job: "docker exec certbot certbot renew --quiet && docker exec nginx nginx -s reload"
+    user: "{{ service_user }}"
