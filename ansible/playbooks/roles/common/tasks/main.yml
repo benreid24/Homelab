@@ -49,5 +49,8 @@
 
 - name: "Set uid and gid facts"
   ansible.builtin.set_fact:
-    service_uid: "{{ getent_passwd[service_user][1] }}"
-    service_gid: "{{ getent_passwd[service_user][2] }}"
+    service_uid: "{{ ansible_facts.getent_passwd[service_user][1] }}"
+    service_gid: "{{ ansible_facts.getent_passwd[service_user][2] }}"
+
+- name: "Add SSH keys for {{ ansible_user }} user"
+  import_tasks: add_keys.yml

@@ -1,0 +1,17 @@
+---
+- name: Find all public keys in ssh_keys directory
+  ansible.builtin.find:
+    paths: "{{ role_path }}/files/ssh_keys"
+    patterns: "*.pub"
+  delegate_to: localhost
+  connection: local
+  become: false
+  register: ssh_key_files
+
+- name: Add public keys to authorized_keys
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ lookup('file', item.path) }}"
+  loop: "{{ ssh_key_files.files }}"
+  when: ssh_key_files.files | length > 0
