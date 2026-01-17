@@ -8,3 +8,6 @@ all:
         onsite_pi:
           ansible_host: 192.168.0.69
           ansible_user: ben
+        offsite_pi:
+          ansible_host: 192.168.0.42
+          ansible_user: ben

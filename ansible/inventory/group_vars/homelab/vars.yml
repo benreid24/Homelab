@@ -9,6 +9,9 @@ overseer_ip: 192.168.0.100
 onsite_pi_ip: 192.168.0.69
 offsite_pi_ip: 192.168.0.42
 
+primary_dns_ip: "{{ overseer_ip }}"
+secondary_dns_ip: "{{ onsite_pi_ip }}"
+
 extra_domains:
   - sirgeorgelordofthevoid.com
 

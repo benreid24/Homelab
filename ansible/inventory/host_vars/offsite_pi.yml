@@ -1,0 +1,11 @@
+data_path: /opt/homelab/data
+host_ip: "{{ offsite_pi_ip }}"
+
+samba_disk_uuid: "F46C8FCE6C8F8A56"
+samba_mount_point: "/mnt/backup-disk"
+samba_share_name: "offsite-drive"
+samba_share_path: "/mnt/backup-disk"
+samba_user: "{{ smb_username }}"
+samba_password: "{{ smb_password }}"
+samba_create_mask: "0755"
+samba_directory_mask: "0755"

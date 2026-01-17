@@ -1,3 +1,11 @@
+- name: Provision Offsite Pi
+  hosts: offsite_pi
+  become: true
+
+  roles:
+    - common
+    - smb_host
+
 - name: Provision Onsite Pi
   hosts: onsite_pi
   become: true
