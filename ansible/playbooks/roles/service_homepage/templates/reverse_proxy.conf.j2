@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/server_common.conf;
+    server_name {{ external_hostname }};
+    
+    location / {
+        set $upstream http://homepage:3000;
+        proxy_pass $upstream;
+        include /etc/nginx/proxy_common.conf;
+    }
+}
+
