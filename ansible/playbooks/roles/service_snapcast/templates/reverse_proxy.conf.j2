@@ -1,5 +1,17 @@
 server {
     include /etc/nginx/server_common.conf;
+    server_name ampd.{{ external_hostname }};
+
+    location / {
+        set $upstream http://ampd:8080;
+        proxy_pass $upstream;
+        include /etc/nginx/proxy_common.conf;
+        include /etc/nginx/internal_only.conf;
+    }
+}
+
+server {
+    include /etc/nginx/server_common.conf;
     server_name snapcast.{{ external_hostname }};
 
     location / {

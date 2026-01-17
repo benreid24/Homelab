@@ -34,6 +34,7 @@
   include_tasks: ../../shared_tasks/tasks/init_service.yml
   vars:
     service_name: AdGuard
+    reverse_proxy: reverse_proxy.conf.j2
     env_content: |
       WORK_PATH={{ services_config_path }}/AdGuard/work
       CONF_PATH={{ services_config_path }}/AdGuard/config

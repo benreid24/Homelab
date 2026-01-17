@@ -99,3 +99,4 @@
     hour: "3"
     job: "docker exec certbot certbot renew --quiet && docker exec nginx nginx -s reload"
     user: "{{ service_user }}"
+

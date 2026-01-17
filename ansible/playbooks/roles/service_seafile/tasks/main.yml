@@ -17,6 +17,7 @@
   include_tasks: ../../shared_tasks/tasks/init_service.yml
   vars:
     service_name: Seafile
+    reverse_proxy: reverse_proxy.conf.j2
     skip_chown_data: true
     env_content: |
       DB_PASSWORD={{ seafile_db_password }}

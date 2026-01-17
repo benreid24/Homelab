@@ -20,6 +20,7 @@
 #     - dst_template_path: Path prefix relative to services_config_path/{{ service_name }} to template to (required)
 #     - file_mode: Permission mode for templated files (optional, default: '0644')
 #     - directory_mode: Permission mode for parent directories (optional, default: '0755')
+#   - reverse_proxy: Template path to reverse proxy config (optional)
 
 - name: "Create {{ service_name }} config directory"
   ansible.builtin.file:
@@ -158,3 +159,28 @@
       (_template_result is defined and _template_result.changed) or
       (_template_glob_result is defined and _template_glob_result.changed)
   become: true
+
+- name: Ensure reverse proxy sites directory exists
+  ansible.builtin.file:
+    path: "{{ nginx.sites_enabled_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+  when:
+    - reverse_proxy is defined
+    - "'service_nginx' in ansible_play_role_names"
+
+- name: "Template {{ service_name }} reverse proxy config"
+  ansible.builtin.template:
+    src: "{{ reverse_proxy }}"
+    dest: "{{ nginx.sites_enabled_path }}/{{ service_name }}.conf"
+    mode: "0644"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+  when:
+    - reverse_proxy is defined
+    - "'service_nginx' in ansible_play_role_names"
+  notify: restart nginx

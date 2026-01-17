@@ -38,6 +38,7 @@ immich:
 nginx:
   config_local_path: config
   config_path: "{{ services_config_path }}/Nginx/config"
+  sites_enabled_path: "{{ services_config_path }}/Nginx/config/sites-enabled"
   certs_path: "{{ services_data_path }}/Nginx/certs"
   letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
   cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
