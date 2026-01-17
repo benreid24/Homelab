@@ -5,6 +5,7 @@
   roles:
     - common
     - docker
+    - smb_host
     - service_adguard
     - service_kuma
 

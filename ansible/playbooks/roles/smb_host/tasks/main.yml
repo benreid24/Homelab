@@ -1,0 +1,65 @@
+- name: Install Samba packages
+  ansible.builtin.apt:
+    name:
+      - samba
+      - samba-common-bin
+      - cifs-utils
+    state: present
+    update_cache: yes
+
+- name: Create mount point directory
+  ansible.builtin.file:
+    path: "{{ samba_mount_point }}"
+    state: directory
+    mode: "0755"
+
+- name: Add fstab entry for NTFS disk
+  ansible.posix.mount:
+    path: "{{ samba_mount_point }}"
+    src: "UUID={{ samba_disk_uuid }}"
+    fstype: ntfs-3g
+    opts: defaults,auto,users,rw,nofail
+    state: mounted
+
+- name: Ensure Samba share directory exists
+  ansible.builtin.file:
+    path: "{{ samba_share_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Create Samba user (system user)
+  ansible.builtin.user:
+    name: "{{ samba_user }}"
+    state: present
+    create_home: yes
+
+- name: Add user to Samba database
+  ansible.builtin.shell: |
+    (echo '{{ samba_password }}'; echo '{{ samba_password }}') | smbpasswd -s -a {{ samba_user }}
+  args:
+    creates: /var/lib/samba/private/{{ samba_user }}.created
+  no_log: true
+
+- name: Mark Samba user as created
+  ansible.builtin.file:
+    path: /var/lib/samba/private/{{ samba_user }}.created
+    state: touch
+    mode: "0600"
+
+- name: Enable Samba user
+  ansible.builtin.shell: smbpasswd -e {{ samba_user }}
+  changed_when: false
+
+- name: Configure Samba share
+  ansible.builtin.blockinfile:
+    path: /etc/samba/smb.conf
+    block: "{{ lookup('template', 'smb_share.conf.j2') }}"
+    marker: "# {mark} ANSIBLE MANAGED SHARE - {{ samba_share_name }}"
+    create: yes
+  notify: restart samba
+
+- name: Enable and start Samba service
+  ansible.builtin.service:
+    name: smbd
+    enabled: true
+    state: started
