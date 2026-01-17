@@ -1,6 +1,6 @@
 {% for domain in extra_domains %}
 server {
-    include /etc/nginx/server_common.conf;
+    include /etc/nginx/common/server_common.conf;
     server_name {{ domain }};
     
     ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;

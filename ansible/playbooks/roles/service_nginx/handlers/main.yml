@@ -1,4 +1,5 @@
 - name: restart nginx
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
+  ansible.builtin.shell:
+    chdir: "{{ services_config_path }}/Nginx"
+    cmd: docker compose restart nginx
+  become: true

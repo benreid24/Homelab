@@ -20,11 +20,8 @@ services:
     volumes:
       - ${CERTS_PATH}:/etc/letsencrypt
       - ${LETSENCRYPT_LIB_PATH}:/var/lib/letsencrypt
+      - ${LOGS_PATH}/certbot:/var/log/letsencrypt
       - ${CLOUDFLARE_CREDENTIALS_PATH}:/etc/cloudflare.ini:ro
-    user: "${PUID}:${PGID}"
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
     # Don't auto-start, run manually
     entrypoint: /bin/sh
     command: -c "trap exit TERM; while :; do sleep 1; done"

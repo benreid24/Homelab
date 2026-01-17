@@ -6,14 +6,15 @@ service_group: homelab
 logs_path: /opt/homelab/logs
 
 overseer_ip: 192.168.0.100
+overseer_hostname: "{{ root_domain }}"
 onsite_pi_ip: 192.168.0.69
+onsite_pi_hostname: "pi.{{ root_domain }}"
 offsite_pi_ip: 192.168.0.42
 
 primary_dns_ip: "{{ overseer_ip }}"
 secondary_dns_ip: "{{ onsite_pi_ip }}"
 
-extra_domains:
-  - sirgeorgelordofthevoid.com
+extra_domains: []
 
 services_config_path: /opt/homelab/service-configs
 services_data_path: "{{ data_path }}/service-data"

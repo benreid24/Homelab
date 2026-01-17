@@ -1,7 +1,7 @@
 server {
     listen 80 default_server;
     listen 443 ssl default_server;
-    include /etc/nginx/ssl_common.conf;
+    include /etc/nginx/common/ssl_common.conf;
     server_name _;
     
     return 403;

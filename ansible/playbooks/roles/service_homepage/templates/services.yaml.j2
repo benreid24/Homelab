@@ -32,14 +32,13 @@
           - blocked
           - latency
   - AdGuard Secondary:
-      href: http://{{ onsite_pi_ip }}
-      icon: https://dns.{{ external_hostname }}/assets/favicon.png
+      href: https://dns.{{ onsite_pi_hostname }}
+      icon: https://dns.{{ onsite_pi_hostname }}/assets/favicon.png
       description: Private DNS
-      server: docker-socket
-      siteMonitor: http://{{ onsite_pi_ip }}
+      siteMonitor: https://dns.{{ onsite_pi_hostname }}
       widget:
         type: adguard
-        url: http://{{ onsite_pi_ip }}
+        url: https://dns.{{ onsite_pi_hostname }}
         username: admin
         password: {{ adguard_password }}
         fields:

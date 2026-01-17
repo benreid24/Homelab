@@ -1,7 +1,16 @@
+- name: Ensure nginx Cloudflare credentials directory exists
+  ansible.builtin.file:
+    path: "{{ nginx.cloudflare_credentials_path | dirname }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
 - name: Write Cloudflare credentials file
   copy:
     dest: "{{ nginx.cloudflare_credentials_path }}"
-    mode: '0600'
+    mode: "0600"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     content: |
@@ -14,14 +23,14 @@
     state: directory
     owner: "101"
     group: "101"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: Configure fail2ban nginx jails
   ansible.builtin.template:
     src: nginx-jail.conf.j2
     dest: /etc/fail2ban/jail.d/nginx.conf
-    mode: '0644'
+    mode: "0644"
   become: true
   register: fail2ban_nginx_jail
 
@@ -64,7 +73,7 @@
 
 - name: Identify domains missing certificates
   set_fact:
-    domains_missing_certs: "{{ letsencrypt_certs.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
+    domains_missing_certs: "{{ letsencrypt_certs.results | selectattr('stat.exists', 'equalto', false) | map(attribute='domain') | list }}"
 
 - name: Wait for certbot container to be ready
   ansible.builtin.pause:
@@ -99,4 +108,3 @@
     hour: "3"
     job: "docker exec certbot certbot renew --quiet && docker exec nginx nginx -s reload"
     user: "{{ service_user }}"
-

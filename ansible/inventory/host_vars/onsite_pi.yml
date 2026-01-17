@@ -1,10 +1,14 @@
 data_path: /opt/homelab/data
+
+external_hostname: "{{ onsite_pi_hostname }}"
 host_ip: "{{ onsite_pi_ip }}"
+
+managed_domains: "{{ [external_hostname] }}"
+certbot_env: prod
 
 primary_dns_ip: "{{ host_ip }}"
 secondary_dns_ip: "{{ overseer_ip }}"
 
-adguard_expose_http: true
 kuma_expose_http: true
 
 samba_disk_uuid: "085AD8EF5AD8DA90"

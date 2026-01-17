@@ -1,23 +1,23 @@
 server {
-    include /etc/nginx/server_common.conf;
+    include /etc/nginx/common/server_common.conf;
     server_name msync.{{ external_hostname }};
 
     location / {
         set $upstream http://msync:3000;
         proxy_pass $upstream;
-        include /etc/nginx/proxy_common.conf;
-        include /etc/nginx/internal_only.conf;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
     }
 }
 
 server {
-    include /etc/nginx/server_common.conf;
+    include /etc/nginx/common/server_common.conf;
     server_name syncthing-music.{{ external_hostname }};
 
     location / {
         set $upstream http://msync-syncthing:8384;
         proxy_pass $upstream;
-        include /etc/nginx/proxy_common.conf;
-        include /etc/nginx/internal_only.conf;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
     }
 }

@@ -1,12 +1,16 @@
-external_hostname: "{{ root_domain }}"
-managed_domains: "{{ [external_hostname] + extra_domains }}"
-data_path: /mnt/data/homelab/data
-certbot_env: prod
-backup_dst_path: "/homelab-backups"
-spotify_audio_name: "Home%20Audio"
-spotify_audio_name_pretty: "Home Audio"
-prompt_to_restart_services: true
 host_ip: "{{ overseer_ip }}"
+external_hostname: "{{ overseer_hostname }}"
 
 primary_dns_ip: "{{ host_ip }}"
 secondary_dns_ip: "{{ onsite_pi_ip }}"
+
+extra_domains:
+  - sirgeorgelordofthevoid.com
+managed_domains: "{{ [external_hostname] + extra_domains }}"
+certbot_env: prod
+
+data_path: /mnt/data/homelab/data
+backup_dst_path: "/homelab-backups"
+
+spotify_audio_name: "Home%20Audio"
+spotify_audio_name_pretty: "Home Audio"

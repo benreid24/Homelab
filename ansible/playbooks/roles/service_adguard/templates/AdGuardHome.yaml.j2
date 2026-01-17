@@ -152,8 +152,14 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites:
-    - domain: {{ root_domain }}
+    - domain: {{ overseer_hostname }}
       answer: {{ overseer_ip }}
+      enabled: true
+    - domain: {{ onsite_pi_hostname }}
+      answer: {{ onsite_pi_ip }}
+      enabled: true
+    - domain: '*.{{ onsite_pi_hostname }}'
+      answer: {{ onsite_pi_ip }}
       enabled: true
     - domain: '*.{{ root_domain }}'
       answer: {{ overseer_ip }}

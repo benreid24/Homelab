@@ -1,10 +1,10 @@
 server {
-    include /etc/nginx/server_common.conf;
+    include /etc/nginx/common/server_common.conf;
     server_name ha.{{ external_hostname }};
 
     location / {
         set $upstream http://homeassistant:8123;
         proxy_pass $upstream;
-        include /etc/nginx/proxy_common.conf;
+        include /etc/nginx/common/proxy_common.conf;
     }
 }
