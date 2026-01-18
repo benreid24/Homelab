@@ -3,6 +3,7 @@ services:
     image: ghcr.io/mealie-recipes/mealie:v3.9.2 
     container_name: mealie
     restart: unless-stopped
+    user: "${PUID}:${PGID}"
     deploy:
       resources:
         limits:
