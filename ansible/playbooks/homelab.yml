@@ -17,6 +17,7 @@
     - service_nginx
     - service_adguard
     - service_kuma
+    - service_komodo
 
 - name: Provision Overseer
   hosts: overseer

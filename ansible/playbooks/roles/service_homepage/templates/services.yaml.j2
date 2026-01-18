@@ -261,13 +261,13 @@
         showStats: false
         widget:
           type: uptimekuma
-          url: http://{{ onsite_pi_ip }}:3001/
+          url: https://kuma.{{ onsite_pi_hostname }}/
           slug: kuma-primary
     - Kuma Secondary:
-        href: http://{{ onsite_pi_ip }}:3001/
-        icon: https://kuma.{{ external_hostname }}/favicon.ico
+        href: https://kuma.{{ onsite_pi_hostname }}/
+        icon: https://kuma.{{ onsite_pi_hostname }}/favicon.ico
         description: Service monitoring and alarms
-        siteMonitor: http://{{ onsite_pi_ip }}:3001/
+        siteMonitor: https://kuma.{{ onsite_pi_hostname }}/
         widget:
           type: uptimekuma
           url: https://kuma.{{ external_hostname }}

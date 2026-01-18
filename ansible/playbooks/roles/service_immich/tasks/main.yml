@@ -3,6 +3,7 @@
   vars:
     service_name: Immich
     reverse_proxy: reverse_proxy.conf.j2
+    skip_chown_data: true
     env_content: |
       IMMICH_VERSION={{ immich.immich_version }}
       UPLOAD_LOCATION={{ services_data_path }}/Immich/library

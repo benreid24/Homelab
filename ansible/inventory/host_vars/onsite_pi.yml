@@ -9,7 +9,7 @@ certbot_env: prod
 primary_dns_ip: "{{ host_ip }}"
 secondary_dns_ip: "{{ overseer_ip }}"
 
-kuma_expose_http: true
+komodo_deployment_mode: periphery-only
 
 samba_disk_uuid: "085AD8EF5AD8DA90"
 samba_mount_point: "/media/backup-disk"

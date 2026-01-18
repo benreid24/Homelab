@@ -1,5 +1,16 @@
 server {
     include /etc/nginx/common/server_common.conf;
+
+{% if komodo_deployment_mode == 'periphery-only' %}
+    server_name komo-periphery.{{ external_hostname }};
+
+    location / {
+        set $upstream http://komodo-periphery:8120;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
+    }
+{% else %}
     server_name komo.{{ external_hostname }};
 
     location / {
@@ -8,4 +19,5 @@ server {
         include /etc/nginx/common/proxy_common.conf;
         include /etc/nginx/common/internal_only.conf;
     }
+{% endif %}
 }

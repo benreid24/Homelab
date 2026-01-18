@@ -11,6 +11,8 @@ services:
   mongo:
     container_name: komodo-mongo
     image: mongo
+    profiles:
+      - full
     labels:
       komodo.skip: # Prevent Komodo from stopping with StopAllContainers
     command: --quiet --wiredTigerCacheSizeGB 0.25
@@ -26,10 +28,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${KOMODO_DB_PASSWORD}
     networks:
       - komodo-net
-  
+
   core:
     container_name: komodo
     image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
+    profiles:
+      - full
     labels:
       komodo.skip: # Prevent Komodo from stopping with StopAllContainers
     restart: unless-stopped
@@ -52,7 +56,7 @@ services:
       # - /path/to/syncs:/syncs
       ## Optionally mount a custom core.config.toml
       # - /path/to/core.config.toml:/config/config.toml
-    ## Allows for systemd Periphery connection at 
+    ## Allows for systemd Periphery connection at
     ## "https://host.docker.internal:8120"
     # extra_hosts:
     #   - host.docker.internal:host-gateway
@@ -61,11 +65,14 @@ services:
       - komodo-net
 
   ## Deploy Periphery container using this block,
-  ## or deploy the Periphery binary with systemd using 
+  ## or deploy the Periphery binary with systemd using
   ## https://github.com/moghtech/komodo/tree/main/scripts
   periphery:
     container_name: komodo-periphery
     image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-latest}
+    profiles:
+      - full
+      - periphery-only
     labels:
       komodo.skip: # Prevent Komodo from stopping with StopAllContainers
     restart: unless-stopped
