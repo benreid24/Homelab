@@ -4,7 +4,7 @@
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0700'
+    mode: "0700"
   become: true
 
 - name: Setup Komodo service

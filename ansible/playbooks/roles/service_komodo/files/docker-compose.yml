@@ -89,7 +89,7 @@ services:
       - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
       - ${SERVICES_PATH}:/service-configs:ro
     networks:
-      - komodo-net
+      - ${PERIPHERY_NETWORK}
 
 volumes:
   # Mongo
