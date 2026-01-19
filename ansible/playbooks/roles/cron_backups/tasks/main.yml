@@ -193,7 +193,7 @@
 - name: "Onsite backup cron job"
   ansible.builtin.cron:
     name: "Onsite Backup"
-    hour: "*/2"
+    hour: "*/1"
     minute: "15"
     job: "{{ crons_config_path }}/Backups/onsite.sh"
     user: root
@@ -202,8 +202,8 @@
 - name: "Offsite backup cron job"
   ansible.builtin.cron:
     name: "Offsite Backup"
-    hour: "1,13"
-    minute: "15"
+    hour: "*/1"
+    minute: "45"
     job: "{{ crons_config_path }}/Backups/offsite.sh"
     user: root
   become: true
