@@ -8,7 +8,7 @@ backups:
       mount_path: "/mnt/backup-onsite"
 
       start_monitor_a: "https://kuma.{{ onsite_pi_hostname }}/api/push/mtaiYPr8ZMEwQEtDQsPxFmPS5JUCpQgZ?status=up&msg=OK&ping="
-      start_monitor_b: "https://kuma.{{ overseer_hostname }}/api/push/qyOdGlZL1l1Ew0i699vjPA4xDMJqzC6Q?status=up&msg=OK&ping="
+      start_monitor_b: "https://kuma.{{ overseer_hostname }}/api/push/IOmy1Ktinig9TjEx4x1eR8NYLFq4DgUG?status=up&msg=OK&ping="
       end_monitor_a: "https://kuma.{{ overseer_hostname }}/api/push/o7vgqb2AIxxda1Jyg23xVJt1PdeBNTdD?status=up&msg=OK"
       end_monitor_b: "https://kuma.{{ onsite_pi_hostname }}/api/push/LQpDNOkCyKpq2SU8r7vbZRKqGsmfOSUc?status=up&msg=OK"
 
