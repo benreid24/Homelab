@@ -1,0 +1,95 @@
+---
+
+- name: "Ensure backup mount point exists"
+  ansible.builtin.file:
+    path: "{{ backup.mount_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+
+- name: "Mount backup SMB share"
+  ansible.posix.mount:
+    path: "{{ backup.mount_path }}"
+    src: "{{ backup.server_path }}"
+    fstype: cifs
+    opts: "credentials=/etc/smb-credentials,file_mode=0755,dir_mode=0755,uid={{ service_uid }},gid={{ service_gid }}"
+    state: mounted
+    boot: true
+  become: true
+
+- name: "Ensure backup destination directory exists"
+  ansible.builtin.file:
+    path: "{{ backup.mount_path }}{{ backup_dst_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
+- name: "Template backup script"
+  ansible.builtin.template:
+    src: "restic_backup.sh.j2"
+    dest: "{{ crons_config_path }}/Backups/{{ backup.name }}.sh"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  vars:
+    backup_type: "{{ backup.name }}"
+    restic: "{{ crons_config_path }}/Backups/restic"
+    src_path: "{{ data_path }}"
+    dst_path: "{{ backup.mount_path }}{{ backup_dst_path }}"
+    log_path: "{{ logs_path }}/backup_{{ backup.name }}.log"
+    start_monitor_a: "{{ backup.start_monitor_a }}"
+    start_monitor_b: "{{ backup.start_monitor_b }}"
+    end_monitor_a: "{{ backup.end_monitor_a }}"
+    end_monitor_b: "{{ backup.end_monitor_b }}"
+  become: true
+
+- name: "Template backup integrity script"
+  ansible.builtin.template:
+    src: "restic_check.sh.j2"
+    dest: "{{ crons_config_path }}/Backups/{{ backup.name }}_check.sh"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  vars:
+    backup_type: "{{ backup.name }}"
+    restic: "{{ crons_config_path }}/Backups/restic"
+    repo_path: "{{ backup.mount_path }}{{ backup_dst_path }}"
+    log_path: "{{ logs_path }}/backup_{{ backup.name }}_check.log"
+    start_monitor: "{{ backup.check_start_monitor }}"
+    end_monitor: "{{ backup.check_end_monitor }}"
+  become: true
+
+- name: "Ensure backup repo is initialized"
+  ansible.builtin.shell: >
+    {{ crons_config_path }}/Backups/restic init
+  environment:
+    RESTIC_PASSWORD_COMMAND: "{{ crons_config_path }}/Backups/restic_passcommand.sh"
+    RESTIC_REPOSITORY: "{{ backup.mount_path }}{{ backup_dst_path }}"
+  args:
+    creates: "{{ backup.mount_path }}{{ backup_dst_path }}/config"
+  become: true
+
+- name: "Register backup cron job"
+  ansible.builtin.cron:
+    name: "{{ backup.name }} Backup"
+    hour: "*/1"
+    minute: "{{ backup.cron_minute }}"
+    job: "{{ crons_config_path }}/Backups/{{ backup.name }}.sh"
+    user: root
+  become: true
+  when: backup.cron_minute is defined
+
+- name: "Register backup integrity check cron job"
+  ansible.builtin.cron:
+    name: "{{ backup.name }} Backup Integrity Check"
+    day: "*"
+    hour: "*/3"
+    minute: "{{ backup.integrity_cron_minute }}"
+    job: "{{ crons_config_path }}/Backups/{{ backup.name }}_check.sh"
+    user: root
+  become: true
+  when: backup.integrity_cron_minute is defined

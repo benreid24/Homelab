@@ -1,0 +1,27 @@
+seafile:
+  clone_path: "{{ data_path }}/seafile-clone"
+  # from https://customer.seafile.com/downloads
+  docker_username: seafile
+
+msync_music_path: "{{ seafile.clone_path }}/Music"
+
+immich:
+  immich_version: release
+  db_hostname: immich_postgres
+  db_username: postgres
+  db_database_name: immich
+  redis_hostname: immich_redis
+
+nginx:
+  config_local_path: config
+  config_path: "{{ services_config_path }}/Nginx/config"
+  sites_enabled_path: "{{ services_config_path }}/Nginx/config/sites-enabled"
+  certs_path: "{{ services_data_path }}/Nginx/certs"
+  letsencrypt_lib_path: "{{ services_data_path }}/Nginx/letsencrypt"
+  cloudflare_credentials_path: "{{ services_config_path }}/Nginx/cloudflare.ini"
+  logs_path: "{{ logs_path }}/nginx"
+
+homeassistant:
+  conf_path: "{{ services_data_path }}/HomeAssistant/config"
+
+satisfactory_saves_path: "{{ data_path }}/satisfactory-saves"

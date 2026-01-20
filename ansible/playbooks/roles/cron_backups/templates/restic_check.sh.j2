@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Redirect all output to both log file and console
+exec > >(tee -a {{ log_path }}) 2>&1
+
+info() { printf "\n%s %s\n\n" "$( date )" "$*" >&2; }
+trap 'echo $( date ) Backup integrity check interrupted >&2; exit 2' INT TERM
+
+info "Starting {{ backup_type }} backup integrity check"
+
+sudo mount -a || \
+    info "Warning: Could not mount all filesystems"
+
+curl -fsS {{ start_monitor }} || \
+    info "Warning: Could not reach start monitor"
+
+export RESTIC_PASSWORD_COMMAND="{{ crons_config_path }}/Backups/restic_passcommand.sh"
+export RESTIC_REPOSITORY={{ repo_path }}
+export RESTIC_HOST=$(hostname)
+
+# Track which subset to check (1-20), cycling through all over 20 days
+STATE_FILE="{{ crons_config_path }}/Backups/restic_check_index_{{ backup_type }}.txt"
+
+# Read current index, default to 1 if file doesn't exist
+if [ -f "$STATE_FILE" ]; then
+    index=$(cat "$STATE_FILE")
+    # Validate index is a number between 1-20
+    if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 1 ] || [ "$index" -gt 20 ]; then
+        index=1
+    fi
+else
+    index=1
+fi
+
+info "Checking data subset $index/20"
+
+{{ restic }} check --read-data-subset=$index/20
+
+# Calculate next index (wrap from 20 to 1)
+next_index=$((index % 20 + 1))
+echo "$next_index" > "$STATE_FILE"
+
+check_exit=$?
+
+if [ ${check_exit} -eq 0 ]; then
+    info "Backup integrity check finished successfully"
+
+    curl -fsS "{{ end_monitor }}" || \
+        info "Warning: Could not reach end monitor"
+else
+    info "Backup integrity check failed"
+fi
