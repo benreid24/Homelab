@@ -36,17 +36,18 @@ info "Checking data subset $index/20"
 
 {{ restic }} check --read-data-subset=$index/20
 
-# Calculate next index (wrap from 20 to 1)
-next_index=$((index % 20 + 1))
-echo "$next_index" > "$STATE_FILE"
-
 check_exit=$?
 
 if [ ${check_exit} -eq 0 ]; then
     info "Backup integrity check finished successfully"
 
+    # Calculate next index (wrap from 20 to 1)
+    next_index=$((index % 20 + 1))
+    echo "$next_index" > "$STATE_FILE"
+
     curl -fsS "{{ end_monitor }}" || \
         info "Warning: Could not reach end monitor"
 else
     info "Backup integrity check failed"
+    exit 1
 fi
