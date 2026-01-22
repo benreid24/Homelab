@@ -1,5 +1,6 @@
 data_path: /opt/homelab/data
 
+pretty_hostname: Onsite Pi
 external_hostname: "{{ onsite_pi_hostname }}"
 host_ip: "{{ onsite_pi_ip }}"
 
@@ -11,10 +12,10 @@ secondary_dns_ip: "{{ overseer_ip }}"
 
 komodo_deployment_mode: periphery-only
 
-samba_disk_uuid: "085AD8EF5AD8DA90"
-samba_mount_point: "/media/backup-disk"
+samba_disk_uuid: "7A0A96B6499D1C74"
+samba_mount_point: "/mnt/backup-disk"
 samba_share_name: "WOGH"
-samba_share_path: "/media/backup-disk/Share"
+samba_share_path: "/mnt/backup-disk/Share"
 samba_user: "{{ smb_username }}"
 samba_password: "{{ smb_password }}"
 samba_create_mask: "0755"

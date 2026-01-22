@@ -1,0 +1,6 @@
+monitored_endpoints:
+  - name: "Gatus {{ pretty_hostname }}"
+    url: "https://gatus.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"

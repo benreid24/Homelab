@@ -11,8 +11,10 @@ info "Starting {{ backup_type }} backup integrity check"
 sudo mount -a || \
     info "Warning: Could not mount all filesystems"
 
-curl -fsS {{ start_monitor }} || \
-    info "Warning: Could not reach start monitor"
+{% for host in push_monitor_hosts %}
+curl -fsS -X POST -H "Authorization: Bearer {{ token }}" "https://{{ host }}/api/v1/endpoints/{{ start_key }}/external?success=true" || \
+    info "Warning: Could not reach start monitor at {{ host }}"
+{% endfor %}
 
 export RESTIC_PASSWORD_COMMAND="{{ crons_config_path }}/Backups/restic_passcommand.sh"
 export RESTIC_REPOSITORY={{ repo_path }}
@@ -45,8 +47,10 @@ if [ ${check_exit} -eq 0 ]; then
     next_index=$((index % 20 + 1))
     echo "$next_index" > "$STATE_FILE"
 
-    curl -fsS "{{ end_monitor }}" || \
-        info "Warning: Could not reach end monitor"
+    {% for host in push_monitor_hosts %}
+        curl -fsS -X POST -H "Authorization: Bearer {{ token }}" "https://{{ host }}/api/v1/endpoints/{{ end_key }}/external?success=true" || \
+            info "Warning: Could not reach end monitor at {{ host }}"
+    {% endfor %}
 else
     info "Backup integrity check failed"
     exit 1

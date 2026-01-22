@@ -14,11 +14,10 @@ info "Starting {{ backup_type }} backup"
 sudo mount -a || \
     info "Warning: Could not mount all filesystems"
 
-curl -fsS {{ start_monitor_a }} || \
-    info "Warning: Could not reach start monitor A"
-
-curl -fsS {{ start_monitor_b }} || \
-    info "Warning: Could not reach start monitor B"
+{% for host in push_monitor_hosts %}
+curl -fsS -X POST -H "Authorization: Bearer {{ token }}" "https://{{ host }}/api/v1/endpoints/{{ start_key }}/external?success=true" || \
+    info "Warning: Could not reach start monitor at {{ host }}"
+{% endfor %}
 
 export RESTIC_PASSWORD_COMMAND="{{ crons_config_path }}/Backups/restic_passcommand.sh"
 export RESTIC_REPOSITORY={{ dst_path }}
@@ -53,11 +52,10 @@ if [ ${backup_exit} -eq 0 ] || [ ${backup_exit} -eq 3 ]; then
     end_time=$(date +%s%3N)
     runtime_ms=$((end_time - start_time))
     
-    curl -fsS "{{ end_monitor_a }}&ping=${runtime_ms}" || \
-        info "Warning: Could not reach end monitor A"
-
-    curl -fsS "{{ end_monitor_b }}&ping=${runtime_ms}" || \
-        info "Warning: Could not reach end monitor B"
+{% for host in push_monitor_hosts %}
+    curl -fsS -X POST -H "Authorization: Bearer {{ token }}" "https://{{ host }}/api/v1/endpoints/{{ end_key }}/external?success=true" || \
+        info "Warning: Could not reach end monitor at {{ host }}"
+{% endfor %}
 fi
 
 exit ${global_exit}

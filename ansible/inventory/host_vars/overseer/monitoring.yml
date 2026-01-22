@@ -1,0 +1,107 @@
+monitored_endpoints:
+  - name: "Gatus {{ pretty_hostname }}"
+    url: "https://gatus.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "AdGuard Primary"
+    url: "https://dns.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Infrastructure"
+
+  - name: "Komodo"
+    url: "https://komo.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Infrastructure"
+
+  - name: "Omada Controller"
+    url: "https://omada.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Infrastructure"
+
+  - name: "Home Assistant"
+    url: "https://ha.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Immich"
+    url: "https://immich.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Seafile"
+    url: "https://seafile.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Mealie"
+    url: "https://mealie.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Snapcast"
+    url: "https://snapcast.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Satisfactory"
+    url: "tcp://{{ external_hostname }}:7777"
+    interval: 60s
+    group: "Games"
+    conditions:
+      - "[CONNECTED] == true"
+
+  - name: "Satisfactory (Legacy)"
+    url: "tcp://sirgeorgelordofthevoid.com:7777"
+    interval: 60s
+    group: "Games"
+    conditions:
+      - "[CONNECTED] == true"
+
+  - name: "mSync UI"
+    url: "https://msync.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Music Sync"
+
+push_monitors:
+  - name: "mSync Scanned"
+    group: "Music Sync"
+    interval: "1200s"
+
+  - name: "{{ backups.servers[0].start_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "4800s"
+  - name: "{{ backups.servers[0].end_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "4800s"
+
+  - name: "{{ backups.servers[0].check_start_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "14400s"
+  - name: "{{ backups.servers[0].check_end_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "14400s"
+
+  - name: "{{ backups.servers[1].start_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "4800s"
+  - name: "{{ backups.servers[1].end_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "4800s"
+
+  - name: "{{ backups.servers[1].check_start_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "14400s"
+  - name: "{{ backups.servers[1].check_end_key }}"
+    group: "{{ backups.monitor_group }}"
+    interval: "14400s"

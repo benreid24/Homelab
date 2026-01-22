@@ -1,7 +1,15 @@
 data_path: /opt/homelab/data
-host_ip: "{{ offsite_pi_ip }}"
 
-samba_disk_uuid: "F46C8FCE6C8F8A56"
+pretty_hostname: Offsite Pi
+host_ip: "{{ offsite_pi_ip }}"
+external_hostname: "{{ offsite_pi_hostname }}"
+
+managed_domains: "{{ [external_hostname] }}"
+certbot_env: prod
+
+komodo_deployment_mode: periphery-only
+
+samba_disk_uuid: "511308952E659B6F"
 samba_mount_point: "/mnt/backup-disk"
 samba_share_name: "offsite-drive"
 samba_share_path: "/mnt/backup-disk"

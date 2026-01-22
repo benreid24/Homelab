@@ -1,0 +1,16 @@
+services:
+  gatus:
+    image: twinproduction/gatus:latest
+    container_name: gatus
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    environment:
+      - TZ=${TIMEZONE}
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

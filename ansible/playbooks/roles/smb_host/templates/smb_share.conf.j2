@@ -2,6 +2,6 @@
 path = {{ samba_share_path }}
 valid users = {{ samba_user }}
 writeable = Yes
-create mask = {{ samba_create_mask | default('0777') }}
-directory mask = {{ samba_directory_mask | default('0777') }}
+create mask = {{ samba_create_mask | default('0755') }}
+directory mask = {{ samba_directory_mask | default('0755') }}
 browseable = Yes

@@ -1,0 +1,22 @@
+---
+- name: Collect monitored endpoints from all homelab hosts
+  ansible.builtin.set_fact:
+    all_monitored_endpoints: "{{ common_monitored_endpoints + (groups['homelab'] | map('extract', hostvars, 'monitored_endpoints') | select('defined') | flatten) }}"
+
+- name: Collect push monitors from all homelab hosts
+  ansible.builtin.set_fact:
+    all_push_monitors: "{{ (common_push_monitors | default([])) + (groups['homelab'] | map('extract', hostvars, 'push_monitors') | select('defined') | flatten) }}"
+
+- name: Setup Gatus service
+  ansible.builtin.include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Gatus
+    reverse_proxy: reverse_proxy.conf.j2
+    config_copies:
+      - src_config_path: .
+    templates:
+      - src_template_path: config.yaml.j2
+        dst_template_path: config/config.yaml
+        file_mode: "0600"
+    env_content: |
+      TIMEZONE={{ timezone }}

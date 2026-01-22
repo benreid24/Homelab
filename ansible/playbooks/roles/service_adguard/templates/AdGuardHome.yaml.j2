@@ -161,6 +161,12 @@ filtering:
     - domain: '*.{{ onsite_pi_hostname }}'
       answer: {{ onsite_pi_ip }}
       enabled: true
+    - domain: {{ offsite_pi_hostname }}
+      answer: {{ offsite_pi_ip }}
+      enabled: true
+    - domain: '*.{{ offsite_pi_hostname }}'
+      answer: {{ offsite_pi_ip }}
+      enabled: true
     - domain: '*.{{ root_domain }}'
       answer: {{ overseer_ip }}
       enabled: true

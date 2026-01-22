@@ -1,31 +1,34 @@
 backups:
   creds_file: /etc/smb-credentials
+  monitor_group: Backups
 
   servers:
     - name: onsite
+      pretty_name: Onsite
       #cron_minute: "15" # 15 minute budget. Currently takes ~3 minutes
       server_path: "//{{ onsite_pi_ip }}/WOGH"
       mount_path: "/mnt/backup-onsite"
 
-      start_monitor_a: "https://kuma.{{ onsite_pi_hostname }}/api/push/mtaiYPr8ZMEwQEtDQsPxFmPS5JUCpQgZ?status=up&msg=OK&ping="
-      start_monitor_b: "https://kuma.{{ overseer_hostname }}/api/push/IOmy1Ktinig9TjEx4x1eR8NYLFq4DgUG?status=up&msg=OK&ping="
-      end_monitor_a: "https://kuma.{{ overseer_hostname }}/api/push/o7vgqb2AIxxda1Jyg23xVJt1PdeBNTdD?status=up&msg=OK"
-      end_monitor_b: "https://kuma.{{ onsite_pi_hostname }}/api/push/LQpDNOkCyKpq2SU8r7vbZRKqGsmfOSUc?status=up&msg=OK"
+      start_key: "Onsite Backup Started"
+      end_key: "Onsite Backup Completed"
+      check_start_key: "Onsite Integrity Check Started"
+      check_end_key: "Onsite Integrity Check Completed"
 
       integrity_cron_minute: "40" # 35 minute budget. Currently takes ~15 minutes
       check_start_monitor: "https://kuma.{{ overseer_hostname }}/api/push/qyOdGlZL1l1Ew0i699vjPA4xDMJqzC6Q?status=up&msg=OK&ping="
       check_end_monitor: "https://kuma.{{ overseer_hostname }}/api/push/KCBwwS9pWoUhUYVHIXFSrNOa2CQjk9Gr?status=up&msg=OK"
 
     - name: offsite
+      pretty_name: Offsite
       cron_minute: "45" # 15 minute budget. Currently takes ~3 minutes
       server_address: "{{ offsite_pi_ip }}"
       server_path: "//{{ offsite_pi_ip }}/offsite-drive"
       mount_path: "/mnt/backup-offsite"
 
-      start_monitor_a: "https://kuma.{{ onsite_pi_hostname }}/api/push/9ym67fWxhE9RPENoafJkAEv4CtacyZn6?status=up&msg=OK&ping="
-      start_monitor_b: "https://kuma.{{ overseer_hostname }}/api/push/D3ZOW2KPNkvQFnVWbziLzfHbZiq6bVhJ?status=up&msg=OK&ping="
-      end_monitor_a: "https://kuma.{{ overseer_hostname }}/api/push/uEWiN88WDt670itRJYFGVaKsx2adQ07W?status=up&msg=OK"
-      end_monitor_b: "https://kuma.{{ onsite_pi_hostname }}/api/push/kXUtPyhoMD4bVJdBiU6I0rFa3BNvOG0C?status=up&msg=OK"
+      start_key: "Offsite Backup Started"
+      end_key: "Offsite Backup Completed"
+      check_start_key: "Offsite Integrity Check Started"
+      check_end_key: "Offsite Integrity Check Completed"
 
       integrity_cron_minute: "0" # 35 minute budget. Currently takes ~15 minutes
       check_start_monitor: "https://kuma.{{ overseer_hostname }}/api/push/wJcA14PkDLxSum6LlT0w9EaH9DWeoVC8?status=up&msg=OK&ping="

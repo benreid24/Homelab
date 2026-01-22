@@ -1,5 +1,4 @@
 ---
-
 - name: "Ensure backup mount point exists"
   ansible.builtin.file:
     path: "{{ backup.mount_path }}"
@@ -41,10 +40,10 @@
     src_path: "{{ data_path }}"
     dst_path: "{{ backup.mount_path }}{{ backup_dst_path }}"
     log_path: "{{ logs_path }}/backup_{{ backup.name }}.log"
-    start_monitor_a: "{{ backup.start_monitor_a }}"
-    start_monitor_b: "{{ backup.start_monitor_b }}"
-    end_monitor_a: "{{ backup.end_monitor_a }}"
-    end_monitor_b: "{{ backup.end_monitor_b }}"
+    token: "{{ push_monitor_token }}"
+    start_key: "{{ backups.monitor_group }}_{{ backup.start_key | replace(' ', '-') }}"
+    end_key: "{{ backups.monitor_group }}_{{ backup.end_key | replace(' ', '-') }}"
+    monitor_hosts: "{{ push_monitor_hosts }}"
   become: true
 
 - name: "Template backup integrity script"
@@ -59,8 +58,10 @@
     restic: "{{ crons_config_path }}/Backups/restic"
     repo_path: "{{ backup.mount_path }}{{ backup_dst_path }}"
     log_path: "{{ logs_path }}/backup_{{ backup.name }}_check.log"
-    start_monitor: "{{ backup.check_start_monitor }}"
-    end_monitor: "{{ backup.check_end_monitor }}"
+    token: "{{ push_monitor_token }}"
+    start_key: "{{ backups.monitor_group }}_{{ backup.check_start_key | replace(' ', '-') }}"
+    end_key: "{{ backups.monitor_group }}_{{ backup.check_end_key | replace(' ', '-') }}"
+    monitor_hosts: "{{ push_monitor_hosts }}"
   become: true
 
 - name: "Ensure backup repo is initialized"

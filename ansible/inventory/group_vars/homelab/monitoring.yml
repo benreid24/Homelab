@@ -1,0 +1,74 @@
+push_monitor_token: "not-secret"
+
+push_monitor_hosts:
+  - "gatus.{{ overseer_hostname }}"
+  - "gatus.{{ onsite_pi_hostname }}"
+  - "gatus.{{ offsite_pi_hostname }}"
+
+common_monitored_endpoints:
+  - name: "Reachable: benanna.club"
+    url: "https://benanna.club"
+    method: GET
+    interval: 60s
+    group: "DNS"
+  - name: "Reachable: sirgeorgelordofthevoid.com"
+    url: "https://sirgeorgelordofthevoid.com"
+    method: GET
+    interval: 60s
+    group: "DNS"
+
+  - name: "NVR"
+    url: "http://192.168.0.10"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Overseer"
+    url: "icmp://{{ overseer_hostname }}"
+    interval: 60s
+    group: "Servers"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Onsite Pi"
+    url: "icmp://{{ onsite_pi_hostname }}"
+    interval: 60s
+    group: "Servers"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Offsite Pi"
+    url: "icmp://{{ offsite_pi_hostname }}"
+    interval: 60s
+    group: "Servers"
+    conditions:
+      - "[CONNECTED] == true"
+
+  - name: "Game Room Audio Zone"
+    url: "icmp://192.168.0.200"
+    interval: 60s
+    group: "Audio Zones"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Dining Room Audio Zone"
+    url: "icmp://192.168.0.202"
+    interval: 60s
+    group: "Audio Zones"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Upstairs Bathroom Audio Zone"
+    url: "icmp://192.168.0.203"
+    interval: 60s
+    group: "Audio Zones"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Bedroom Audio Zone"
+    url: "icmp://192.168.0.204"
+    interval: 60s
+    group: "Audio Zones"
+    conditions:
+      - "[CONNECTED] == true"
+  - name: "Office Audio Zone"
+    url: "icmp://192.168.0.205"
+    interval: 60s
+    group: "Audio Zones"
+    conditions:
+      - "[CONNECTED] == true"

@@ -1,0 +1,12 @@
+monitored_endpoints:
+  - name: "Gatus {{ pretty_hostname }}"
+    url: "https://gatus.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+    
+  - name: "AdGuard Secondary"
+    url: "https://dns.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Infrastructure"
