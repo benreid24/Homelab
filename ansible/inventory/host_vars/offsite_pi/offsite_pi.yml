@@ -17,3 +17,8 @@ samba_user: "{{ smb_username }}"
 samba_password: "{{ smb_password }}"
 samba_create_mask: "0755"
 samba_directory_mask: "0755"
+
+homepage_data_volume: /mnt/backup-disk
+
+seafile:
+  clone_path: /mnt/backup-disk/seafile-clone

@@ -1,0 +1,26 @@
+- name: Ensure Seafile client config directory exists with correct permissions
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Seafile/seafile-client"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+    recurse: true
+  become: true
+
+- name: Setup Seafile client
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: SeafileClient
+    skip_chown_data: true
+    env_content: |
+      BUILD_CTX={{ 'seafile-cli-pi' if ansible_architecture == 'aarch64' else 'seafile-cli' }}
+      SEAFILE_CLI_LIBRARY_IDS={{ seafile_library_ids | join(',') }}
+      SEAFILE_CLI_USERNAME={{ admin_email }}
+      SEAFILE_CLI_TOKEN={{ seafile_client_token if ansible_architecture != 'aarch64' else seafile_admin_password }}
+      SEAFILE_CLI_SERVER_URL=https://seafile.{{ overseer_hostname }}
+      SEAFILE_CLI_CONFIG_PATH={{ services_data_path }}/Seafile/seafile-client
+      SEAFILE_CLI_CLONE_PATH={{ seafile.clone_path }}
+      NON_ROOT=true
+    config_copies:
+      - src_config_path: .

@@ -8,7 +8,11 @@
     env_content: |
       DATA_PATH={{ services_config_path }}/Homepage/config
       HOSTNAME={{ external_hostname }}
+      HOMEPAGE_DATA_VOLUME={{ homepage_data_volume }}
     templates:
       - src_template_path: services.yaml.j2
         dst_template_path: config/config/services.yaml
+        file_mode: "0600"
+      - src_template_path: docker.yaml.j2
+        dst_template_path: config/config/docker.yaml
         file_mode: "0600"

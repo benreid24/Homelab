@@ -10,9 +10,11 @@
   roles:
     - common
     - docker
+    - docker_proxy
     - smb_host
     - service_nginx
     - service_komodo
+    - service_homepage
     - service_gatus
 
 - name: Provision Onsite Pi
@@ -22,11 +24,13 @@
   roles:
     - common
     - docker
+    - docker_proxy
     - smb_host
     - service_nginx
     - service_adguard
-    - service_kuma
     - service_komodo
+    - service_seafile_client
+    - service_homepage
     - service_gatus
 
 - name: Provision Overseer
@@ -36,19 +40,21 @@
   roles:
     - common
     - docker
+    - docker_proxy
     - service_adguard
     - service_nginx
     - service_komodo
     - service_redbot
     - service_seafile
+    - service_seafile_client
     - service_immich
     - service_ddns
     - service_homeassistant
     - service_omada
-    - service_kuma
     - service_snapcast
     - service_msync
     - service_mealie
+    - service_leantime
     - service_homepage
     - cron_backups
     - cron_github_mirror

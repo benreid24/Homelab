@@ -17,3 +17,5 @@ spotify_audio_name: "Home%20Audio"
 spotify_audio_name_pretty: "Home Audio"
 
 komodo_deployment_mode: full
+
+homepage_data_volume: /mnt/data

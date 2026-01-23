@@ -11,11 +11,17 @@ common_monitored_endpoints:
     method: GET
     interval: 60s
     group: "DNS"
+    conditions:
+      - "[STATUS] == any(200, 204)"
+      - "[CERTIFICATE_EXPIRATION] > 48h"
   - name: "Reachable: sirgeorgelordofthevoid.com"
     url: "https://sirgeorgelordofthevoid.com"
     method: GET
     interval: 60s
     group: "DNS"
+    conditions:
+      - "[STATUS] == any(200, 204)"
+      - "[CERTIFICATE_EXPIRATION] > 48h"
 
   - name: "NVR"
     url: "http://192.168.0.10"
@@ -24,23 +30,26 @@ common_monitored_endpoints:
     group: "Services"
 
   - name: "Overseer"
-    url: "icmp://{{ overseer_hostname }}"
+    url: "https://{{ overseer_hostname }}"
     interval: 60s
     group: "Servers"
     conditions:
-      - "[CONNECTED] == true"
+      - "[STATUS] == any(200, 204)"
+      - "[CERTIFICATE_EXPIRATION] > 48h"
   - name: "Onsite Pi"
-    url: "icmp://{{ onsite_pi_hostname }}"
+    url: "https://{{ onsite_pi_hostname }}"
     interval: 60s
     group: "Servers"
     conditions:
-      - "[CONNECTED] == true"
+      - "[STATUS] == any(200, 204)"
+      - "[CERTIFICATE_EXPIRATION] > 48h"
   - name: "Offsite Pi"
-    url: "icmp://{{ offsite_pi_hostname }}"
+    url: "https://{{ offsite_pi_hostname }}"
     interval: 60s
     group: "Servers"
     conditions:
-      - "[CONNECTED] == true"
+      - "[STATUS] == any(200, 204)"
+      - "[CERTIFICATE_EXPIRATION] > 48h"
 
   - name: "Game Room Audio Zone"
     url: "icmp://192.168.0.200"

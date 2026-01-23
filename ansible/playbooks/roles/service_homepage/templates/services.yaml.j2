@@ -4,27 +4,27 @@
 
 - Infrastructure:
   - Omada:
-      href: https://omada.{{ external_hostname }}/
-      icon: https://omada.{{ external_hostname }}/favicon.ico?v=2
+      href: https://omada.{{ overseer_hostname }}/
+      icon: https://omada.{{ overseer_hostname }}/favicon.ico?v=2
       description: Network control plane
-      server: docker-socket
+      server: overseer-docker
       container: omada-controller
   - Nginx:
       icon: /icons/nginx.png
       description: Reverse proxy and web server
-      server: docker-socket
+      server: overseer-docker
       container: nginx
   - AdGuard Primary:
-      href: https://dns.{{ external_hostname }}
-      icon: https://dns.{{ external_hostname }}/assets/favicon.png
+      href: https://dns.{{ overseer_hostname }}
+      icon: https://dns.{{ overseer_hostname }}/assets/favicon.png
       description: Private DNS
-      server: docker-socket
+      server: overseer-docker
       container: adguard
       statusStyle: dot
       showStats: false
       widget:
         type: adguard
-        url: https://dns.{{ external_hostname }}
+        url: https://dns.{{ overseer_hostname }}
         username: admin
         password: {{ adguard_password }}
         fields:
@@ -49,64 +49,53 @@
       href: https://dash.cloudflare.com/
       icon: https://dash.cloudflare.com/favicon.ico
       description: Automatic DNS update service
-      server: docker-socket
+      server: overseer-docker
       container: ddns
   - Komodo:
-      href: https://komo.{{ external_hostname }}/stacks
+      href: https://komo.{{ overseer_hostname }}/stacks
       icon: /icons/komodo.png
       description: Running container stats and control
-      server: docker-socket
+      server: overseer-docker
       container: komodo
       showStats: false
       widget:
         type: komodo
-        url: https://komo.{{ external_hostname }}
+        url: https://komo.{{ overseer_hostname }}
         key: {{ komodo_api_key }}
         secret: {{ komodo_api_secret }}
         showSummary: true
 
 - Services:
   - Home Assistant:
-      href: https://ha.{{ external_hostname }}
-      icon: https://ha.{{ external_hostname }}/static/icons/favicon.ico
+      href: https://ha.{{ overseer_hostname }}
+      icon: https://ha.{{ overseer_hostname }}/static/icons/favicon.ico
       description: Home automation and control
-      server: docker-socket
+      server: overseer-docker
       container: homeassistant
   - Immich:
-      href: https://immich.{{ external_hostname }}
-      icon: https://immich.{{ external_hostname }}/favicon.ico
+      href: https://immich.{{ overseer_hostname }}
+      icon: https://immich.{{ overseer_hostname }}/favicon.ico
       description: Photo organization and gallery
-      server: docker-socket
+      server: overseer-docker
       container: immich_server
   - Seafile:
-      href: https://seafile.{{ external_hostname }}
-      icon: https://seafile.{{ external_hostname }}/media/favicons/favicon.png
+      href: https://seafile.{{ overseer_hostname }}
+      icon: https://seafile.{{ overseer_hostname }}/media/favicons/favicon.png
       description: File synchronization and backup
-      server: docker-socket
+      server: overseer-docker
       container: seafile
   - Mealie:
-      href: https://mealie.{{ external_hostname }}
-      icon: https://mealie.{{ external_hostname }}/favicon.ico
+      href: https://mealie.{{ overseer_hostname }}
+      icon: https://mealie.{{ overseer_hostname }}/favicon.ico
       description: Recipe storage and meal planner
-      server: docker-socket
+      server: overseer-docker
       container: mealie
-  - Satisfactory:
-      icon: /icons/satisfactory.png
-      description: Satisfactory game server
-      widget:
-        type: customapi
-        url: https://{{ host_ip }}:7777/api/v1
-        method: POST
-        headers:
-          Content-Type: application/json
-        requestBody:
-          function: HealthCheck
-          data:
-            ClientCustomData: {}
-        mappings:
-          - field: data.health
-            label: Status
-            format: text
+  - Leantime:
+      href: https://leantime.{{ overseer_hostname }}
+      icon: https://leantime.{{ overseer_hostname }}/dist/images/favicon.png
+      description: Project management and tracking
+      server: overseer-docker
+      container: leantime
   - NVR:
       href: https://192.168.0.10/
       icon: https://192.168.0.10/favicon.ico
@@ -114,7 +103,7 @@
       siteMonitor: https://192.168.0.10/
       widget:
         type: homeassistant
-        url: https://ha.{{ external_hostname }}
+        url: https://ha.{{ overseer_hostname }}
         key: {{ homepage_ha_token }}
         custom:
           - template: "{% raw %}{{ states('switch.nvr_record') }}{% endraw %}"
@@ -122,153 +111,189 @@
           - template: "{% raw %}{{ 'Up to Date' if state_attr('update.nvr_firmware', 'installed_version') == state_attr('update.nvr_firmware', 'latest_version') else 'Out of Date' }}{% endraw %}"
             label: Firmware
 
-- AudioContainer:
+- MiddleRow:
   - Home Audio:
     - Playback Control:
-        href: https://ampd.{{ external_hostname }}/browse
+        href: https://ampd.{{ overseer_hostname }}/browse
         icon: mdi-music-circle-#7b19bd
         description: Control plane for music playback
-        server: docker-socket
+        server: overseer-docker
         container: ampd
+        showStats: false
+    - mSync:
+        href: https://msync.{{ overseer_hostname }}
+        icon: https://msync.{{ overseer_hostname }}/assets/favicon.png
+        description: Youtube playlist auto sync
+        server: overseer-docker
+        container: msync
+        showStats: false
+    - mSync Syncthing:
+        href: https://syncthing-music.{{ overseer_hostname }}
+        icon: https://syncthing-music.{{ overseer_hostname }}/assets/img/favicon-default.png
+        description: Syncthing client for music folder sync
+        server: overseer-docker
+        container: msync-syncthing
+        showStats: false
+
+  - Downstairs Zones:
+    - Fireplace Zone:
+        href: http://192.168.0.200/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the game room
+        siteMonitor: http://192.168.0.200/
+    - Dining Room Zone:
+        href: http://192.168.0.202/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the dining room
+        siteMonitor: http://192.168.0.202/
+    - TV Room Zone:
+        href: http://192.168.0.202/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the TV room
+        siteMonitor: http://192.168.0.202/
+  - Upstairs Zones:
+    - Office Zone:
+        href: http://192.168.0.205/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs office
+        siteMonitor: http://192.168.0.205/
+    - Bedroom Zone:
+        href: http://192.168.0.204/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the bedroom
+        siteMonitor: http://192.168.0.204/
+    - Bathroom Zone:
+        href: http://192.168.0.203/
+        icon: mdi-cast-audio-#5191e0
+        description: Audio zone in the upstairs bathroom
+        siteMonitor: http://192.168.0.203/
+
+  - Audio Infrastructure:
     - Snapcast:
-        href: https://snapcast.{{ external_hostname }}
+        href: https://snapcast.{{ overseer_hostname }}
         icon: /icons/snapcast.png
         description: Audio zone management
-        server: docker-socket
+        server: overseer-docker
         container: snapcast
+        showStats: false
     - Librespot:
         description: Spotify Connect adaptor service
         icon: /icons/spotify.png
-        server: docker-socket
+        server: overseer-docker
         container: librespot
+        showStats: false
     - Music Player Daemon:
         description: API service for audio playback control
         icon: /icons/mpd.png
-        server: docker-socket
+        server: overseer-docker
         container: mpd
+        showStats: false
 
-  - Zones:
-    - Downstairs Zones:
-      - Fireplace Zone:
-          href: http://192.168.0.200/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the game room
-          siteMonitor: http://192.168.0.200/
-      - Dining Room Zone:
-          href: http://192.168.0.202/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the dining room
-          siteMonitor: http://192.168.0.202/
-      - TV Room Zone:
-          href: http://192.168.0.202/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the TV room
-          siteMonitor: http://192.168.0.202/
-    - Upstairs Zones:
-      - Office Zone:
-          href: http://192.168.0.205/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the upstairs office
-          siteMonitor: http://192.168.0.205/
-      - Bedroom Zone:
-          href: http://192.168.0.204/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the bedroom
-          siteMonitor: http://192.168.0.204/
-      - Bathroom Zone:
-          href: http://192.168.0.203/
-          icon: mdi-cast-audio-#5191e0
-          description: Audio zone in the upstairs bathroom
-          siteMonitor: http://192.168.0.203/
-
-  - Music Sync:
-    - mSync:
-        href: https://msync.{{ external_hostname }}
-        icon: https://msync.{{ external_hostname }}/assets/favicon.png
-        description: Youtube playlist auto sync
-        server: docker-socket
-        container: msync
-    - mSync Seafile:
-        href: https://seafile.{{ external_hostname }}/library/{{ seafile_music_library_id }}
-        icon: https://seafile.{{ external_hostname }}/media/favicons/favicon.png
-        description: Seafile client instance for music sync
-        server: docker-socket
+  - File Sync:
+    - Overseer Seafile Client:
+        href: https://seafile.{{ overseer_hostname }}
+        icon: https://seafile.{{ overseer_hostname }}/media/favicons/favicon.png
+        description: Syncs personal files to Overseer
+        server: overseer-docker
         container: seafile-client
-    - mSync Syncthing:
-        href: https://syncthing-music.{{ external_hostname }}
-        icon: https://syncthing-music.{{ external_hostname }}/assets/img/favicon-default.png
-        description: Syncthing client for music folder sync
-        server: docker-socket
-        container: msync-syncthing
-    - Redbot:
-        description: Discord bot for music
-        server: docker-socket
-        container: redbot
-        icon: mdi-robot-#cc2316
+        showStats: false
+    - Onsite Pi Seafile Client:
+        href: https://seafile.{{ overseer_hostname }}
+        icon: https://seafile.{{ overseer_hostname }}/media/favicons/favicon.png
+        description: Syncs personal files to Onsite Pi
+        server: onsite-pi-docker
+        container: seafile-client
+        showStats: false
+    - Offsite Pi Seafile Client:
+        href: https://seafile.{{ overseer_hostname }}
+        icon: https://seafile.{{ overseer_hostname }}/media/favicons/favicon.png
+        description: Syncs personal files to Offsite Pi
+        server: offsite-pi-docker
+        container: seafile-client
+        showStats: false
+
+  - Certbots:
+    - Overseer Certbot:
+        description: Manages SSL certificates
+        icon: /icons/certbot.ico
+        server: overseer-docker
+        container: certbot
+        showStats: false
+    - Onsite Pi Certbot:
+        description: Manages SSL certificates
+        icon: /icons/certbot.ico
+        server: onsite-pi-docker
+        container: certbot
+        showStats: false
+    - Offsite Pi Certbot:
+        description: Manages SSL certificates
+        icon: /icons/certbot.ico
+        server: offsite-pi-docker
+        container: certbot
+        showStats: false
 
 - BottomRow:
-  - BackupsRow:
-    - Backups:
-      - Onsite:
-          description: Onsite backup status
-          href: https://kuma.{{ external_hostname }}/status/backup-onsite
-          icon: mdi-harddisk-#0c929c
-          widget:
-            type: uptimekuma
-            url: https://kuma.{{ external_hostname }}
-            slug: backup-onsite
-    - " ":
-      - Offsite:
-          description: Offsite backup status
-          href: https://kuma.{{ external_hostname }}/status/backup-offsite
-          icon: mdi-harddisk-#0c4f9c
-          widget:
-            type: uptimekuma
-            url: https://kuma.{{ external_hostname }}
-            slug: backup-offsite
+  - LeftColumn:
     - Energy:
       - Power Usage:
-          href: https://ha.{{ external_hostname }}/dashboard-power/0
+          href: https://ha.{{ overseer_hostname }}/dashboard-power/0
           description: Current power consumption
           icon: mdi-lightning-bolt-circle-#bfc930
           widget:
             type: homeassistant
-            url: https://ha.{{ external_hostname }}
+            url: https://ha.{{ overseer_hostname }}
             key: {{ homepage_ha_token }}
             custom:
               - template: "{% raw %}{{ states('sensor.emporiavue2_total_power') | float(0) | round(0) }} W{% endraw %}"
                 label: Active Draw
               - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
                 label: Used Today
+    - Bots:
+      - Redbot:
+          description: Discord bot for music
+          server: overseer-docker
+          container: redbot
+          icon: mdi-robot-#cc2316
+    - Games:
+       - Satisfactory:
+          icon: /icons/satisfactory.png
+          description: Satisfactory game server
+          widget:
+            type: customapi
+            url: https://{{ overseer_ip }}:7777/api/v1
+            method: POST
+            headers:
+              Content-Type: application/json
+            requestBody:
+              function: HealthCheck
+              data:
+                ClientCustomData: {}
+            mappings:
+              - field: data.health
+                label: Status
+                format: text
   - Monitoring:
-    - Services:
-        href: https://kuma.{{ external_hostname }}
-        icon: https://kuma.{{ external_hostname }}/favicon.ico
-        description: Uptime for all services
-        server: docker-socket
-        container: uptime-kuma
-        showStats: false
+    - Gatus Primary:
+        href: https://gatus.{{ overseer_hostname }}
+        icon: https://gatus.{{ overseer_hostname }}/favicon-32x32.png
+        description: Primary service monitor instance
+        siteMonitor: https://gatus.{{ overseer_hostname }}
         widget:
-          type: uptimekuma
-          url: https://kuma.{{ external_hostname }}
-          slug: services
-    - Kuma Primary:
-        href: https://kuma.{{ external_hostname }}
-        icon: https://kuma.{{ external_hostname }}/favicon.ico
-        description: Service monitoring and alarms
-        server: docker-socket
-        container: uptime-kuma
-        showStats: false
+          type: gatus
+          url: https://gatus.{{ overseer_hostname }}
+    - Gatus Secondary:
+        href: https://gatus.{{ onsite_pi_hostname }}
+        icon: https://gatus.{{ onsite_pi_hostname }}/favicon-32x32.png
+        description: Secondary service monitor instance
+        siteMonitor: https://gatus.{{ onsite_pi_hostname }}
         widget:
-          type: uptimekuma
-          url: https://kuma.{{ onsite_pi_hostname }}/
-          slug: kuma-primary
-    - Kuma Secondary:
-        href: https://kuma.{{ onsite_pi_hostname }}/
-        icon: https://kuma.{{ onsite_pi_hostname }}/favicon.ico
-        description: Service monitoring and alarms
-        siteMonitor: https://kuma.{{ onsite_pi_hostname }}/
+          type: gatus
+          url: https://gatus.{{ onsite_pi_hostname }}
+    - Gatus Tertiary:
+        href: https://gatus.{{ offsite_pi_hostname }}
+        icon: https://gatus.{{ offsite_pi_hostname }}/favicon-32x32.png
+        description: Tertiary service monitor instance
+        siteMonitor: https://gatus.{{ offsite_pi_hostname }}
         widget:
-          type: uptimekuma
-          url: https://kuma.{{ external_hostname }}
-          slug: kuma-secondary
+          type: gatus
+          url: https://gatus.{{ offsite_pi_hostname }}

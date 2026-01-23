@@ -1,0 +1,39 @@
+- resources:
+    cpu: true
+    cputemp: true
+    tempmin: 0
+    tempmax: 100
+    units: metric
+
+- resources:
+    memory: true
+    disk: /
+    diskUnits: bbytes
+
+- resources:
+    disk: /mnt/data # docker volume
+    diskUnits: bbytes
+
+- resources:
+    uptime: true
+
+- datetime:
+    text_size: 3xl
+    format:
+      weekday: short
+      day: "2-digit"
+      month: "short"
+      year: "numeric"
+      hour: "2-digit"
+      minute: "2-digit"
+      hour12: false
+
+- openmeteo:
+    label: Snyder # optional
+    latitude: 42.9640401
+    longitude: -78.7760449
+    timezone: Americ/New_York
+    units: imperial
+    cache: 5 # Time in minutes to cache API responses, to stay within limits
+    format: # optional, Intl.NumberFormat options
+      maximumFractionDigits: 0

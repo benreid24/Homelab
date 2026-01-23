@@ -8,6 +8,24 @@ storage:
 web:
   port: 8080
 
+alerting:
+  discord:
+    webhook-url: {{ discord_alert_url }}
+    minimum-reminder-interval: 60m
+    title: ":helmet_with_white_cross: Gatus [{{ pretty_hostname }}]"
+    default-alert:
+      send-on-resolved: true
+      failure-threshold: 3
+      success-threshold: 2
+  homeassistant:
+    url: https://ha.{{ overseer_hostname }}
+    token: "{{ ha_alert_token }}"
+    minimum-reminder-interval: 60m
+    default-alert:
+      send-on-resolved: true
+      failure-threshold: 3
+      success-threshold: 2
+
 endpoints:
 {% for endpoint in all_monitored_endpoints | default([]) %}
   - name: "{{ endpoint.name }}"
@@ -17,6 +35,9 @@ endpoints:
 {% endif %}
     interval: "{{ endpoint.interval }}"
     group: "{{ endpoint.group }}"
+    alerts:
+      - type: discord
+      - type: homeassistant
     conditions:
 {% for condition in endpoint.conditions | default(["[STATUS] == any(200, 204)"]) %}
       - "{{ condition }}"
@@ -29,6 +50,9 @@ external-endpoints:
   - name: "{{ endpoint.name }}"
     group: "{{ endpoint.group }}"
     token: "{{ push_monitor_token }}"
+    alerts:
+      - type: discord
+      - type: homeassistant
     heartbeat:
       interval: "{{ endpoint.interval }}"
 {% endfor %}

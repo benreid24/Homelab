@@ -14,26 +14,28 @@ layout:
   Services:
     style: row
     columns: 6
-  AudioContainer:
+  MiddleRow:
     style: row
-    columns: 3
+    columns: 6
     header: false
     Home Audio:
       style: row
-      columns: 2
-    Music Sync:
-      style: row
-      columns: 2
-    Zones:
-      style: row
-      columns: 2
-      header: false
-      Downstairs Zones:
-        style: column
-        rows: 3
-      Upstairs Zones:
-        style: column
-        rows: 3
+      columns: 1
+    Downstairs Zones:
+      style: column
+      rows: 3
+    Upstairs Zones:
+      style: column
+      rows: 3
+    Audio Infrastructure:
+      style: column
+      rows: 3
+    File Sync:
+      style: column
+      rows: 3
+    Certbots:
+      style: column
+      rows: 3
   Infrastructure:
     style: row
     columns: 6
@@ -41,19 +43,10 @@ layout:
     header: false
     style: row
     columns: 2
-    BackupsRow:
+    LeftColumn:
       style: row
       columns: 3
       header: false
-      Backups:
-        style: row
-        columns: 1
-      " ":
-        style: row
-        columns: 1
-      Energy:
-        style: row
-        columns: 1
     Monitoring:
       style: row
       columns: 3

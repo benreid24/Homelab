@@ -1,0 +1,22 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/docker/
+
+# my-docker:
+#   host: 127.0.0.1
+#   port: 2375
+
+overseer-docker:
+  host: docker.{{ overseer_hostname }}
+  port: 443
+  protocol: https
+
+onsite-pi-docker:
+  host: docker.{{ onsite_pi_hostname }}
+  port: 443
+  protocol: https
+
+offsite-pi-docker:
+  host: docker.{{ offsite_pi_hostname }}
+  port: 443
+  protocol: https
