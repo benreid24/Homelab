@@ -14,6 +14,7 @@
     - smb_host
     - service_nginx
     - service_komodo
+    - service_seafile_client
     - service_homepage
     - service_gatus
 
