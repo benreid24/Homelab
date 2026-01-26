@@ -111,3 +111,7 @@ push_monitors:
   - name: "{{ backups.servers[1].check_end_key }}"
     group: "{{ backups.monitor_group }}"
     interval: "14400s"
+
+  - name: "Raid Array Health"
+    group: "{{ backups.monitor_group }}"
+    interval: "65s"

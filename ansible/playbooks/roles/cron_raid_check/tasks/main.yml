@@ -1,0 +1,31 @@
+- name: "Ensure RaidCheck cron config directory exists"
+  ansible.builtin.file:
+    path: "{{ crons_config_path }}/RaidCheck"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  become: true
+
+- name: "Template RAID check script"
+  ansible.builtin.template:
+    src: "raid_check.sh.j2"
+    dest: "{{ crons_config_path }}/RaidCheck/check.sh"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  vars:
+    log_path: "{{ logs_path }}/raid_check.log"
+    token: "{{ push_monitor_token }}"
+    monitor_key: "{{ backups.monitor_group }}_Raid-Array-Health"
+    monitor_hosts: "{{ push_monitor_hosts }}"
+  become: true
+
+- name: "Register RAID check cron job"
+  ansible.builtin.cron:
+    name: "Raid Array Health Check"
+    hour: "*"
+    minute: "*/1"
+    job: "{{ crons_config_path }}/RaidCheck/check.sh"
+    user: root
+  become: true

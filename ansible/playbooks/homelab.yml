@@ -59,6 +59,7 @@
     - service_homepage
     - cron_backups
     - cron_github_mirror
+    - cron_raid_check
     - steam
     - satisfactory
     - service_gatus
