@@ -1,5 +1,7 @@
 - resources:
     cpu: true
+
+- resources:
     cputemp: true
     tempmin: 0
     tempmax: 100
@@ -7,6 +9,8 @@
 
 - resources:
     memory: true
+
+- resources:
     disk: /
     diskUnits: bbytes
 
@@ -32,7 +36,7 @@
     label: Snyder # optional
     latitude: 42.9640401
     longitude: -78.7760449
-    timezone: Americ/New_York
+    timezone: America/New_York
     units: imperial
     cache: 5 # Time in minutes to cache API responses, to stay within limits
     format: # optional, Intl.NumberFormat options
