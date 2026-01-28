@@ -11,6 +11,7 @@ managed_domains: "{{ [external_hostname] + extra_domains }}"
 certbot_env: prod
 
 data_path: /mnt/data/homelab/data
+media_path: /mnt/data/homelab/media
 backup_dst_path: "/homelab-backups"
 
 spotify_audio_name: "Home%20Audio"

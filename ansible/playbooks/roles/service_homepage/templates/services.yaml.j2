@@ -96,21 +96,12 @@
       description: Project management and tracking
       server: overseer-docker
       container: leantime
-  - NVR:
-      href: https://192.168.0.10/
-      icon: https://192.168.0.10/favicon.ico
-      description: Camera feeds and recordings
-      siteMonitor: https://192.168.0.10/
-      widget:
-        type: homeassistant
-        url: https://ha.{{ overseer_hostname }}
-        key: {{ homepage_ha_token }}
-        custom:
-          - template: "{% raw %}{{ states('switch.nvr_record') }}{% endraw %}"
-            label: Recording
-          - template: "{% raw %}{{ 'Up to Date' if state_attr('update.nvr_firmware', 'installed_version') == state_attr('update.nvr_firmware', 'latest_version') else 'Out of Date' }}{% endraw %}"
-            label: Firmware
-
+  - Jellyfin:
+      href: https://jellyfin.{{ overseer_hostname }}
+      icon: https://jellyfin.{{ overseer_hostname }}/web/favicons/touchicon114.png
+      description: Media server and streaming
+      server: overseer-docker
+      container: jellyfin
 - MiddleRow:
   - Home Audio:
     - Playback Control:

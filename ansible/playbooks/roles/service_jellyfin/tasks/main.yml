@@ -1,0 +1,42 @@
+- name: Ensure Jellyfin media dir exists
+  ansible.builtin.file:
+    path: "{{ media_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: Ensure Jellyfin cache dir exists
+  ansible.builtin.file:
+    path: "{{ cache_path }}/Jellyfin"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: Install NVidia container toolkit
+  include_tasks: nvidia_setup.yml
+
+- name: Add service user to video group for GPU access
+  ansible.builtin.user:
+    name: "{{ service_user }}"
+    groups: video
+    append: yes
+  become: yes
+
+- name: Setup Jellyfin service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Jellyfin
+    reverse_proxy: reverse_proxy.conf.j2
+    env_content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      CONFIG_DIR={{ services_data_path }}/Jellyfin/config
+      CACHE_DIR={{ cache_path }}/Jellyfin
+      MEDIA_DIR={{ media_path }}
+      HOSTNAME=jellyfin.{{ external_hostname }}
+    config_copies:
+      - src_config_path: .

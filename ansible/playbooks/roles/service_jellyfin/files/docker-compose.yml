@@ -1,0 +1,30 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "${PUID:-1000}:${PGID:-1000}"
+    ports:
+      - 7359:7359/udp
+    volumes:
+      - ${CONFIG_DIR}:/config
+      - ${CACHE_DIR}:/cache
+      - type: bind
+        source: ${MEDIA_DIR}
+        target: /media
+    restart: "unless-stopped"
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://${HOSTNAME}
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

@@ -59,6 +59,12 @@ monitored_endpoints:
     interval: 60s
     group: "Services"
 
+  - name: "Jellyfin"
+    url: "https://jellyfin.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
   - name: "Satisfactory"
     url: "tcp://{{ external_hostname }}:7777"
     interval: 60s

@@ -42,6 +42,15 @@
     mode: '0755'
   become: true
 
+- name: Ensure homelab cache directory exists
+  ansible.builtin.file:
+    path: "{{ cache_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
 - name: "Get service user info"
   ansible.builtin.getent:
     database: passwd

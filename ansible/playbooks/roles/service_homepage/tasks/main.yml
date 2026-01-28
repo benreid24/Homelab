@@ -16,3 +16,6 @@
       - src_template_path: docker.yaml.j2
         dst_template_path: config/config/docker.yaml
         file_mode: "0600"
+      - src_template_path: bookmarks.yaml.j2
+        dst_template_path: config/config/bookmarks.yaml
+        file_mode: "0600"
