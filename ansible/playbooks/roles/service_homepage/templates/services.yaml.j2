@@ -96,12 +96,25 @@
       description: Project management and tracking
       server: overseer-docker
       container: leantime
+- Media:
   - Jellyfin:
       href: https://jellyfin.{{ overseer_hostname }}
       icon: https://jellyfin.{{ overseer_hostname }}/web/favicons/touchicon114.png
       description: Media server and streaming
       server: overseer-docker
       container: jellyfin
+  - qBittorrent:
+      href: https://qbit.{{ overseer_hostname }}
+      icon: https://qbit.{{ overseer_hostname }}/images/qbittorrent32.png
+      description: Torrent client for media downloads
+      server: overseer-docker
+      container: qbittorrent
+  - Gluetun:
+      href: https://qbit.{{ overseer_hostname }}
+      icon: proton-vpn.svg
+      description: VPN client for secure torrenting
+      server: overseer-docker
+      container: gluetun
 - MiddleRow:
   - Home Audio:
     - Playback Control:

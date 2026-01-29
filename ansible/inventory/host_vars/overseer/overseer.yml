@@ -12,6 +12,8 @@ certbot_env: prod
 
 data_path: /mnt/data/homelab/data
 media_path: /mnt/data/homelab/media
+torrent_path: /mnt/data/homelab/torrents/complete
+torrent_incomplete_path: /mnt/data/homelab/torrents/incomplete
 backup_dst_path: "/homelab-backups"
 
 spotify_audio_name: "Home%20Audio"

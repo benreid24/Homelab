@@ -13,7 +13,10 @@ useEqualHeights: true
 layout:
   Services:
     style: row
-    columns: 6
+    columns: 5
+  Media:
+    style: row
+    columns: 3
   MiddleRow:
     style: row
     columns: 6

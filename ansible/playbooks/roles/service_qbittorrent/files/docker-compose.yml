@@ -1,0 +1,61 @@
+services:
+  gluetun:
+    image: ghcr.io/qdm12/gluetun:latest
+    container_name: gluetun
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    environment:
+      - TZ=${TZ}
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=United States
+      - VPN_PORT_FORWARDING=on
+      - QBT_WEBUI_ENABLED=true
+      - PORT_FORWARD_ONLY=true
+    volumes:
+      - ${GLUETUN_CONFIG_DIR}:/gluetun
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://google.com"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - homelab
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+      - QBITTORRENT_INTERFACE=tun0
+      - DOCKER_MODS=ghcr.io/t-anc/gsp-qbittorent-gluetun-sync-port-mod:main # Port Forwarding Mod (Syncs qBittorrent with Gluetun)
+      - GSP_GTN_API_KEY=${GSP_GTN_API_KEY:-randomapikey}  # API key for port forwarding updates
+      - GSP_QBITTORRENT_PORT=${GSP_QBITTORRENT_PORT:-53764}  # Torrenting port (auto-updated by Gluetun)
+      - GSP_MINIMAL_LOGS=false
+    volumes:
+      - ${QBITTORRENT_CONFIG_DIR}:/config
+      - ${QBITTORRENT_INCOMPLETE_DIR}:/incomplete  # Temporary download location (reduces SSD wear)
+      - ${QBITTORRENT_DOWNLOADS_DIR}:/downloads  # Completed torrents move here
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 65536  # Increases allowed open files (important for high-speed torrenting)
+
+networks:
+  homelab:
+    external: true

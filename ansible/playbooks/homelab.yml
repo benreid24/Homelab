@@ -47,6 +47,7 @@
     - service_komodo
     - service_redbot
     - service_jellyfin
+    - service_qbittorrent
     - service_seafile
     - service_seafile_client
     - service_immich

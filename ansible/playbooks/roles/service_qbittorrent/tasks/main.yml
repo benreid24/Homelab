@@ -1,0 +1,36 @@
+- name: Ensure qBittorrent incomplete downloads dir exists
+  ansible.builtin.file:
+    path: "{{ torrent_incomplete_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: Ensure qBittorrent downloads dir exists
+  ansible.builtin.file:
+    path: "{{ torrent_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0755'
+  become: true
+
+- name: Setup qBittorrent service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: qBittorrent
+    reverse_proxy: reverse_proxy.conf.j2
+    env_content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      TZ={{ timezone }}
+      QBITTORRENT_CONFIG_DIR={{ services_data_path }}/qBittorrent/config
+      QBITTORRENT_INCOMPLETE_DIR={{ torrent_incomplete_path }}
+      QBITTORRENT_DOWNLOADS_DIR={{ torrent_path }}
+      GLUETUN_CONFIG_DIR={{ services_data_path }}/qBittorrent/gluetun
+      OPENVPN_USER={{ qbittorrent_vpn_openvpn_user }}
+      OPENVPN_PASSWORD={{ qbittorrent_vpn_openvpn_password }}
+      GSP_GTN_API_KEY={{ qbittorrent_gsp_gtn_api_key }}
+    config_copies:
+      - src_config_path: .
