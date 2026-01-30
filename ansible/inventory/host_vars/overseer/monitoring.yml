@@ -65,6 +65,30 @@ monitored_endpoints:
     interval: 60s
     group: "Services"
 
+  - name: "Sonarr"
+    url: "https://sonarr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Prowlarr"
+    url: "https://prowlarr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "FlareSolverr"
+    url: "https://flaresolverr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+  
+  - name: "qBittorrent"
+    url: "https://qbit.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
   - name: "Satisfactory"
     url: "tcp://{{ external_hostname }}:7777"
     interval: 60s

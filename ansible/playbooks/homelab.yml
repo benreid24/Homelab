@@ -48,6 +48,8 @@
     - service_redbot
     - service_jellyfin
     - service_qbittorrent
+    - service_prowlarr
+    - service_sonarr
     - service_seafile
     - service_seafile_client
     - service_immich

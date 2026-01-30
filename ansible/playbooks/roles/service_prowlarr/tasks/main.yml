@@ -1,0 +1,12 @@
+- name: Setup Prowlarr service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Prowlarr
+    reverse_proxy: reverse_proxy.conf.j2
+    env_content: |
+      PUID={{ service_uid }}
+      PGID={{ service_gid }}
+      TZ={{ timezone }}
+      CONFIG_PATH={{ services_data_path }}/Prowlarr
+    config_copies:
+      - src_config_path: .

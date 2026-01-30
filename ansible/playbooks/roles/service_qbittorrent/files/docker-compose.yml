@@ -49,8 +49,7 @@ services:
       - GSP_MINIMAL_LOGS=false
     volumes:
       - ${QBITTORRENT_CONFIG_DIR}:/config
-      - ${QBITTORRENT_INCOMPLETE_DIR}:/incomplete  # Temporary download location (reduces SSD wear)
-      - ${QBITTORRENT_DOWNLOADS_DIR}:/downloads  # Completed torrents move here
+      - ${QBITTORRENT_MEDIA_DIR}:/media
     ulimits:
       nofile:
         soft: 32768

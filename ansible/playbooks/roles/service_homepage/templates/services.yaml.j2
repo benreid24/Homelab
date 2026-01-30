@@ -103,6 +103,24 @@
       description: Media server and streaming
       server: overseer-docker
       container: jellyfin
+  - Sonarr:
+      href: https://sonarr.{{ overseer_hostname }}
+      icon: https://sonarr.{{ overseer_hostname }}/favicon.ico
+      description: Automatic TV show downloader
+      server: overseer-docker
+      container: sonarr
+  - Prowlarr:
+      href: https://prowlarr.{{ overseer_hostname }}
+      icon: https://prowlarr.{{ overseer_hostname }}/favicon.ico
+      description: Torrent indexer bridge
+      server: overseer-docker
+      container: prowlarr
+  - FlareSolverr:
+      href: https://flaresolverr.{{ overseer_hostname }}
+      icon: https://flaresolverr.{{ overseer_hostname }}/favicon.ico
+      description: Bypass for web-based captchas
+      server: overseer-docker
+      container: flaresolverr
   - qBittorrent:
       href: https://qbit.{{ overseer_hostname }}
       icon: https://qbit.{{ overseer_hostname }}/images/qbittorrent32.png

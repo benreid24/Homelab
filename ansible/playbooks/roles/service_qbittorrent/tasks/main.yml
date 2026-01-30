@@ -4,7 +4,7 @@
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: Ensure qBittorrent downloads dir exists
@@ -13,7 +13,7 @@
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0755'
+    mode: "0755"
   become: true
 
 - name: Setup qBittorrent service
@@ -26,8 +26,7 @@
       PGID={{ service_gid }}
       TZ={{ timezone }}
       QBITTORRENT_CONFIG_DIR={{ services_data_path }}/qBittorrent/config
-      QBITTORRENT_INCOMPLETE_DIR={{ torrent_incomplete_path }}
-      QBITTORRENT_DOWNLOADS_DIR={{ torrent_path }}
+      QBITTORRENT_MEDIA_DIR={{ media_parent_path }}
       GLUETUN_CONFIG_DIR={{ services_data_path }}/qBittorrent/gluetun
       OPENVPN_USER={{ qbittorrent_vpn_openvpn_user }}
       OPENVPN_PASSWORD={{ qbittorrent_vpn_openvpn_password }}

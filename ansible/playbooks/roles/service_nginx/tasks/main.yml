@@ -1,3 +1,17 @@
+- name: Clean up existing sites-enabled configs
+  ansible.builtin.find:
+    paths: "{{ nginx.config_local_path }}/sites-enabled"
+    patterns: "*.conf"
+  register: sites_enabled_files
+
+- name: Remove existing sites-enabled configs
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ sites_enabled_files.files }}"
+  when: sites_enabled_files.files is defined
+  become: true
+
 - name: Ensure nginx Cloudflare credentials directory exists
   ansible.builtin.file:
     path: "{{ nginx.cloudflare_credentials_path | dirname }}"
