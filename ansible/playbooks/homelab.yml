@@ -50,6 +50,8 @@
     - service_qbittorrent
     - service_prowlarr
     - service_sonarr
+    - service_radarr
+    - service_bazarr
     - service_seafile
     - service_seafile_client
     - service_immich

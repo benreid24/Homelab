@@ -14,9 +14,26 @@ layout:
   Services:
     style: row
     columns: 5
-  Media:
+  MediaRow:
     style: row
-    columns: 6
+    columns: 5
+    header: false
+    Media:
+      style: column
+      rows: 1
+    Acquisition:
+      style: column
+      rows: 2
+    Acquisition2:
+      style: column
+      rows: 2
+      header: " "
+    Indexing:
+      style: column
+      rows: 2
+    Torrenting:
+      style: column
+      rows: 2
   MiddleRow:
     style: row
     columns: 6

@@ -34,7 +34,9 @@
     env_content: |
       PUID={{ service_uid }}
       PGID={{ service_gid }}
+      TZ={{ timezone }}
       CONFIG_DIR={{ services_data_path }}/Jellyfin/config
+      CONFIG_JELLYSEERR_DIR={{ services_data_path }}/Jellyfin/jellyseerr
       CACHE_DIR={{ cache_path }}/Jellyfin
       MEDIA_DIR={{ media_path }}
       HOSTNAME=jellyfin.{{ external_hostname }}

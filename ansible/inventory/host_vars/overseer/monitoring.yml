@@ -65,8 +65,26 @@ monitored_endpoints:
     interval: 60s
     group: "Services"
 
+  - name: "Jellyseerr"
+    url: "https://jellyseerr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
+  - name: "Bazarr"
+    url: "https://bazarr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+
   - name: "Sonarr"
     url: "https://sonarr.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Services"
+  
+  - name: "Radarr"
+    url: "https://radarr.{{ external_hostname }}"
     method: GET
     interval: 60s
     group: "Services"

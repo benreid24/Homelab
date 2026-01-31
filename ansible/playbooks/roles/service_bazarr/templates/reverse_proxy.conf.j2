@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/common/server_common.conf;
+    server_name bazarr.{{ external_hostname }};
+
+    location / {
+        set $upstream http://gluetun:6767;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
+    }
+}

@@ -96,43 +96,74 @@
       description: Project management and tracking
       server: overseer-docker
       container: leantime
-- Media:
-  - Jellyfin:
-      href: https://jellyfin.{{ overseer_hostname }}
-      icon: https://jellyfin.{{ overseer_hostname }}/web/favicons/touchicon114.png
-      description: Media server and streaming
-      server: overseer-docker
-      container: jellyfin
-  - Sonarr:
-      href: https://sonarr.{{ overseer_hostname }}
-      icon: https://sonarr.{{ overseer_hostname }}/favicon.ico
-      description: Automatic TV show downloader
-      server: overseer-docker
-      container: sonarr
-  - Prowlarr:
-      href: https://prowlarr.{{ overseer_hostname }}
-      icon: https://prowlarr.{{ overseer_hostname }}/favicon.ico
-      description: Torrent indexer bridge
-      server: overseer-docker
-      container: prowlarr
-  - FlareSolverr:
-      href: https://flaresolverr.{{ overseer_hostname }}
-      icon: https://flaresolverr.{{ overseer_hostname }}/favicon.ico
-      description: Bypass for web-based captchas
-      server: overseer-docker
-      container: flaresolverr
-  - qBittorrent:
-      href: https://qbit.{{ overseer_hostname }}
-      icon: https://qbit.{{ overseer_hostname }}/images/qbittorrent32.png
-      description: Torrent client for media downloads
-      server: overseer-docker
-      container: qbittorrent
-  - Gluetun:
-      href: https://qbit.{{ overseer_hostname }}
-      icon: proton-vpn.svg
-      description: VPN client for secure torrenting
-      server: overseer-docker
-      container: gluetun
+- MediaRow:
+  - Media:
+    - Jellyfin:
+        href: https://jellyfin.{{ overseer_hostname }}
+        icon: https://jellyfin.{{ overseer_hostname }}/web/favicons/touchicon114.png
+        description: Media server and streaming
+        server: overseer-docker
+        container: jellyfin
+  - Acquisition:
+    - Sonarr:
+        href: https://sonarr.{{ overseer_hostname }}
+        icon: https://sonarr.{{ overseer_hostname }}/favicon.ico
+        description: Automatic TV show downloader
+        server: overseer-docker
+        container: sonarr
+        showStats: false
+    - Radarr:
+        href: https://radarr.{{ overseer_hostname }}
+        icon: https://radarr.{{ overseer_hostname }}/favicon.ico
+        description: Automatic movie downloader
+        server: overseer-docker
+        container: radarr
+        showStats: false
+  - Acquisition2:
+    - Bazarr:
+        href: https://bazarr.{{ overseer_hostname }}
+        icon: https://bazarr.{{ overseer_hostname }}/images/favicon.ico
+        description: Subtitle downloader and manager
+        server: overseer-docker
+        container: bazarr
+        showStats: false
+    - Jellyseerr:
+        href: https://jellyseerr.{{ overseer_hostname }}
+        icon: https://jellyseerr.{{ overseer_hostname }}/favicon-32x32.png
+        description: Media request management for Jellyfin
+        server: overseer-docker
+        container: jellyseerr
+        showStats: false
+  - Indexing:
+    - Prowlarr:
+        href: https://prowlarr.{{ overseer_hostname }}
+        icon: https://prowlarr.{{ overseer_hostname }}/favicon.ico
+        description: Torrent indexer bridge
+        server: overseer-docker
+        container: prowlarr
+        showStats: false
+    - FlareSolverr:
+        href: https://flaresolverr.{{ overseer_hostname }}
+        icon: mdi-flare-#bfbf0a
+        description: Bypass for web-based captchas
+        server: overseer-docker
+        container: flaresolverr
+        showStats: false
+  - Torrenting:
+    - qBittorrent:
+        href: https://qbit.{{ overseer_hostname }}
+        icon: https://qbit.{{ overseer_hostname }}/images/qbittorrent32.png
+        description: Torrent client for media downloads
+        server: overseer-docker
+        container: qbittorrent
+        showStats: false
+    - Gluetun:
+        href: https://qbit.{{ overseer_hostname }}
+        icon: proton-vpn.svg
+        description: VPN client for secure torrenting
+        server: overseer-docker
+        container: gluetun
+        showStats: false
 - MiddleRow:
   - Home Audio:
     - Playback Control:

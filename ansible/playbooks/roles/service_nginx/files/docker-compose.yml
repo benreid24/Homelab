@@ -12,7 +12,8 @@ services:
       - ${LOGS_PATH}:/var/log/nginx
     restart: unless-stopped
     networks:
-      - homelab
+      homelab:
+        ipv4_address: 172.20.0.10
 
   certbot:
     image: certbot/dns-cloudflare

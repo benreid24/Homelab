@@ -8,3 +8,15 @@ server {
         include /etc/nginx/common/proxy_common.conf;
     }
 }
+
+server {
+    include /etc/nginx/common/server_common.conf;
+    server_name jellyseerr.{{ external_hostname }};
+
+    location / {
+        set $upstream http://jellyseerr:5055;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
+    }
+}

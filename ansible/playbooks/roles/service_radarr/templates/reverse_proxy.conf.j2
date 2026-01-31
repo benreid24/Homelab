@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/common/server_common.conf;
+    server_name radarr.{{ external_hostname }};
+
+    location / {
+        set $upstream http://gluetun:7878;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
+    }
+}
