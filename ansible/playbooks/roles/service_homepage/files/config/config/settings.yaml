@@ -24,10 +24,9 @@ layout:
     Acquisition:
       style: column
       rows: 2
-    Acquisition2:
+    " ":
       style: column
       rows: 2
-      header: " "
     Indexing:
       style: column
       rows: 2
