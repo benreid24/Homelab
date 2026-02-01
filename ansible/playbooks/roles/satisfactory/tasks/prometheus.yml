@@ -1,0 +1,38 @@
+- name: "Set Satisfactory exporter fact"
+  ansible.builtin.set_fact:
+    satisfactory_exporter_path: "{{ services_config_path }}/Satisfactory/prometheus_exporter"
+
+- name: "Clone Prometheus exporter repository"
+  ansible.builtin.git:
+    repo: "https://github.com/Shinigami92/satisfactory-server-prometheus-exporter.git"
+    dest: "{{ satisfactory_exporter_path }}"
+    version: "main"
+    force: true
+  become: true
+  become_user: "{{ service_user }}"
+
+- name: "Write Satisfactory exporter configuration"
+  ansible.builtin.copy:
+    dest: "{{ satisfactory_exporter_path }}/.env"
+    content: |
+      ACCESS_TOKEN={{ satisfactory_server_access_token }}
+      HOST_IP={{ overseer_ip }}
+    mode: "0600"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+
+- name: "Copy custom compose file for Satisfactory exporter"
+  ansible.builtin.copy:
+    src: ./files/compose.yaml
+    dest: "{{ satisfactory_exporter_path }}/compose.yaml"
+    mode: "0644"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+
+- name: "Start Satisfactory Prometheus exporter container"
+  ansible.builtin.shell:
+    chdir: "{{ satisfactory_exporter_path }}"
+    cmd: docker compose up -d --build
+  become: true

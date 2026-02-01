@@ -1,0 +1,18 @@
+services:
+  satisfactory-prometheus:
+    build:
+      context: .
+    container_name: satisfactory-prometheus
+    environment:
+      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - BASE_URL=https://${HOST_IP}:7777/api
+      - HOST=0.0.0.0
+      - PORT=9777
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

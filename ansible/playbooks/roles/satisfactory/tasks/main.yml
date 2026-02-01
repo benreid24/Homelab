@@ -62,3 +62,6 @@
     job: "systemctl restart satisfactory.service"
     user: root
   become: true
+
+- name: "Setup Satisfactory Prometheus exporter"
+  include_tasks: ./prometheus.yml
