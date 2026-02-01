@@ -1,0 +1,18 @@
+services:
+  gpu-exporter:
+    image: nvcr.io/nvidia/k8s/dcgm-exporter:4.5.1-4.8.0-distroless
+    container_name: gpu-exporter
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    cap_add:
+      - SYS_ADMIN
+    restart: unless-stopped
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

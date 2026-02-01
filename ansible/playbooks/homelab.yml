@@ -17,6 +17,7 @@
     - service_seafile_client
     - service_homepage
     - infra_cadvisor
+    - infra_node_exporter
     - infra_gatus
 
 - name: Provision Onsite Pi
@@ -34,6 +35,7 @@
     - service_seafile_client
     - service_homepage
     - infra_cadvisor
+    - infra_node_exporter
     - infra_gatus
 
 - name: Provision Overseer
@@ -71,5 +73,7 @@
     - steam
     - satisfactory
     - infra_cadvisor
+    - infra_node_exporter
+    - infra_gpu_exporter
     - infra_prometheus
     - infra_gatus

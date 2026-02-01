@@ -1,0 +1,11 @@
+server {
+    include /etc/nginx/common/server_common.conf;
+    server_name gpu-prom.{{ external_hostname }};
+
+    location / {
+        set $upstream http://gpu-exporter:9400;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+        include /etc/nginx/common/internal_only.conf;
+    }
+}

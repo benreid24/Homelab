@@ -1,0 +1,6 @@
+- name: Setup node exporter service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: node_exporter
+    config_copies:
+      - src_config_path: .
