@@ -1,0 +1,21 @@
+- name: Create Prometheus data subdirectory
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Prometheus/data"
+    state: directory
+    mode: "0755"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  become: true
+
+- name: Setup Prometheus service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Prometheus
+    reverse_proxy: reverse_proxy.conf.j2
+    env_content: |
+      PROMETHEUS_DATA_PATH={{ services_data_path }}/Prometheus
+    config_copies:
+      - src_config_path: .
+    templates:
+      - src_template_path: prometheus.yml.j2
+        dst_template_path: prometheus.yml

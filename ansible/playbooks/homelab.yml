@@ -12,11 +12,12 @@
     - docker
     - docker_proxy
     - smb_host
-    - service_nginx
-    - service_komodo
+    - infra_nginx
+    - infra_komodo
     - service_seafile_client
     - service_homepage
-    - service_gatus
+    - infra_cadvisor
+    - infra_gatus
 
 - name: Provision Onsite Pi
   hosts: onsite_pi
@@ -27,12 +28,13 @@
     - docker
     - docker_proxy
     - smb_host
-    - service_nginx
-    - service_adguard
-    - service_komodo
+    - infra_nginx
+    - infra_adguard
+    - infra_komodo
     - service_seafile_client
     - service_homepage
-    - service_gatus
+    - infra_cadvisor
+    - infra_gatus
 
 - name: Provision Overseer
   hosts: overseer
@@ -42,9 +44,9 @@
     - common
     - docker
     - docker_proxy
-    - service_adguard
-    - service_nginx
-    - service_komodo
+    - infra_adguard
+    - infra_nginx
+    - infra_komodo
     - service_redbot
     - service_jellyfin
     - service_qbittorrent
@@ -55,9 +57,9 @@
     - service_seafile
     - service_seafile_client
     - service_immich
-    - service_ddns
+    - infra_ddns
     - service_homeassistant
-    - service_omada
+    - infra_omada
     - service_snapcast
     - service_msync
     - service_mealie
@@ -68,4 +70,6 @@
     - cron_raid_check
     - steam
     - satisfactory
-    - service_gatus
+    - infra_cadvisor
+    - infra_prometheus
+    - infra_gatus

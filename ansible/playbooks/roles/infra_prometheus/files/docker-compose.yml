@@ -1,0 +1,16 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "${PUID}:${PGID}"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ${PROMETHEUS_DATA_PATH}:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - homelab
+
+networks:
+  homelab:
+    external: true

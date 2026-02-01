@@ -1,9 +1,9 @@
 server {
     include /etc/nginx/common/server_common.conf;
-    server_name kuma.{{ external_hostname }};
+    server_name prometheus.{{ external_hostname }};
 
     location / {
-        set $upstream http://uptime-kuma:3001;
+        set $upstream http://prometheus:9090;
         proxy_pass $upstream;
         include /etc/nginx/common/proxy_common.conf;
         include /etc/nginx/common/internal_only.conf;

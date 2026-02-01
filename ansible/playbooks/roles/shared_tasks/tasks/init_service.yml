@@ -78,6 +78,7 @@
     group: "{{ service_group }}"
   when:
     - templates is defined
+    - template_item.dst_template_path is defined
     - template_item.dst_template_path | dirname != ''
   loop: "{{ templates | default([]) }}"
   loop_control:
@@ -170,7 +171,7 @@
   become: true
   when:
     - reverse_proxy is defined
-    - "'service_nginx' in ansible_play_role_names"
+    - "'infra_nginx' in ansible_play_role_names"
 
 - name: "Template {{ service_name }} reverse proxy config"
   ansible.builtin.template:
@@ -182,5 +183,5 @@
   become: true
   when:
     - reverse_proxy is defined
-    - "'service_nginx' in ansible_play_role_names"
+    - "'infra_nginx' in ansible_play_role_names"
   notify: restart nginx
