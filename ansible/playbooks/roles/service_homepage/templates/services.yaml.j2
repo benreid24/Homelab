@@ -336,6 +336,10 @@
           url: https://grafana.{{ overseer_hostname }}
           username: admin
           password: {{ grafana_admin_password }}
+          fields:
+            - dashboards
+            - datasources
+            - alertstriggered
     - Prometheus:
         href: https://prometheus.{{ overseer_hostname }}
         icon: https://prometheus.{{ overseer_hostname }}/favicon.svg
