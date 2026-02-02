@@ -127,6 +127,36 @@ monitored_endpoints:
     interval: 60s
     group: "Music Sync"
 
+  - name: "cAdvisor - Overseer"
+    url: "https://cadvisor.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "GPU Exporter - Overseer"
+    url: "https://gpu-prom.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "Node Exporter - Overseer"
+    url: "http://{{ overseer_ip }}:9100/metrics"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "Prometheus"
+    url: "https://prometheus.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "Grafana"
+    url: "https://grafana.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
 push_monitors:
   - name: "mSync Scanned"
     group: "Music Sync"

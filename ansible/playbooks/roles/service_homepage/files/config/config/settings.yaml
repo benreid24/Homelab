@@ -13,14 +13,14 @@ useEqualHeights: true
 layout:
   Services:
     style: row
-    columns: 5
+    columns: 6
   MediaRow:
     style: row
     columns: 5
     header: false
     Media:
       style: column
-      rows: 1
+      rows: 2
     Acquisition:
       style: column
       rows: 2
@@ -58,17 +58,9 @@ layout:
   Infrastructure:
     style: row
     columns: 6
-  BottomRow:
-    header: false
+  Monitoring & Observability:
     style: row
-    columns: 2
-    LeftColumn:
-      style: row
-      columns: 3
-      header: false
-    Monitoring:
-      style: row
-      columns: 3
+    columns: 6
 
 headerStyle: boxed
 background:

@@ -4,3 +4,15 @@ monitored_endpoints:
     method: GET
     interval: 60s
     group: "Monitoring"
+
+  - name: "cAdvisor - Offsite Pi"
+    url: "https://cadvisor.{{ external_hostname }}"
+    method: GET
+    interval: 60s
+    group: "Monitoring"
+
+  - name: "Node Exporter - Offsite Pi"
+    url: "http://{{ offsite_pi_ip }}:9100/metrics"
+    method: GET
+    interval: 60s
+    group: "Monitoring"

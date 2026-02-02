@@ -76,4 +76,5 @@
     - infra_node_exporter
     - infra_gpu_exporter
     - infra_prometheus
+    - infra_grafana
     - infra_gatus

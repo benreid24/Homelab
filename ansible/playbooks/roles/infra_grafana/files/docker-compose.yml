@@ -1,0 +1,39 @@
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    user: "${PUID}:${PGID}"
+    volumes:
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
+      - ${DATA_PATH}/grafana:/var/lib/grafana
+    networks:
+      - homelab
+      - grafana-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: grafana-postgres
+    image: postgres:17
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    volumes:
+      - ${DATA_PATH}/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: grafana
+      POSTGRES_USER: grafana
+      PGUSER: grafana
+      POSTGRES_DB: grafana
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - grafana-network
+
+networks:
+  homelab:
+    external: true
+  grafana-network:

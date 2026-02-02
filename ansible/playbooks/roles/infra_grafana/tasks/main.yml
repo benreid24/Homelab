@@ -1,0 +1,13 @@
+- name: Setup Grafana service
+  include_tasks: ../../shared_tasks/tasks/init_service.yml
+  vars:
+    service_name: Grafana
+    reverse_proxy: reverse_proxy.conf.j2
+    env_content: |
+      DATA_PATH={{ services_data_path }}/Grafana
+    config_copies:
+      - src_config_path: .
+    templates:
+      - src_template_path: grafana.ini.j2
+        dst_template_path: grafana.ini
+        file_mode: "0600"

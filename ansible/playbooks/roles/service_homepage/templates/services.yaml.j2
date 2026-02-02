@@ -96,6 +96,23 @@
       description: Project management and tracking
       server: overseer-docker
       container: leantime
+  - Satisfactory:
+      icon: /icons/satisfactory.png
+      description: Satisfactory game server
+      widget:
+        type: customapi
+        url: https://{{ overseer_ip }}:7777/api/v1
+        method: POST
+        headers:
+            Content-Type: application/json
+        requestBody:
+            function: HealthCheck
+            data:
+              ClientCustomData: {}
+        mappings:
+          - field: data.health
+            label: Status
+            format: text
 - MediaRow:
   - Media:
     - Jellyfin:
@@ -104,6 +121,13 @@
         description: Media server and streaming
         server: overseer-docker
         container: jellyfin
+        showStats: false
+    - Redbot:
+        description: Discord bot for music
+        server: overseer-docker
+        container: redbot
+        icon: mdi-robot-#cc2316
+        showStats: false
   - Acquisition:
     - Sonarr:
         href: https://sonarr.{{ overseer_hostname }}
@@ -285,47 +309,44 @@
         container: certbot
         showStats: false
 
-- BottomRow:
-  - LeftColumn:
-    - Energy:
-      - Power Usage:
-          href: https://ha.{{ overseer_hostname }}/dashboard-power/0
-          description: Current power consumption
-          icon: mdi-lightning-bolt-circle-#bfc930
-          widget:
-            type: homeassistant
-            url: https://ha.{{ overseer_hostname }}
-            key: {{ homepage_ha_token }}
-            custom:
-              - template: "{% raw %}{{ states('sensor.emporiavue2_total_power') | float(0) | round(0) }} W{% endraw %}"
-                label: Active Draw
-              - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
-                label: Used Today
-    - Bots:
-      - Redbot:
-          description: Discord bot for music
-          server: overseer-docker
-          container: redbot
-          icon: mdi-robot-#cc2316
-    - Games:
-       - Satisfactory:
-          icon: /icons/satisfactory.png
-          description: Satisfactory game server
-          widget:
-            type: customapi
-            url: https://{{ overseer_ip }}:7777/api/v1
-            method: POST
-            headers:
-              Content-Type: application/json
-            requestBody:
-              function: HealthCheck
-              data:
-                ClientCustomData: {}
-            mappings:
-              - field: data.health
-                label: Status
-                format: text
-  - Monitoring:
+- Monitoring & Observability:
+    - Power Usage:
+        href: https://ha.{{ overseer_hostname }}/dashboard-power/0
+        description: Current power consumption
+        icon: mdi-lightning-bolt-circle-#bfc930
+        widget:
+          type: homeassistant
+          url: https://ha.{{ overseer_hostname }}
+          key: {{ homepage_ha_token }}
+          custom:
+            - template: "{% raw %}{{ states('sensor.emporiavue2_total_power') | float(0) | round(0) }} W{% endraw %}"
+              label: Active Draw
+            - template: "{% raw %}{{ (states('sensor.emporiavue2_total_daily_energy') | float(0) / float(1000)) | round(1) }} KWh{% endraw %}"
+              label: Used Today
+
+    - Grafana:
+        href: https://grafana.{{ overseer_hostname }}
+        icon: https://grafana.{{ overseer_hostname }}/public/img/fav32.png
+        description: Metrics dashboard and visualization
+        server: overseer-docker
+        container: grafana
+        showStats: false
+        widget:
+          type: grafana
+          url: https://grafana.{{ overseer_hostname }}
+          username: admin
+          password: {{ grafana_admin_password }}
+    - Prometheus:
+        href: https://prometheus.{{ overseer_hostname }}
+        icon: https://prometheus.{{ overseer_hostname }}/favicon.svg
+        description: Metrics collection and storage
+        server: overseer-docker
+        container: prometheus
+        showStats: false
+        widget:
+          type: prometheus
+          url: https://prometheus.{{ overseer_hostname }}
+
     - Gatus Primary:
         href: https://gatus.{{ overseer_hostname }}
         icon: https://gatus.{{ overseer_hostname }}/favicon-32x32.png
