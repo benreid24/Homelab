@@ -25,3 +25,10 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['satisfactory-prometheus:9777']
+
+  - job_name: 'immich_prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - "immich_server:8081"
+        - "immich_server:8082"
