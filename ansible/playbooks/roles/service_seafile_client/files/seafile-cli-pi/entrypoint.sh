@@ -48,6 +48,23 @@ fi
 
 # 4. Download libraries
 if [ -n "$LIBRARY_IDS" ]; then
+  # Check if daemon logs show server resolution errors (indicates wrong URL)
+  if [ -f "$SEAFILE_CONF_DIR/logs/seafile.log" ]; then
+    if grep -q "Couldn't resolve host name" "$SEAFILE_CONF_DIR/logs/seafile.log" || \
+       grep -q "Cannot resolve server address" "$SEAFILE_CONF_DIR/logs/seafile.log"; then
+      echo "[seaf-cli] Detected server resolution errors in logs, desyncing all libraries..."
+      # Desync each library folder in the data directory
+      for lib_folder in "$DATA_DIR"/*/ ; do
+        if [ -d "$lib_folder" ]; then
+          echo "[seaf-cli] Desyncing ${lib_folder}..."
+          seaf-cli desync -c "$SEAFILE_CONF_DIR" -d "${lib_folder%/}" || true
+        fi
+      done
+      # Clear the log to prevent re-triggering on next restart
+      > "$SEAFILE_CONF_DIR/logs/seafile.log"
+    fi
+  fi
+  
   IFS=',' read -ra LIB_ARRAY <<< "$LIBRARY_IDS"
 
   for LIB_ID in "${LIB_ARRAY[@]}"; do
