@@ -1,8 +1,8 @@
 services:
   seafile-client:
     build:
-      context: ./${BUILD_CTX}
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ${BUILD_CTX}/Dockerfile
     container_name: seafile-client
     restart: unless-stopped
     devices:
@@ -14,8 +14,9 @@ services:
     environment:
       - SEAFILE_CLI_SERVER_URL=${SEAFILE_CLI_SERVER_URL}
       - SEAFILE_CLI_USERNAME=${SEAFILE_CLI_USERNAME}
-      - SEAFILE_CLI_TOKEN=${SEAFILE_CLI_TOKEN}
+      - SEAFILE_CLI_PASSWORD=${SEAFILE_CLI_PASSWORD}
       - SEAFILE_CLI_LIBRARY_IDS=${SEAFILE_CLI_LIBRARY_IDS}
+      - SEAFILE_CLI_USE_TOKEN=${SEAFILE_CLI_USE_TOKEN:-false}
       - SEAFILE_CLI_DATA_DIR=/data
       - SEAFILE_CLI_CONFIG_DIR=/config
     volumes:

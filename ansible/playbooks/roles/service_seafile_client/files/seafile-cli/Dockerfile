@@ -29,6 +29,7 @@ RUN mkdir -p \
     /data
 
 COPY entrypoint.sh /entrypoint.sh
+COPY sync_libraries.py /sync_libraries.py
 RUN chmod +x /entrypoint.sh
 
 # Default config location (maps cleanly to volume)

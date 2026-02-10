@@ -16,9 +16,10 @@
     env_content: |
       BUILD_CTX={{ 'seafile-cli-pi' if ansible_architecture == 'aarch64' else 'seafile-cli' }}
       SEAFILE_CLI_LIBRARY_IDS={{ seafile_library_ids | join(',') }}
-      SEAFILE_CLI_USERNAME={{ admin_email }}
-      SEAFILE_CLI_TOKEN={{ seafile_client_token if ansible_architecture != 'aarch64' else seafile_admin_password }}
+      SEAFILE_CLI_USERNAME={{ seafile_syncer_email }}
+      SEAFILE_CLI_PASSWORD={{ seafile_syncer_password }}
       SEAFILE_CLI_SERVER_URL=https://seafile.{{ overseer_hostname }}
+      SEAFILE_CLI_USE_TOKEN={{ 'false' if ansible_architecture == 'aarch64' else 'true' }}
       SEAFILE_CLI_CONFIG_PATH={{ services_data_path }}/Seafile/seafile-client
       SEAFILE_CLI_CLONE_PATH={{ seafile.clone_path }}
       NON_ROOT=true

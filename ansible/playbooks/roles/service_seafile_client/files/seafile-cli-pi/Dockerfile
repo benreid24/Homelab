@@ -17,6 +17,7 @@ WORKDIR /opt/seafile
 RUN mkdir -p /config /data
 
 COPY entrypoint.sh /entrypoint.sh
+COPY sync_libraries.py /sync_libraries.py
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/entrypoint.sh"]
