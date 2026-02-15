@@ -43,3 +43,27 @@
     job: "docker exec seafile /scripts/gc.sh"
     user: "{{ service_user }}"
   become: true
+
+- name: Ensure Seafile conf directory exists
+  ansible.builtin.file:
+    path: "{{ services_data_path }}/Seafile/data/seafile/conf"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+    recurse: true
+  become: true
+
+- name: Configure ALLOWED_HOSTS in seahub_settings.py
+  ansible.builtin.blockinfile:
+    path: "{{ services_data_path }}/Seafile/data/seafile/conf/seahub_settings.py"
+    marker: "# {mark} ANSIBLE MANAGED - ALLOWED_HOSTS"
+    block: |
+      ALLOWED_HOSTS = [
+          '.{{ external_hostname }}',
+          'seafile',
+          '127.0.0.1',
+          'localhost',
+      ]
+    create: true
+  become: true

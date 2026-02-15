@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Sync Seafile libraries using seaf-cli sync with library names from list-remote.
+"""Sync Seafile libraries using seaf-cli sync with library names from the API.
 
-On AppImage builds (USE_TOKEN=true), authentication is handled by this script
-using system Python to obtain an API token, because the AppImage's bundled
-Python has compatibility issues with some servers. The token is then passed
-to seaf-cli with -T. On non-AppImage builds, password auth (-p) is used directly.
+Authentication is always handled by this script using system Python to obtain
+an API token, because seaf-cli's bundled/system Python has compatibility issues
+with some servers. Remote library listing is done via direct API calls.
+For seaf-cli sync, -T (token) is used on AppImage builds, -p (password) on pi.
 """
 
 import json
@@ -34,26 +34,53 @@ def get_api_token(server_url, username, password):
         return None
 
 
-def get_remote_libraries(server_url, username, credential, conf_dir, use_token):
-    """Fetch remote libraries and return a dict of {id: name}."""
-    auth_flag = "-T" if use_token else "-p"
-    output = run([
-        "seaf-cli", "list-remote",
-        "-c", conf_dir,
-        "-s", server_url,
-        "-u", username,
-        auth_flag, credential,
-        "--json",
-    ])
-    if output is None:
+def get_remote_libraries(server_url, token):
+    """Fetch remote libraries via the Seafile API and return a dict of {id: name}."""
+    url = f"{server_url}/api2/repos/"
+    headers = {"Authorization": f"Token {token}"}
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        resp = urllib.request.urlopen(req)
+        repos = json.loads(resp.read().decode())
+        return {repo["id"]: repo["name"] for repo in repos}
+    except Exception as e:
+        print(f"[sync] Failed to fetch remote libraries: {e}", file=sys.stderr)
         return {}
 
-    try:
-        libraries = json.loads(output)
-        return {lib["id"]: lib["name"] for lib in libraries}
-    except:
-        print(f"[sync] Failed to parse list-remote output: {output}", file=sys.stderr)
-        raise Exception("Failed to parse list-remote output")
+
+PATCHED_SEAF_CLI = "/tmp/seaf-cli-patched"
+
+
+def patch_seaf_cli():
+    """Create a patched copy of seaf-cli that reads auth token from env var.
+
+    The pi's seaf-cli uses Python 3.9 urllib which gets 400 errors from the
+    server's auth endpoint. This patches get_token to return a pre-fetched
+    token from the SEAF_PREFETCHED_TOKEN env var instead.
+    """
+    seaf_cli_path = "/usr/bin/seaf-cli"
+    with open(seaf_cli_path, "r") as f:
+        source = f.read()
+
+    # Inject a token override at the very start of get_token
+    old = "def get_token(url, username, password, tfa, conf_dir):"
+    new = (
+        "def get_token(url, username, password, tfa, conf_dir):\n"
+        "    _env_token = __import__('os').environ.get('SEAF_PREFETCHED_TOKEN')\n"
+        "    if _env_token:\n"
+        "        return _env_token"
+    )
+    if old not in source:
+        print("[sync] Warning: could not patch seaf-cli, get_token signature not found",
+              file=sys.stderr)
+        return False
+
+    patched = source.replace(old, new, 1)
+    with open(PATCHED_SEAF_CLI, "w") as f:
+        f.write(patched)
+    os.chmod(PATCHED_SEAF_CLI, 0o755)
+    print("[sync] Patched seaf-cli to use pre-fetched token")
+    return True
 
 
 def run(cmd, check=True):
@@ -68,16 +95,26 @@ def run(cmd, check=True):
 
 def get_synced_libraries(conf_dir):
     """Return set of library IDs currently synced."""
+    # Try --json first
     output = run(["seaf-cli", "list", "-c", conf_dir, "--json"], check=False)
+    if output:
+        try:
+            libraries = json.loads(output)
+            return {lib["id"] for lib in libraries}
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+    # Fall back to plain text
+    output = run(["seaf-cli", "list", "-c", conf_dir], check=False)
     if not output:
         return set()
-
-    try:
-        libraries = json.loads(output)
-        return {lib["id"] for lib in libraries}
-    except (json.JSONDecodeError, KeyError):
-        print(f"[sync] Failed to parse list output: {output}", file=sys.stderr)
-        return set()
+    ids = set()
+    for line in output.splitlines():
+        # Look for UUID-shaped strings (36 chars with hyphens)
+        for part in line.split():
+            if len(part) == 36 and part.count("-") == 4:
+                ids.add(part)
+    return ids
 
 
 def desync_bad_libraries(conf_dir, data_dir, log_path):
@@ -116,17 +153,19 @@ def main():
         print("[sync] Missing required environment variables", file=sys.stderr)
         sys.exit(1)
 
-    # For AppImage builds, obtain a token via system Python to work around
-    # the bundled Python's auth issues
-    if use_token:
-        print("[sync] Authenticating via system Python...")
-        token = get_api_token(server_url, username, password)
-        if not token:
-            print("[sync] Failed to obtain API token", file=sys.stderr)
-            sys.exit(1)
-        credential = token
-    else:
-        credential = password
+    # Always authenticate via system Python (seaf-cli's Python has issues)
+    print("[sync] Authenticating via system Python...")
+    token = get_api_token(server_url, username, password)
+    if not token:
+        print("[sync] Failed to obtain API token", file=sys.stderr)
+        sys.exit(1)
+
+    # For pi builds, patch seaf-cli to use our pre-fetched token
+    seaf_cli_cmd = "seaf-cli"
+    if not use_token:
+        os.environ["SEAF_PREFETCHED_TOKEN"] = token
+        if patch_seaf_cli():
+            seaf_cli_cmd = PATCHED_SEAF_CLI
 
     wanted_ids = {lib_id.strip() for lib_id in library_ids_str.split(",") if lib_id.strip()}
 
@@ -144,7 +183,7 @@ def main():
 
     # Fetch remote library list to get names
     print("[sync] Fetching remote library list...")
-    remote_libs = get_remote_libraries(server_url, username, credential, conf_dir, use_token)
+    remote_libs = get_remote_libraries(server_url, token)
     if not remote_libs:
         print("[sync] Failed to fetch remote libraries", file=sys.stderr)
         sys.exit(1)
@@ -159,17 +198,20 @@ def main():
         os.makedirs(sync_path, exist_ok=True)
 
         print(f"[sync] Syncing library '{lib_name}' ({lib_id}) to {sync_path}...")
-        auth_flag = "-T" if use_token else "-p"
+        sync_cmd = [
+            seaf_cli_cmd, "sync",
+            "-c", conf_dir,
+            "-l", lib_id,
+            "-s", server_url,
+            "-d", sync_path,
+            "-u", username,
+        ]
+        if use_token:
+            sync_cmd += ["-T", token]
+        else:
+            sync_cmd += ["-p", password]
         result = subprocess.run(
-            [
-                "seaf-cli", "sync",
-                "-c", conf_dir,
-                "-l", lib_id,
-                "-s", server_url,
-                "-d", sync_path,
-                "-u", username,
-                auth_flag, credential,
-            ],
+            sync_cmd,
             capture_output=True,
             text=True,
         )
