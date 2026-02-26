@@ -71,7 +71,6 @@
     - cron_github_mirror
     - cron_raid_check
     - steam
-    - satisfactory
     - infra_cadvisor
     - infra_node_exporter
     - infra_gpu_exporter

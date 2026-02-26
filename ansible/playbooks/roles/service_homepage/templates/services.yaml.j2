@@ -96,23 +96,6 @@
       description: Project management and tracking
       server: overseer-docker
       container: leantime
-  - Satisfactory:
-      icon: /icons/satisfactory.png
-      description: Satisfactory game server
-      widget:
-        type: customapi
-        url: https://{{ overseer_ip }}:7777/api/v1
-        method: POST
-        headers:
-            Content-Type: application/json
-        requestBody:
-            function: HealthCheck
-            data:
-              ClientCustomData: {}
-        mappings:
-          - field: data.health
-            label: Status
-            format: text
 - MediaRow:
   - Media:
     - Jellyfin:

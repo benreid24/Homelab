@@ -107,20 +107,6 @@ monitored_endpoints:
     interval: 60s
     group: "Services"
 
-  - name: "Satisfactory"
-    url: "tcp://{{ external_hostname }}:7777"
-    interval: 60s
-    group: "Games"
-    conditions:
-      - "[CONNECTED] == true"
-
-  - name: "Satisfactory (Legacy)"
-    url: "tcp://sirgeorgelordofthevoid.com:7777"
-    interval: 60s
-    group: "Games"
-    conditions:
-      - "[CONNECTED] == true"
-
   - name: "mSync UI"
     url: "https://msync.{{ external_hostname }}"
     method: GET

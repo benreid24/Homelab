@@ -21,11 +21,6 @@ scrape_configs:
         - "cadvisor.{{ onsite_pi_hostname }}"
         - "cadvisor.{{ offsite_pi_hostname }}"
 
-  - job_name: 'satisfactory_prometheus'
-    scrape_interval: 5s
-    static_configs:
-      - targets: ['satisfactory-prometheus:9777']
-
   - job_name: 'immich_prometheus'
     scrape_interval: 5s
     static_configs:
