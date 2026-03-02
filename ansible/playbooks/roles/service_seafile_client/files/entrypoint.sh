@@ -29,14 +29,20 @@ max_sync_file_count = 2000000
 EOF
 fi
 
-# 2. Start daemon
+# 2. Set libraries read-only before starting daemon (DB can't be written while daemon runs)
+export SEAFILE_CONF_DIR
+export SEAFILE_CLI_DATA_DIR="$DATA_DIR"
+python3 /sync_libraries.py --set-readonly
+
+# 3. Start daemon
 echo "[seaf-cli] Starting daemon..."
 seaf-cli start -c "$SEAFILE_CONF_DIR"
 
-# Wait for daemon to be ready (socket file + status check)
+# Wait for daemon to be ready
+SEAFILE_DATA_DIR="$DATA_DIR/seafile-data"
 echo "[seaf-cli] Waiting for daemon..."
 for i in {1..60}; do
-  if [ -S "$SEAFILE_CONF_DIR/seafile.sock" ] || ls "$SEAFILE_CONF_DIR"/*.sock >/dev/null 2>&1; then
+  if [ -S "$SEAFILE_DATA_DIR/seafile.sock" ] || ls "$SEAFILE_DATA_DIR"/*.sock >/dev/null 2>&1; then
     if seaf-cli status -c "$SEAFILE_CONF_DIR" >/dev/null 2>&1; then
       echo "[seaf-cli] Daemon ready"
       break
@@ -48,8 +54,7 @@ for i in {1..60}; do
   sleep 1
 done
 
-# 3. Sync libraries
-export SEAFILE_CONF_DIR
+# 4. Sync libraries
 python3 /sync_libraries.py
 
 # 4. Keep container alive (daemon runs in background)

@@ -9,6 +9,7 @@ For seaf-cli sync, -T (token) is used on AppImage builds, -p (password) on pi.
 
 import json
 import os
+import sqlite3
 import subprocess
 import sys
 import urllib.request
@@ -140,6 +141,50 @@ def desync_bad_libraries(conf_dir, data_dir, log_path):
     open(log_path, "w").close()
 
 
+def set_libraries_readonly(conf_dir, data_dir, library_ids):
+    """Mark libraries as read-only in the daemon's SQLite DB.
+
+    This prevents the daemon from scanning for local changes and trying
+    to commit/upload them, which fails with read-only server permissions.
+    """
+    # repo.db lives in the seafile-data directory under the data dir
+    db_path = os.path.join(data_dir, "seafile-data", "repo.db")
+    if not os.path.exists(db_path):
+        print(f"[sync] Warning: {db_path} not found, can't set read-only", file=sys.stderr)
+        return
+
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        for lib_id in library_ids:
+            # Check if the repo exists in the RepoProperty table
+            cursor.execute(
+                "SELECT value FROM RepoProperty WHERE repo_id=? AND key='is-readonly'",
+                (lib_id,)
+            )
+            row = cursor.fetchone()
+            if row and row[0] == "true":
+                continue
+
+            if row:
+                cursor.execute(
+                    "UPDATE RepoProperty SET value='true' WHERE repo_id=? AND key='is-readonly'",
+                    (lib_id,)
+                )
+            else:
+                cursor.execute(
+                    "INSERT INTO RepoProperty (repo_id, key, value) VALUES (?, 'is-readonly', 'true')",
+                    (lib_id,)
+                )
+            print(f"[sync] Set library {lib_id} to read-only")
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[sync] Warning: Failed to set read-only: {e}", file=sys.stderr)
+
+
 def main():
     conf_dir = os.environ.get("SEAFILE_CONF_DIR")
     data_dir = os.environ.get("SEAFILE_CLI_DATA_DIR", "/data")
@@ -223,6 +268,23 @@ def main():
             if output:
                 print(f"[sync] {output}")
 
+    # Mark all libraries as read-only to prevent upload attempts
+    # Note: this is now done via --set-readonly before daemon starts
+
+
+def set_readonly_mode():
+    """Set all wanted libraries to read-only in the DB (daemon must be stopped)."""
+    data_dir = os.environ.get("SEAFILE_CLI_DATA_DIR", "/data")
+    conf_dir = os.environ.get("SEAFILE_CONF_DIR")
+    library_ids_str = os.environ.get("SEAFILE_CLI_LIBRARY_IDS", "")
+    wanted_ids = {lib_id.strip() for lib_id in library_ids_str.split(",") if lib_id.strip()}
+    if wanted_ids:
+        set_libraries_readonly(conf_dir, data_dir, wanted_ids)
+
 
 if __name__ == "__main__":
-    main()
+    import sys as _sys
+    if "--set-readonly" in _sys.argv:
+        set_readonly_mode()
+    else:
+        main()
