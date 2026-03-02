@@ -6,8 +6,8 @@ DATA_DIR="${SEAFILE_CLI_DATA_DIR:-/data}"
 
 SEAFILE_CONF_DIR="$CONFIG_DIR/seafile"
 
-# Ensure dirs exist
-mkdir -p "$CONFIG_DIR" "$DATA_DIR"
+# Ensure dirs exist (seafile-data needed by seaf-cli for device ID)
+mkdir -p "$CONFIG_DIR" "$DATA_DIR" "$DATA_DIR/seafile-data"
 
 # 1. Init config if missing
 # seaf-cli init requires the config dir to not exist, so we use a subdirectory
@@ -33,11 +33,17 @@ fi
 echo "[seaf-cli] Starting daemon..."
 seaf-cli start -c "$SEAFILE_CONF_DIR"
 
-# Wait for daemon to be ready
+# Wait for daemon to be ready (socket file + status check)
 echo "[seaf-cli] Waiting for daemon..."
-for i in {1..10}; do
-  if seaf-cli status -c "$SEAFILE_CONF_DIR" >/dev/null 2>&1; then
-    break
+for i in {1..60}; do
+  if [ -S "$SEAFILE_CONF_DIR/seafile.sock" ] || ls "$SEAFILE_CONF_DIR"/*.sock >/dev/null 2>&1; then
+    if seaf-cli status -c "$SEAFILE_CONF_DIR" >/dev/null 2>&1; then
+      echo "[seaf-cli] Daemon ready"
+      break
+    fi
+  fi
+  if [ "$i" -eq 60 ]; then
+    echo "[seaf-cli] WARNING: Daemon may not be ready after 60s"
   fi
   sleep 1
 done
