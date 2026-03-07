@@ -75,6 +75,7 @@ services:
     ports:
       - "1704:1704/tcp"
       - "1705:1705/tcp"
+      - "1780:1780/tcp"
     networks:
       - homelab
     depends_on:
