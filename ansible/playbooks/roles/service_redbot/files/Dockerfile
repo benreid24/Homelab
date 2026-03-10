@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -21,7 +21,7 @@ RUN groupadd -r -g $RED_GID ${RED_USER} && \
 COPY redbot/requirements.txt ${RED_HOME}/
 
 RUN apt update && \
-   apt --no-install-recommends -y install build-essential git openjdk-11-jre-headless units iputils-ping && \
+   apt --no-install-recommends -y install build-essential git openjdk-17-jre-headless units iputils-ping && \
    su $RED_USER -c "python -m pip install --no-cache-dir --user -r ${RED_HOME}/requirements.txt" && \
    apt remove -y build-essential && \
    apt autoremove -y && \
