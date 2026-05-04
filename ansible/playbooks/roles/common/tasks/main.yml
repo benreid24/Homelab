@@ -2,6 +2,7 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
+  when: not (skip_apt_update | default(false))
 
 - name: Install base packages
   apt:
@@ -15,6 +16,7 @@
       - git
       - fail2ban
     state: present
+  when: not (skip_apt_update | default(false))
 
 - name: Ensure fail2ban is enabled and started
   ansible.builtin.service:

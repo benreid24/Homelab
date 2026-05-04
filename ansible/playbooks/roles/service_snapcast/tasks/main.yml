@@ -61,6 +61,7 @@
     group: "{{ service_group }}"
     mode: '0755'
   become: true
+  when: not (skip_apt_update | default(false))
 
 - name: Setup Snapcast service
   include_tasks: ../shared_tasks/tasks/init_service.yml

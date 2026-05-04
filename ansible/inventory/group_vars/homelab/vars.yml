@@ -1,6 +1,8 @@
 timezone: America/New_York
 root_domain: benanna.club
 docker_network_subnet: 172.20.0.0/16
+docker_network_ip_range: 172.20.1.0/24
+nginx_docker_ip: 172.20.0.10
 service_user: homelab
 service_group: homelab
 logs_path: /opt/homelab/logs

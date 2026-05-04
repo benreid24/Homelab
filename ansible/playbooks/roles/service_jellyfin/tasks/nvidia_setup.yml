@@ -8,6 +8,7 @@
     update_cache: yes
     install_recommends: no
   become: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Create keyrings directory if it doesn't exist
   ansible.builtin.file:
@@ -22,6 +23,7 @@
     dest: /tmp/nvidia-container-toolkit.gpg
     mode: "0644"
   become: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Dearmor and install NVIDIA GPG key
   ansible.builtin.shell: |
@@ -29,6 +31,7 @@
   args:
     creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
   become: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Add NVIDIA Container Toolkit repository
   ansible.builtin.shell: |
@@ -38,11 +41,13 @@
   args:
     creates: /etc/apt/sources.list.d/nvidia-container-toolkit.list
   become: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Update apt cache after adding NVIDIA repository
   ansible.builtin.apt:
     update_cache: yes
   become: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Install NVIDIA Container Toolkit packages
   ansible.builtin.apt:
@@ -54,3 +59,4 @@
     state: present
     allow_downgrade: yes
   become: yes
+  when: not (skip_apt_update | default(false))

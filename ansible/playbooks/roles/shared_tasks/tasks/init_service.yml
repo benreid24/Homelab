@@ -161,6 +161,24 @@
       (_template_glob_result is defined and _template_glob_result.changed)
   become: true
 
+- name: "Check if {{ service_name }} has any stopped containers"
+  ansible.builtin.shell:
+    chdir: "{{ services_config_path }}/{{ service_name }}/{{ docker_compose_path | default('') }}"
+    cmd: docker compose ps --status exited --status created --quiet
+  register: _stopped_containers
+  changed_when: false
+  when: _docker_compose_file.stat.exists
+  become: true
+
+- name: "Ensure {{ service_name }} is running"
+  ansible.builtin.shell:
+    chdir: "{{ services_config_path }}/{{ service_name }}/{{ docker_compose_path | default('') }}"
+    cmd: docker compose up -d || (docker compose down && docker compose up -d)
+  when:
+    - _docker_compose_file.stat.exists
+    - _stopped_containers.stdout | default('') | length > 0
+  become: true
+
 - name: Ensure reverse proxy sites directory exists
   ansible.builtin.file:
     path: "{{ nginx.sites_enabled_path }}"

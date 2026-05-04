@@ -6,6 +6,7 @@
       - cifs-utils
     state: present
     update_cache: yes
+  when: not (skip_apt_update | default(false))
 
 - name: Create mount point directory
   ansible.builtin.file:

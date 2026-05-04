@@ -34,6 +34,7 @@
     group: "{{ service_group }}"
     mode: "0755"
   become: true
+  when: not (skip_apt_update | default(false))
 
 - name: "Decompress restic binary"
   ansible.builtin.shell: >

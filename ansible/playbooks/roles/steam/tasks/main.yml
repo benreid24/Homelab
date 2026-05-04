@@ -6,6 +6,7 @@
     - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} multiverse"
     - "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates multiverse"
   become: true
+  when: not (skip_apt_update | default(false))
 
 - name: Add i386 architecture
   ansible.builtin.command: dpkg --add-architecture i386
@@ -18,6 +19,7 @@
   ansible.builtin.apt:
     update_cache: yes
   become: true
+  when: not (skip_apt_update | default(false))
 
 - name: Accept steamcmd license
   ansible.builtin.debconf:
@@ -33,6 +35,7 @@
       - steamcmd
     state: present
   become: true
+  when: not (skip_apt_update | default(false))
 
 - name: Create steam group
   ansible.builtin.group: 

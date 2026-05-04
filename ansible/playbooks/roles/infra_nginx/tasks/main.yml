@@ -69,6 +69,7 @@
       CLOUDFLARE_CREDENTIALS_PATH={{ nginx.cloudflare_credentials_path }}
       CLOUDFLARE_API_TOKEN={{ cloudflare_dns_api_token }}
       LOGS_PATH={{ nginx.logs_path }}
+      NGINX_IP={{ nginx_docker_ip }}
     template_globs:
       - src_template_glob: common/*.conf.j2
         dst_template_path_prefix: "{{ nginx.config_local_path }}/common"
