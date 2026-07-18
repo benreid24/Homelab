@@ -10,6 +10,7 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - homelab
+    restart: unless-stopped
 
 networks:
   homelab:
