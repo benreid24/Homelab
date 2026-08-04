@@ -60,3 +60,17 @@
     allow_downgrade: yes
   become: yes
   when: not (skip_apt_update | default(false))
+
+- name: Install nvidia-persistenced
+  ansible.builtin.apt:
+    name: nvidia-persistenced
+    state: present
+  become: yes
+  when: not (skip_apt_update | default(false))
+
+- name: Enable and start nvidia-persistenced
+  ansible.builtin.systemd:
+    name: nvidia-persistenced
+    enabled: yes
+    state: started
+  become: yes

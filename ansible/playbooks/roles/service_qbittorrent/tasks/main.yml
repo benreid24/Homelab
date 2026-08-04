@@ -30,6 +30,7 @@
       GLUETUN_CONFIG_DIR={{ services_data_path }}/qBittorrent/gluetun
       OPENVPN_USER={{ qbittorrent_vpn_openvpn_user }}
       OPENVPN_PASSWORD={{ qbittorrent_vpn_openvpn_password }}
+      WIREGUARD_KEY={{ qbittorrent_vpn_wireguard_key }}
       GSP_GTN_API_KEY={{ qbittorrent_gsp_gtn_api_key }}
     config_copies:
       - src_config_path: .

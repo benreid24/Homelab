@@ -65,7 +65,6 @@
     - service_snapcast
     - service_msync
     - service_mealie
-    - service_leantime
     - service_homepage
     - cron_backups
     - cron_github_mirror

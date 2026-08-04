@@ -25,7 +25,3 @@ homeassistant:
   conf_path: "{{ services_data_path }}/HomeAssistant/config"
 
 satisfactory_saves_path: "{{ data_path }}/satisfactory-saves"
-
-leantime:
-  db_name: leantime
-  db_user: leantime_user

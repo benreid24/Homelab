@@ -12,13 +12,15 @@ services:
     environment:
       - TZ=${TZ}
       - VPN_SERVICE_PROVIDER=protonvpn
-      - VPN_TYPE=openvpn
+      - VPN_TYPE=wireguard
       - OPENVPN_USER=${OPENVPN_USER}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_KEY}
       - SERVER_COUNTRIES=United States
       - VPN_PORT_FORWARDING=on
       - QBT_WEBUI_ENABLED=true
       - PORT_FORWARD_ONLY=true
+      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE='{"auth":"apikey","apikey":"${GSP_GTN_API_KEY:-randomapikey}"}'
     volumes:
       - ${GLUETUN_CONFIG_DIR}:/gluetun
     healthcheck:
@@ -44,8 +46,8 @@ services:
       - WEBUI_PORT=8080
       - QBITTORRENT_INTERFACE=tun0
       - DOCKER_MODS=ghcr.io/t-anc/gsp-qbittorent-gluetun-sync-port-mod:main # Port Forwarding Mod (Syncs qBittorrent with Gluetun)
-      - GSP_GTN_API_KEY=${GSP_GTN_API_KEY:-randomapikey}  # API key for port forwarding updates
-      - GSP_QBITTORRENT_PORT=${GSP_QBITTORRENT_PORT:-53764}  # Torrenting port (auto-updated by Gluetun)
+      - GSP_GTN_API_KEY=${GSP_GTN_API_KEY:-randomapikey} # API key for port forwarding updates
+      - GSP_QBITTORRENT_PORT=${GSP_QBITTORRENT_PORT:-53764} # Torrenting port (auto-updated by Gluetun)
       - GSP_MINIMAL_LOGS=false
     volumes:
       - ${QBITTORRENT_CONFIG_DIR}:/config
@@ -53,7 +55,7 @@ services:
     ulimits:
       nofile:
         soft: 32768
-        hard: 65536  # Increases allowed open files (important for high-speed torrenting)
+        hard: 65536 # Increases allowed open files (important for high-speed torrenting)
 
 networks:
   homelab:

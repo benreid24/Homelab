@@ -47,12 +47,6 @@ monitored_endpoints:
     interval: 60s
     group: "Services"
 
-  - name: "Leantime"
-    url: "https://leantime.{{ external_hostname }}"
-    method: GET
-    interval: 60s
-    group: "Services"
-
   - name: "Snapcast"
     url: "https://snapcast.{{ external_hostname }}"
     method: GET
