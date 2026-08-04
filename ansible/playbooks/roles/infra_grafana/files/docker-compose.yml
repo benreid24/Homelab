@@ -2,6 +2,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    user: "${PUID}:${PGID}"
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini:ro
       - ${DATA_PATH}/grafana:/var/lib/grafana
