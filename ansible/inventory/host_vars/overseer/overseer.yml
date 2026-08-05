@@ -11,7 +11,7 @@ managed_domains: "{{ [external_hostname] + extra_domains }}"
 certbot_env: prod
 
 data_path: /mnt/data/homelab/data
-media_parent_path: /mnt/data/homelab/media
+media_parent_path: /mnt/media/homelab
 media_path: "{{ media_parent_path }}/media"
 torrent_path: "{{ media_parent_path }}/torrents"
 torrent_incomplete_path: "{{ media_parent_path }}/torrent-incomplete"
