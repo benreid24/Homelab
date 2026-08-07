@@ -9,6 +9,7 @@
       DATA_PATH={{ services_config_path }}/Homepage/config
       HOSTNAME={{ external_hostname }}
       HOMEPAGE_DATA_VOLUME={{ homepage_data_volume }}
+      HOMEPAGE_MEDIA_VOLUME={{ homepage_media_volume }}
     templates:
       - src_template_path: services.yaml.j2
         dst_template_path: config/config/services.yaml
