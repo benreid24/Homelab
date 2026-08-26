@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Redirect all output to both log file and console
+exec > >(tee -a {{ log_path }}) 2>&1
+
+info() { printf "\n%s %s\n\n" "$( date )" "$*" >&2; }
+
+info "Unlocking {{ backup_type }} restic repository"
+
+sudo mount -a || \
+    info "Warning: Could not mount all filesystems"
+
+export RESTIC_PASSWORD_COMMAND="{{ crons_config_path }}/Backups/restic_passcommand.sh"
+export RESTIC_REPOSITORY={{ repo_path }}
+
+{{ restic }} unlock
+
+unlock_exit=$?
+
+if [ ${unlock_exit} -eq 0 ]; then
+    info "Repository unlocked successfully"
+else
+    info "Repository unlock failed"
+fi
+
+exit ${unlock_exit}

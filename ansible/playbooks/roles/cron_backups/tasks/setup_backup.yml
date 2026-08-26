@@ -64,6 +64,20 @@
     monitor_hosts: "{{ push_monitor_hosts }}"
   become: true
 
+- name: "Template backup unlock script"
+  ansible.builtin.template:
+    src: "restic_unlock.sh.j2"
+    dest: "{{ crons_config_path }}/Backups/{{ backup.name }}_unlock.sh"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0755"
+  vars:
+    backup_type: "{{ backup.name }}"
+    restic: "{{ crons_config_path }}/Backups/restic"
+    repo_path: "{{ backup.mount_path }}{{ backup_dst_path }}"
+    log_path: "{{ logs_path }}/backup_{{ backup.name }}.log"
+  become: true
+
 - name: "Ensure backup repo is initialized"
   ansible.builtin.shell: >
     {{ crons_config_path }}/Backups/restic init
