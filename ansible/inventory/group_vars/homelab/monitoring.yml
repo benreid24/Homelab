@@ -24,7 +24,7 @@ common_monitored_endpoints:
       - "[CERTIFICATE_EXPIRATION] > 48h"
 
   - name: "NVR"
-    url: "http://192.168.0.10"
+    url: "http://nvr.{{ overseer_hostname }}"
     method: GET
     interval: 60s
     group: "Services"

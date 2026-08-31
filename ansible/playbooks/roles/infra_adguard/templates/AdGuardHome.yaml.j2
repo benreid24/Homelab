@@ -167,6 +167,9 @@ filtering:
     - domain: '*.{{ offsite_pi_hostname }}'
       answer: {{ offsite_pi_ip }}
       enabled: true
+    - domain: 'dns.{{ root_domain }}'
+      answer: 192.168.0.10
+      enabled: true
     - domain: '*.{{ root_domain }}'
       answer: {{ overseer_ip }}
       enabled: true
