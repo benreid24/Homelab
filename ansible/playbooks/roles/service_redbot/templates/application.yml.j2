@@ -1,0 +1,117 @@
+server:
+  address: 0.0.0.0
+  port: 2333
+lavalink:
+  plugins:
+  - dependency: dev.lavalink.youtube:youtube-plugin:{{ redbot_lavalink_youtube_plugin_version }}
+{% if redbot_lavalink_youtube_plugin_snapshot %}
+    repository: https://maven.lavalink.dev/snapshots
+    snapshot: true
+{% else %}
+    repository: https://maven.lavalink.dev/releases
+{% endif %}
+  server:
+    password: "{{ redbot_lavalink_password }}"
+    bufferDurationMs: 400
+    frameBufferDurationMs: 1000
+    gc-warnings: true
+    playerUpdateInterval: 1
+    soundcloudSearchEnabled: true
+    sources:
+      bandcamp: true
+      http: true
+      local: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      youtube: false
+    youtubePlaylistLoadLimit: 100
+    youtubeSearchEnabled: true
+logging:
+  file:
+    path: ./logs/
+  level:
+    lavalink: INFO
+    root: INFO
+  logback:
+    rollingpolicy:
+      max-history: 15
+      max-size: 10MB
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+plugins:
+  youtube:
+    enabled: true
+    allowDirectPlaylistIds: true
+    allowDirectVideoIds: true
+    allowSearch: true
+    oauth:
+      enabled: true
+{% if redbot_lavalink_youtube_refresh_token %}
+      refreshToken: "{{ redbot_lavalink_youtube_refresh_token }}"
+{% endif %}
+    remoteCipher:
+      url: "http://yt-cipher:8001"
+      password: "{{ redbot_lavalink_cipher_token }}"
+      userAgent: "redbot-lavalink"
+    clientOptions:
+      ANDROID_MUSIC:
+        playback: true
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      ANDROID_VR:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      IOS:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      MUSIC:
+        playback: false
+        playlistLoading: false
+        searching: true
+        videoLoading: false
+      MWEB:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      TV:
+        playback: true
+        playlistLoading: false
+        searching: false
+        videoLoading: true
+      TVHTML5_SIMPLY:
+        playback: true
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      WEB:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      WEBEMBEDDED:
+        playback: true
+        playlistLoading: false
+        searching: false
+        videoLoading: true
+    clients:
+    - TV
+    - MUSIC
+    - WEBEMBEDDED
+    - ANDROID_VR
+    - ANDROID_MUSIC
+    - TVHTML5_SIMPLY
+    - IOS
+    - WEB
+    - MWEB
+sentry:
+  dsn: ''
+  environment: ''

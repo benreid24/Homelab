@@ -1,4 +1,29 @@
 services:
+  yt-cipher:
+    image: ghcr.io/kikkia/yt-cipher:master
+    container_name: redbot-yt-cipher
+    restart: unless-stopped
+    environment:
+      OVERRIDE_PLAYER_VARIANT: IAS
+      API_TOKEN: "${YT_CIPHER_TOKEN}"
+    networks:
+      - redbot
+
+  lavalink:
+    build:
+      context: ./lavalink
+    container_name: redbot-lavalink
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    depends_on:
+      - yt-cipher
+    volumes:
+      - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
+      - ${DATA_PATH}/lavalink/plugins:/opt/Lavalink/plugins
+      - ${DATA_PATH}/lavalink/logs:/opt/Lavalink/logs
+    networks:
+      - redbot
+
   red-bot:
     build:
       context: .
@@ -7,9 +32,17 @@ services:
         PGID: ${PGID}
     container_name: redbot
     restart: unless-stopped
+    depends_on:
+      - lavalink
     environment:
       INSTANCE_NAME: "BenAnnaBot"
       PREFIX: "!"
       TOKEN: "${TOKEN}"
     volumes:
       - ${DATA_PATH}:/redbot/data
+    networks:
+      - redbot
+
+networks:
+  redbot:
+    driver: bridge
