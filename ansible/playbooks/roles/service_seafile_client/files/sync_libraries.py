@@ -185,6 +185,24 @@ def set_libraries_readonly(conf_dir, data_dir, library_ids):
         print(f"[sync] Warning: Failed to set read-only: {e}", file=sys.stderr)
 
 
+def clear_libraries_readonly(data_dir, library_ids):
+    """Remove the local read-only flag from excluded libraries."""
+    db_path = os.path.join(data_dir, "seafile-data", "repo.db")
+    if not os.path.exists(db_path):
+        return
+
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.executemany(
+            "DELETE FROM RepoProperty WHERE repo_id=? AND key='is-readonly'",
+            [(lib_id,) for lib_id in library_ids],
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[sync] Warning: Failed to clear read-only: {e}", file=sys.stderr)
+
+
 def main():
     conf_dir = os.environ.get("SEAFILE_CONF_DIR")
     data_dir = os.environ.get("SEAFILE_CLI_DATA_DIR", "/data")
@@ -276,8 +294,38 @@ def set_readonly_mode():
     """Set all wanted libraries to read-only in the DB (daemon must be stopped)."""
     data_dir = os.environ.get("SEAFILE_CLI_DATA_DIR", "/data")
     conf_dir = os.environ.get("SEAFILE_CONF_DIR")
+    server_url = os.environ.get("SEAFILE_CLI_SERVER_URL", "")
+    username = os.environ.get("SEAFILE_CLI_USERNAME", "")
+    password = os.environ.get("SEAFILE_CLI_PASSWORD", "")
     library_ids_str = os.environ.get("SEAFILE_CLI_LIBRARY_IDS", "")
     wanted_ids = {lib_id.strip() for lib_id in library_ids_str.split(",") if lib_id.strip()}
+    excluded_ids = set()
+
+    excluded_ids.update(
+        lib_id.strip()
+        for lib_id in os.environ.get("SEAFILE_CLI_READONLY_EXCLUDE_IDS", "").split(",")
+        if lib_id.strip()
+    )
+
+    excluded_names = {
+        name.strip().casefold()
+        for name in os.environ.get("SEAFILE_CLI_READONLY_EXCLUDE_NAMES", "").split(",")
+        if name.strip()
+    }
+    if excluded_names:
+        token = get_api_token(server_url, username, password)
+        remote_libraries = get_remote_libraries(server_url, token) if token else {}
+        excluded_ids.update({
+            lib_id for lib_id in wanted_ids
+            if remote_libraries.get(lib_id, "").casefold() not in excluded_names
+        })
+        wanted_ids -= excluded_ids
+
+    excluded_ids &= wanted_ids
+    wanted_ids -= excluded_ids
+
+    if excluded_ids:
+        clear_libraries_readonly(data_dir, excluded_ids)
     if wanted_ids:
         set_libraries_readonly(conf_dir, data_dir, wanted_ids)
 
