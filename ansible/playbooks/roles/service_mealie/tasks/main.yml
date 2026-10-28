@@ -1,3 +1,21 @@
+- name: Clone mealie mcp repository
+  git:
+    repo: 'git@github.com:benreid24/mealie-mcp.git'
+    dest: "{{ services_config_path }}/Mealie/mealie-mcp"
+    version: 'main'
+    force: yes
+    update: yes
+  become: true
+  become_user: "{{ service_user }}"
+  register: mealie_mcp_repo
+
+- name: Rebuild mealie mcp service
+  ansible.builtin.shell: >
+    cd {{ services_config_path }}/Mealie/mealie-mcp &&
+    docker compose down && docker compose build --no-cache
+  become: true
+  when: mealie_mcp_repo.changed
+
 - name: Setup Mealie service
   include_tasks: ../../shared_tasks/tasks/init_service.yml
   vars:
@@ -11,3 +29,5 @@
       TIMEZONE={{ timezone }}
       HOSTNAME={{ external_hostname }}
       DATA_PATH={{ services_data_path }}/Mealie
+      MEALIE_API_TOKEN={{ mealie_api_token }}
+      MEALIE_MCP_TOKEN={{ mealie_mcp_token }}

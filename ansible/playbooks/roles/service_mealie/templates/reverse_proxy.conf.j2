@@ -8,3 +8,14 @@ server {
         include /etc/nginx/common/proxy_common.conf;
     }
 }
+
+server {
+    include /etc/nginx/common/server_common.conf;
+    server_name mealie-mcp.{{ external_hostname }};
+
+    location / {
+        set $upstream http://mealie-mcp:8000;
+        proxy_pass $upstream;
+        include /etc/nginx/common/proxy_common.conf;
+    }
+}

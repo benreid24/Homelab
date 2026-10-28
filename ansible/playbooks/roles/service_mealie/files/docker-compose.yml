@@ -1,6 +1,6 @@
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v3.9.2 
+    image: ghcr.io/mealie-recipes/mealie:v3.9.2
     container_name: mealie
     restart: unless-stopped
     user: "${PUID}:${PGID}"
@@ -49,6 +49,23 @@ services:
       start_period: 5m
     networks:
       - mealie-network
+
+  mealie-mcp:
+    container_name: mealie-mcp
+    build:
+      context: ./mealie-mcp
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    environment:
+      MCP_AUTH_TOKEN: ${MEALIE_MCP_TOKEN}
+      MEALIE_API_TOKEN: ${MEALIE_API_TOKEN}
+      MCP_TRANSPORT: http
+      MCP_PORT: 8000
+      MEALIE_URL: http://mealie:9000
+    networks:
+      - mealie-network
+      - homelab
 
 networks:
   mealie-network:
